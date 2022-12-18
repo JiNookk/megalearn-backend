@@ -47,11 +47,11 @@ public class BackdoorController {
 
         jdbcTemplate.execute("INSERT INTO " +
                 "lecture(id, course_id, lecture_title, video_url) " +
-                "VALUES(1, 1, '테스트 1강', 'wQWzdhirwBw')");
+                "VALUES(1, 1, '테스트 1강', 'xEbAwSof5M4')");
 
         jdbcTemplate.execute("INSERT INTO " +
                 "lecture(id, course_id, lecture_title, video_url) " +
-                "VALUES(2, 1, '테스트 2강', 'UARNUFPCp0c')");
+                "VALUES(2, 1, '테스트 2강', 'KHiONHoiGys')");
 
         return "Ok";
     }
