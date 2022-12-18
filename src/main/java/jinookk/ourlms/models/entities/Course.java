@@ -105,12 +105,3 @@ public class Course {
         return new CourseDto(id, category, title, stars, studentCount, instructor, currentLectureId, hashTags);
     }
 }
-
-//courseId: productId,
-//lectureId: 135,
-//category: '개발,프로그래밍 > 백엔드',
-//title: '강의 1',
-//stars: 5.0,
-//studentCount: 1234,
-//instructor: '오진성',
-//hashTags: ['헛소리 잘하는법', '화나게 하는법'],

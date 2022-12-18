@@ -42,15 +42,6 @@ public class Inquiry {
     @AttributeOverride(name = "value", column = @Column(name = "account_id"))
     private AccountId accountId;
 
-    // 누가 쓴것인지 -> 유저 아이디로 들고 있는다.
-    // 포스트에 작성자가 익명으로 할당되고, 댓글이랑 어떻게 연결하면
-    // 글쓴이 인지 id로 구분을 하자.
-
-    // TODO : 강의시간을 기입할 것
-    // TODO : 익명 구현하기 => 질문 게시판 CRUD를 마무리 하고 마지막에 구현하기
-    // 익명으로 게시한 글을 계속 익명으로 사용하고 싶다. 댓글도 익명으로 사용하고 싶다.
-    // 댓글에서 게시글과 똑같은 익명 닉네임을 사용하고 싶다면 어떻게 해야할까?
-
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "status"))
     private Status status;
@@ -202,8 +193,6 @@ public class Inquiry {
         }
 
         Optional<Comment> previousComment = previousComment(comments, new AccountId(account.id()));
-
-        System.out.println(previousComment.isPresent());
 
         if (previousComment.isPresent()) {
             Name author = previousComment.get().author();
