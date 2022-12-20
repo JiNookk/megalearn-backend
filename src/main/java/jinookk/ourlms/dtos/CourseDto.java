@@ -2,7 +2,7 @@ package jinookk.ourlms.dtos;
 
 import jinookk.ourlms.models.vos.Category;
 import jinookk.ourlms.models.vos.HashTag;
-import jinookk.ourlms.models.vos.LectureId;
+import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Stars;
 import jinookk.ourlms.models.vos.StudentCount;

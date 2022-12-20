@@ -6,10 +6,10 @@ import jinookk.ourlms.dtos.InquiryDeleteDto;
 import jinookk.ourlms.dtos.InquiryDto;
 import jinookk.ourlms.dtos.InquiryRequestDto;
 import jinookk.ourlms.dtos.InquiryUpdateDto;
-import jinookk.ourlms.models.vos.AccountId;
+import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
-import jinookk.ourlms.models.vos.LectureId;
+import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Status;
@@ -183,10 +183,6 @@ public class Inquiry {
                 .toList();
     }
 
-    public boolean isPublisherId(AccountId accountId) {
-        return Objects.equals(this.accountId, accountId);
-    }
-
     public Comment createComment(List<Comment> comments, CommentRequestDto commentRequestDto, Account account) {
         if (isPublisherId(new AccountId(account.id()))) {
             return Comment.of(commentRequestDto, publisher, accountId);
@@ -201,6 +197,10 @@ public class Inquiry {
 
         Name author = new Name(account.name().value(), anonymous);
         return Comment.of(commentRequestDto, author, new AccountId(account.id()));
+    }
+
+    public boolean isPublisherId(AccountId accountId) {
+        return Objects.equals(this.accountId, accountId);
     }
 
     public Optional<Comment> previousComment(List<Comment> comments, AccountId accountId) {

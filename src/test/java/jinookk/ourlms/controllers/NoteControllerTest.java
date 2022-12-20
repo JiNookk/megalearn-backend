@@ -4,7 +4,7 @@ import jinookk.ourlms.dtos.NoteDeleteDto;
 import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NotesDto;
 import jinookk.ourlms.models.entities.Note;
-import jinookk.ourlms.models.vos.NoteId;
+import jinookk.ourlms.models.vos.ids.NoteId;
 import jinookk.ourlms.services.NoteService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

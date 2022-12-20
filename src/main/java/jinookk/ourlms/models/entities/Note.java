@@ -4,9 +4,9 @@ import jinookk.ourlms.dtos.NoteDeleteDto;
 import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NoteRequestDto;
 import jinookk.ourlms.dtos.NoteUpdateDto;
-import jinookk.ourlms.models.vos.AccountId;
+import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Content;
-import jinookk.ourlms.models.vos.LectureId;
+import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Status;
 

@@ -5,8 +5,8 @@ import jinookk.ourlms.dtos.CommentDto;
 import jinookk.ourlms.dtos.CommentRequestDto;
 import jinookk.ourlms.dtos.CommentUpdateDto;
 import jinookk.ourlms.dtos.CommentsDto;
-import jinookk.ourlms.models.vos.AccountId;
-import jinookk.ourlms.models.vos.InquiryId;
+import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CommentController {
     private final CommentService commentService;
-
 
     public CommentController(CommentService commentService) {
         this.commentService = commentService;

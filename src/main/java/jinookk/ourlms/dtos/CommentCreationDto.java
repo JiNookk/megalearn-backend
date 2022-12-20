@@ -1,6 +1,6 @@
 package jinookk.ourlms.dtos;
 
-import jinookk.ourlms.models.vos.InquiryId;
+import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.Name;
 
 public class CommentCreationDto {

@@ -1,12 +1,21 @@
 package jinookk.ourlms.backdoor;
 
 import jinookk.ourlms.models.vos.HashTag;
+import jinookk.ourlms.models.vos.Title;
+import jinookk.ourlms.models.vos.VideoUrl;
+import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.ids.SectionId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.List;
 
 @RestController
@@ -53,6 +62,10 @@ public class BackdoorController {
                 "lecture(id, course_id, lecture_title, video_url) " +
                 "VALUES(2, 1, '테스트 2강', 'KHiONHoiGys')");
 
+        jdbcTemplate.execute("INSERT INTO " +
+                "lecture(id, course_id, lecture_title, video_url) " +
+                "VALUES(3, 1, '테스트 3강', 'quvgobYR8pA')");
+
         return "Ok";
     }
 
@@ -61,6 +74,35 @@ public class BackdoorController {
         jdbcTemplate.execute("DELETE from inquiry_hash_tags");
         jdbcTemplate.execute("DELETE from comment");
         jdbcTemplate.execute("DELETE from inquiry");
+
+        return "Ok";
+    }
+
+    @GetMapping("/setup-section-db")
+    public String setupSections() {
+        jdbcTemplate.execute("DELETE from progress");
+        jdbcTemplate.execute("DELETE from section");
+
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "section(id, course_id, title) " +
+                "VALUES(1, 1, '섹션 1')");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "section(id, course_id, title) " +
+                "VALUES(2, 1, '섹션 2')");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "progress(id, course_id, section_id, account_id, lecture_id, lecture_title, status, minutes) " +
+                "VALUES(1, 1, 1, 1, 1, '테스트 1강', 'unwatched', 67)");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "progress(id, course_id, section_id, account_id, lecture_id, lecture_title, status, minutes) " +
+                "VALUES(2, 1, 1, 1, 2, '테스트 2강', 'unwatched', 121)");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "progress(id, course_id, section_id, account_id, lecture_id, lecture_title, status, minutes) " +
+                "VALUES(3, 1, 2, 1, 3, '테스트 3강', 'unwatched', 86)");
 
         return "Ok";
     }

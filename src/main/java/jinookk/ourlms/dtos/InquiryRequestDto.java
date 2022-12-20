@@ -1,6 +1,6 @@
 package jinookk.ourlms.dtos;
 
-import jinookk.ourlms.models.vos.LectureId;
+import jinookk.ourlms.models.vos.ids.LectureId;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
