@@ -1,6 +1,6 @@
 package jinookk.ourlms.models.entities;
 
-import jinookk.ourlms.models.vos.AccountId;
+import jinookk.ourlms.models.vos.ids.AccountId;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

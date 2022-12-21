@@ -1,4 +1,4 @@
-package jinookk.ourlms.models.vos;
+package jinookk.ourlms.models.vos.ids;
 
 import java.util.Objects;
 

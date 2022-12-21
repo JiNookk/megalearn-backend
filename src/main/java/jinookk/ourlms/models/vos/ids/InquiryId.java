@@ -1,17 +1,16 @@
-package jinookk.ourlms.models.vos;
+package jinookk.ourlms.models.vos.ids;
 
 import java.util.Objects;
 
-public class LectureId {
+public class InquiryId {
     private Long value;
 
-    public LectureId() {
+    public InquiryId() {
     }
 
-    public LectureId(Long value) {
+    public InquiryId(Long value) {
         this.value = value;
     }
-
 
     public Long value() {
         return value;
@@ -25,12 +24,12 @@ public class LectureId {
     @Override
     public boolean equals(Object other) {
         return other != null &&
-                other.getClass().equals(LectureId.class) &&
-                ((LectureId) other).value.equals(this.value);
+                other.getClass().equals(InquiryId.class) &&
+                ((InquiryId) other).value.equals(this.value);
     }
 
     @Override
     public String toString() {
-        return "LectureId value: " + value;
+        return "InquiryId value: " + value;
     }
 }

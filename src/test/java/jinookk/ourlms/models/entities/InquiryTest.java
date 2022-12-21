@@ -1,11 +1,11 @@
 package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.CommentRequestDto;
-import jinookk.ourlms.models.vos.AccountId;
+import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
-import jinookk.ourlms.models.vos.InquiryId;
-import jinookk.ourlms.models.vos.LectureId;
+import jinookk.ourlms.models.vos.ids.InquiryId;
+import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Status;

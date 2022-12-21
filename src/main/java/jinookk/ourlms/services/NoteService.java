@@ -7,15 +7,14 @@ import jinookk.ourlms.dtos.NoteUpdateDto;
 import jinookk.ourlms.dtos.NotesDto;
 import jinookk.ourlms.exceptions.NoteNotFound;
 import jinookk.ourlms.models.entities.Note;
-import jinookk.ourlms.models.vos.AccountId;
-import jinookk.ourlms.models.vos.LectureId;
-import jinookk.ourlms.models.vos.NoteId;
+import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.ids.LectureId;
+import jinookk.ourlms.models.vos.ids.NoteId;
 import jinookk.ourlms.repositories.NoteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @Service

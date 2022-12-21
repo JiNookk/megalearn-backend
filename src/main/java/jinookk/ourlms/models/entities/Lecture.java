@@ -11,12 +11,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+//
+
 @Entity
 public class Lecture {
     @Id
     @GeneratedValue
     private Long id;
-
     private Long courseId;
 
     @Embedded
@@ -27,9 +28,6 @@ public class Lecture {
     @AttributeOverride(name = "value", column = @Column(name = "video_url"))
     private VideoUrl videoUrl;
 
-    //    private ChattingRoom chattingRoom;
-    //    private List<Post> posts;
-    //    private List<Note> notes;
 
     public Lecture() {
     }
@@ -40,15 +38,6 @@ public class Lecture {
         this.title = title;
         this.videoUrl = videoUrl;
     }
-
-//    public Lecture(Title title, VideoUrl videoUrl, ChattingRoom chattingRoom,
-//                   List<Post> posts, List<Note> notes) {
-//        this.title = title;
-//        this.videoUrl = videoUrl;
-//        this.chattingRoom = chattingRoom;
-//        this.posts = posts;
-//        this.notes = notes;
-//    }
 
     public static Lecture fake(String lectureTitle) {
         Title title = new Title(lectureTitle);
@@ -78,18 +67,6 @@ public class Lecture {
     public VideoUrl videoUrl() {
         return videoUrl;
     }
-
-//    public ChattingRoom chattingRoom() {
-//        return chattingRoom;
-//    }
-//
-//    public List<Post> posts() {
-//        return List.copyOf(posts);
-//    }
-//
-//    public List<Note> notes() {
-//        return List.copyOf(notes);
-//    }
 
     public LectureDto toLectureDto() {
         return new LectureDto(id, courseId, title, videoUrl);

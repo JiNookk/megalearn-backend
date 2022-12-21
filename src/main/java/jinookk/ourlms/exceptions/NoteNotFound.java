@@ -1,6 +1,6 @@
 package jinookk.ourlms.exceptions;
 
-import jinookk.ourlms.models.vos.NoteId;
+import jinookk.ourlms.models.vos.ids.NoteId;
 
 public class NoteNotFound extends RuntimeException {
     public NoteNotFound(NoteId noteId) {

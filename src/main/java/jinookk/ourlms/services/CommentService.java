@@ -10,8 +10,8 @@ import jinookk.ourlms.exceptions.InquiryNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Comment;
 import jinookk.ourlms.models.entities.Inquiry;
-import jinookk.ourlms.models.vos.AccountId;
-import jinookk.ourlms.models.vos.InquiryId;
+import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CommentRepository;
 import jinookk.ourlms.repositories.InquiryRepository;
@@ -62,6 +62,9 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAllByInquiryId(inquiryId);
 
         Comment comment = inquiry.createComment(comments, commentRequestDto, account);
+
+        // 댓글이 만드는 방식으로 리팩토링하기
+//        Comment comment = Comment.of()
 
         Comment saved = commentRepository.save(comment);
 

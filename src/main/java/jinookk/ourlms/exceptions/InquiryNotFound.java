@@ -1,6 +1,6 @@
 package jinookk.ourlms.exceptions;
 
-import jinookk.ourlms.models.vos.InquiryId;
+import jinookk.ourlms.models.vos.ids.InquiryId;
 
 public class InquiryNotFound extends RuntimeException {
     public InquiryNotFound(InquiryId inquiryId) {

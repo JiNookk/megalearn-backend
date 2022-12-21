@@ -1,12 +1,10 @@
 package jinookk.ourlms.repositories;
 
 import jinookk.ourlms.models.entities.Inquiry;
-import jinookk.ourlms.models.vos.InquiryId;
-import jinookk.ourlms.models.vos.LectureId;
+import jinookk.ourlms.models.vos.ids.LectureId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
     List<Inquiry> findAllByLectureId(LectureId lectureId);
