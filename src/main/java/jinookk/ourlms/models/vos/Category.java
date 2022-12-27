@@ -18,6 +18,18 @@ public class Category {
         return value;
     }
 
+    public void update(String value) {
+        if (value.isBlank()) {
+            return;
+        }
+
+        this.value = value;
+    }
+
+    public void delete() {
+        this.value = null;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(value);

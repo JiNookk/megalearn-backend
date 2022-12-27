@@ -3,9 +3,11 @@ package jinookk.ourlms.controllers;
 import jinookk.ourlms.dtos.InquiriesDto;
 import jinookk.ourlms.dtos.InquiryDeleteDto;
 import jinookk.ourlms.dtos.InquiryDto;
+import jinookk.ourlms.dtos.InquiryFilterDto;
 import jinookk.ourlms.dtos.InquiryRequestDto;
 import jinookk.ourlms.dtos.InquiryUpdateDto;
 import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.services.InquiryService;
@@ -37,6 +39,17 @@ public class InquiryController {
             @PathVariable Long inquiryId
     ) {
         return inquiryService.detail(new InquiryId(inquiryId));
+    }
+
+    @GetMapping("/inquiries")
+    public InquiriesDto listWithInstructorId(
+            @RequestAttribute Long accountId,
+            @RequestParam(required = false) Long courseId,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String order
+    ) {
+        return inquiryService.list(new AccountId(accountId),
+                new InquiryFilterDto(courseId, type, order));
     }
 
     @GetMapping("/lectures/{lectureId}/inquiries")

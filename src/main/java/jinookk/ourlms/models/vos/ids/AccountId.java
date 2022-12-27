@@ -12,9 +12,12 @@ public class AccountId {
         this.value = value;
     }
 
-
     public Long value() {
         return value;
+    }
+
+    public void delete() {
+        this.value = null;
     }
 
     @Override

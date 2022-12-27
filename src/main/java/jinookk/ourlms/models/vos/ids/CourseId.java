@@ -17,6 +17,10 @@ public class CourseId {
         return value;
     }
 
+    public void delete() {
+        this.value = null;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(value);

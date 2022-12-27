@@ -1,35 +1,37 @@
 package jinookk.ourlms.models.vos;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Like {
-    private String value;
+    private Long accountId;
 
     public Like() {
     }
 
-    public Like(String value) {
-        this.value = value;
+    public Like(Long accountId) {
+        this.accountId = accountId;
     }
 
-    public String value() {
-        return value;
+    public Long accountId() {
+        return accountId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(accountId);
     }
 
     @Override
     public boolean equals(Object other) {
         return other != null &&
                 other.getClass().equals(Like.class) &&
-                ((Like) other).value.equals(this.value);
+                ((Like) other).accountId.equals(this.accountId);
     }
 
     @Override
     public String toString() {
-        return "Like value: " + value;
+        return "Like accountId: " + accountId;
     }
 }

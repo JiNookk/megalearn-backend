@@ -1,6 +1,5 @@
 package jinookk.ourlms.models.vos;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Content {
@@ -17,8 +16,16 @@ public class Content {
         return value;
     }
 
-    public void update(String content) {
-        this.value = content;
+    public void update(String value) {
+        if (value.isBlank()) {
+            return;
+        }
+
+        this.value = value;
+    }
+
+    public void delete() {
+        this.value = null;
     }
 
     @Override

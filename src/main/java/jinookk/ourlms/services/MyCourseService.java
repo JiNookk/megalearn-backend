@@ -1,8 +1,10 @@
 package jinookk.ourlms.services;
 
-import jinookk.ourlms.dtos.MyCourseDto;
+import jinookk.ourlms.dtos.CourseDto;
+import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.dtos.MyCoursesDto;
 import jinookk.ourlms.models.entities.Course;
+import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.repositories.CourseRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +20,7 @@ public class MyCourseService {
         this.courseRepository = courseRepository;
     }
 
-    public MyCoursesDto list() {
+    public MyCoursesDto purchasedList() {
         Long userId = 1L;
 
         // TODO: 나중에 로그인 구현시 유저 아이디로 찾아오는 메서드 구현
@@ -30,5 +32,23 @@ public class MyCourseService {
                 .map(Course::toMyCourseDto)
                 .toList()
         );
+    }
+
+    public CoursesDto uploadedList(AccountId accountId, String type) {
+        List<Course> courses = courseRepository.findAllByAccountId(accountId);
+
+        List<Course> filtered = filtered(courses, type);
+
+        List<CourseDto> courseDtos = filtered.stream()
+                .map(Course::toCourseDto)
+                .toList();
+
+        return new CoursesDto(courseDtos);
+    }
+
+    private List<Course> filtered(List<Course> courses, String type) {
+        return courses.stream()
+                .filter(course -> course.filterType(type))
+                .toList();
     }
 }

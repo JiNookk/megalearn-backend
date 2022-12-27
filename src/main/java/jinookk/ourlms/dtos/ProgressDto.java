@@ -1,7 +1,7 @@
 package jinookk.ourlms.dtos;
 
 import jinookk.ourlms.models.vos.LectureTime;
-import jinookk.ourlms.models.vos.Status;
+import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.LectureId;
 

@@ -48,10 +48,10 @@ public class CommentController {
     }
 
     @PatchMapping("comments/{inquiryId}")
-    public CommentDto  update(
+    public CommentDto update(
             @PathVariable Long inquiryId,
             @RequestBody CommentUpdateDto commentUpdateDto
-            ) {
+    ) {
         return commentService.update(inquiryId, commentUpdateDto.getContent());
     }
 

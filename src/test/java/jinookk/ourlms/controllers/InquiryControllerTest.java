@@ -70,6 +70,7 @@ class InquiryControllerTest {
                         .content("{" +
                                 "\"hashTag\": \"hashtag\", " +
                                 "\"lectureId\": 1, " +
+                                "\"courseId\": 1, " +
                                 "\"title\": \"title\", " +
                                 "\"content\": \"test\", " +
                                 "\"publisher\": \"tester\", " +

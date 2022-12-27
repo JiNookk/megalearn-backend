@@ -1,8 +1,12 @@
 package jinookk.ourlms.controllers;
 
 import jinookk.ourlms.dtos.CourseDto;
+import jinookk.ourlms.dtos.CoursesDto;
+import jinookk.ourlms.dtos.MyCourseDto;
+import jinookk.ourlms.dtos.MyCoursesDto;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.services.CourseService;
+import jinookk.ourlms.services.MyCourseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,7 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,6 +31,25 @@ class CourseControllerTest {
     @MockBean
     private CourseService courseService;
 
+    @MockBean
+    private MyCourseService myCourseService;
+
+    @Test
+    void create() throws Exception {
+        CourseDto courseDto = Course.fake("courseTitle").toCourseDto();
+
+        given(courseService.create(any(), any())).willReturn(courseDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/courses")
+                        .header("Authorization", "Bearer ACCESS.TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("\"title\":\"courseTitle\""))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"title\":\"courseTitle\"")
+                ));
+    }
+
     @Test
     void detail() throws Exception {
         CourseDto courseDto = Course.fake("test").toCourseDto();
@@ -35,6 +61,86 @@ class CourseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"title\":\"test\"")
+                ));
+    }
+
+    @Test
+    void list() throws Exception {
+        CourseDto courseDto = Course.fake("test").toCourseDto();
+
+        given(courseService.list()).willReturn(new CoursesDto(List.of(courseDto)));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/courses"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"courses\":[")
+                ));
+    }
+
+    @Test
+    void purchasedMyCourses() throws Exception {
+        MyCourseDto myCourseDto = Course.fake("my-courses").toMyCourseDto();
+        List<MyCourseDto> dtos = List.of(myCourseDto);
+
+        given(myCourseService.purchasedList())
+                .willReturn(new MyCoursesDto(dtos));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/account/my-courses"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"myCourses\":[")
+                ));
+    }
+
+    @Test
+    void update() throws Exception {
+        CourseDto courseDto = Course.fake("updated").toCourseDto();
+
+        given(courseService.update(any(), any())).willReturn(courseDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/courses/1")
+                        .header("Authorization", "Bearer ACCESS.TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"description\":\"description\",\n" +
+                                "\"thumbnailPath\":\"path\",\n" +
+                                "\"status\":\"created\",\n" +
+                                "\"price\":10000," +
+                                "\"title\":\"updated\"," +
+                                "\"category\":\"category\"" +
+                                "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"title\":\"updated\"")
+                ));
+    }
+
+    @Test
+    void delete() throws Exception {
+        CourseDto courseDto = Course.fake(null).toCourseDto();
+
+        given(courseService.delete(any())).willReturn(courseDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"title\":null")
+                ));
+    }
+
+    @Test
+    void uploadedMyCourses() throws Exception {
+        CourseDto courseDto = Course.fake("my-courses").toCourseDto();
+        List<CourseDto> dtos = List.of(courseDto);
+
+        given(myCourseService.uploadedList(any(), any()))
+                .willReturn(new CoursesDto(dtos));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/instructor/my-courses")
+                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"courses\":[")
                 ));
     }
 }

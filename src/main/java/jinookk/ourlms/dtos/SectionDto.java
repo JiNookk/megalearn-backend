@@ -1,32 +1,38 @@
 package jinookk.ourlms.dtos;
 
+import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.Title;
-
-import java.util.List;
+import jinookk.ourlms.models.vos.ids.CourseId;
 
 public class SectionDto {
     private Long id;
+    private Long courseId;
     private String title;
-    private List<ProgressDto> progresses;
+    private String content;
 
     public SectionDto() {
     }
 
-    public SectionDto(Long id, Title title, List<ProgressDto> progresses) {
+    public SectionDto(Long id, CourseId courseId, Title title, Content content) {
         this.id = id;
+        this.courseId = courseId.value();
         this.title = title.value();
-        this.progresses = progresses;
+        this.content = content.value();
     }
 
     public Long getId() {
         return id;
     }
 
+    public Long getCourseId() {
+        return courseId;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    public List<ProgressDto> getProgresses() {
-        return progresses;
+    public String getContent() {
+        return content;
     }
 }
