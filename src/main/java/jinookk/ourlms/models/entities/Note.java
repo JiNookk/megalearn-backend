@@ -8,7 +8,8 @@ import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.LectureTime;
-import jinookk.ourlms.models.vos.Status;
+import jinookk.ourlms.models.vos.status.Status;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -41,6 +42,8 @@ public class Note {
 
     @Embedded
     private LectureTime lectureTime;
+
+    @CreationTimestamp
     private LocalDateTime publishTime;
 
     public Note() {

@@ -1,7 +1,15 @@
 package jinookk.ourlms.services;
 
+import jinookk.ourlms.dtos.LectureDto;
+import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.dtos.SectionDto;
+import jinookk.ourlms.dtos.SectionUpdateRequestDto;
+import jinookk.ourlms.dtos.SectionWithProgressDto;
+import jinookk.ourlms.dtos.SectionRequestDto;
 import jinookk.ourlms.dtos.SectionsDto;
+import jinookk.ourlms.exceptions.LectureNotFound;
+import jinookk.ourlms.exceptions.SectionNotFound;
+import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -25,15 +33,42 @@ public class SectionService {
         this.progressRepository = progressRepository;
     }
 
-    public SectionsDto list(CourseId courseId, AccountId accountId) {
+    public SectionsDto listWithProgress(CourseId courseId, AccountId accountId) {
         List<Section> sections = sectionRepository.findAllByCourseId(courseId);
 
-        List<SectionDto> sectionDtos = sections.stream()
-                .map(section -> section.toSectionDto(
+        List<SectionWithProgressDto> sectionWithProgressDtos = sections.stream()
+                .map(section -> section.toSectionWithProgressDto(
                         progressRepository.findAllByAccountIdAndSectionId(
                                 accountId, new SectionId(section.id()))))
                 .toList();
 
-        return new SectionsDto(sectionDtos);
+        return new SectionsDto(sectionWithProgressDtos);
+    }
+
+    public SectionDto create(SectionRequestDto sectionRequestDto) {
+        Section section = Section.of(sectionRequestDto);
+
+        Section saved = sectionRepository.save(section);
+
+        return saved.toSectionDto();
+    }
+
+
+    public SectionDto update(Long sectionId, SectionUpdateRequestDto sectionUpdateRequestDto) {
+        Section section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new SectionNotFound(sectionId));
+
+        section.update(sectionUpdateRequestDto);
+
+        return section.toSectionDto();
+    }
+
+    public SectionDto delete(Long sectionId) {
+        Section section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new SectionNotFound(sectionId));
+
+        section.delete();
+
+        return section.toSectionDto();
     }
 }

@@ -10,7 +10,7 @@ import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.Status;
+import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CommentRepository;
 import jinookk.ourlms.repositories.InquiryRepository;

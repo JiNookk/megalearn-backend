@@ -1,7 +1,10 @@
 package jinookk.ourlms.services;
 
+import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.dtos.MyCoursesDto;
 import jinookk.ourlms.models.entities.Course;
+import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.CourseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,14 +26,26 @@ class MyCourseServiceTest {
     }
 
     @Test
-    void list() {
+    void purchasedList() {
         Course course = Course.fake("test");
 
         given(courseRepository.findAll())
                 .willReturn(List.of(course));
 
-        MyCoursesDto list = myCourseService.list();
+        MyCoursesDto list = myCourseService.purchasedList();
 
         assertThat(list.getMyCourses()).hasSize(1);
+    }
+
+    @Test
+    void uploadedList() {
+        Course course = Course.fake("test");
+
+        given(courseRepository.findAllByAccountId(new AccountId(1L)))
+                .willReturn(List.of(course));
+
+        CoursesDto uploadedList = myCourseService.uploadedList(new AccountId(1L), Status.PROCESSING);
+
+        assertThat(uploadedList.getCourses()).hasSize(1);
     }
 }

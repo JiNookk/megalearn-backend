@@ -2,7 +2,7 @@ package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.models.vos.LectureTime;
-import jinookk.ourlms.models.vos.Status;
+import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -62,7 +62,6 @@ public class Progress {
         this.title = title;
         this.status = status;
     }
-
 
     public static Progress fake(String lectureTitle) {
         return fake(new Title(lectureTitle));

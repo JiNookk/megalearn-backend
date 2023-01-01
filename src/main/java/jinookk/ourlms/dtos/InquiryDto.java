@@ -3,16 +3,24 @@ package jinookk.ourlms.dtos;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.LectureTime;
+import jinookk.ourlms.models.vos.Like;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Title;
+import jinookk.ourlms.models.vos.ids.CourseId;
+import jinookk.ourlms.models.vos.ids.LectureId;
+import jinookk.ourlms.models.vos.status.InquiryStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class InquiryDto {
     private Long id;
+    private Long lectureId;
+    private Long courseId;
     private List<String> hashTag;
+    private InquiryStatusDto status;
     private String title;
+    private Integer likes;
     private String content;
     private String publisher;
     private LocalDateTime publishTime;
@@ -21,11 +29,15 @@ public class InquiryDto {
     public InquiryDto() {
     }
 
-    public InquiryDto(Long id, List<HashTag> hashTag, Title title, Content content, Name publisher,
-                      LocalDateTime publishTime, LectureTime lectureTime) {
+    public InquiryDto(Long id, LectureId lectureId, CourseId courseId, List<HashTag> hashTag, InquiryStatus status, Title title,
+                      List<Like> likes, Content content, Name publisher, LocalDateTime publishTime, LectureTime lectureTime) {
         this.id = id;
+        this.lectureId = lectureId.value();
+        this.courseId = courseId.value();
         this.hashTag = hashTag.stream().map(HashTag::tagName).toList();
+        this.status = new InquiryStatusDto(status.value(), status.replied(), status.solved());
         this.title = title.value();
+        this.likes = likes.size();
         this.content = content.value();
         this.publisher = publisher.value();
         this.publishTime = publishTime;
@@ -58,5 +70,21 @@ public class InquiryDto {
 
     public LectureTimeDto getLectureTime() {
         return lectureTime;
+    }
+
+    public InquiryStatusDto getStatus() {
+        return status;
+    }
+
+    public Long getLectureId() {
+        return lectureId;
+    }
+
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public Long getCourseId() {
+        return courseId;
     }
 }

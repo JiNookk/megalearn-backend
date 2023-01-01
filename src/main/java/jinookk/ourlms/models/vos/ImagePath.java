@@ -18,6 +18,19 @@ public class ImagePath {
         return value;
     }
 
+    public void update(String value) {
+        System.out.println("path: " + value);
+        if (value.isBlank()) {
+            return;
+        }
+
+        this.value = value;
+    }
+
+    public void delete() {
+        this.value = null;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(value);

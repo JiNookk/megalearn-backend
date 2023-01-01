@@ -7,7 +7,11 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class InquiryRequestDto {
+    @NotNull
     private LectureId lectureId;
+
+    @NotNull
+    private Long courseId;
 
     private List<String> hashTags;
 
@@ -28,7 +32,7 @@ public class InquiryRequestDto {
     }
 
     public InquiryRequestDto(LectureId lectureId, List<String> hashTags, String title, String content,
-                             Boolean anonymous, Long minute, Long second) {
+                             Boolean anonymous, Long minute, Long second, Long courseId) {
         this.lectureId = lectureId;
         this.hashTags = hashTags;
         this.title = title;
@@ -36,6 +40,7 @@ public class InquiryRequestDto {
         this.anonymous = anonymous;
         this.minute = minute;
         this.second = second;
+        this.courseId = courseId;
     }
 
     public List<String> getHashTags() {
@@ -64,5 +69,9 @@ public class InquiryRequestDto {
 
     public Long getSecond() {
         return second;
+    }
+
+    public Long getCourseId() {
+        return courseId;
     }
 }

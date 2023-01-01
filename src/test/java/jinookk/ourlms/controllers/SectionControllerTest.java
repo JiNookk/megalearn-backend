@@ -1,6 +1,7 @@
 package jinookk.ourlms.controllers;
 
 import jinookk.ourlms.dtos.SectionDto;
+import jinookk.ourlms.dtos.SectionWithProgressDto;
 import jinookk.ourlms.dtos.SectionsDto;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.entities.Section;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -29,19 +31,73 @@ class SectionControllerTest {
     private SectionService sectionService;
 
     @Test
+    void create() throws Exception {
+        SectionDto sectionDto = Section.fake("hi").toSectionDto();
+
+        given(sectionService.create(any()))
+                .willReturn(sectionDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/sections")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"title\":\"hi\"," +
+                                "\"goal\":\"\"," +
+                                "\"courseId\":1" +
+                                "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"title\":\"hi\"")
+                ));
+    }
+
+    @Test
     void list() throws Exception {
         List<Progress> progresses = List.of(Progress.fake("hi"));
 
-        SectionDto sectionDto = Section.fake("hi").toSectionDto(progresses);
+        SectionWithProgressDto sectionWithProgressDto = Section.fake("hi").toSectionWithProgressDto(progresses);
 
-        given(sectionService.list(any(), any()))
-                .willReturn(new SectionsDto(List.of(sectionDto)));
+        given(sectionService.listWithProgress(any(), any()))
+                .willReturn(new SectionsDto(List.of(sectionWithProgressDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/sections")
                         .header("Authorization", "Bearer ACCESS.TOKEN"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"sections\":[")
+                ));
+    }
+
+
+    @Test
+    void update() throws Exception {
+        SectionDto sectionDto = Section.fake("updated").toSectionDto();
+
+        given(sectionService.update(any(), any()))
+                .willReturn(sectionDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/sections/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"title\":\"updated\"," +
+                                "\"goal\":\"goal\"" +
+                                "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"title\":\"updated\"")
+                ));
+    }
+
+    @Test
+    void delete() throws Exception {
+        SectionDto sectionDto = Section.fake(null).toSectionDto();
+
+        given(sectionService.delete(any()))
+                .willReturn(sectionDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/sections/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"title\":null")
                 ));
     }
 }

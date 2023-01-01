@@ -34,6 +34,10 @@ public class Name {
         return value;
     }
 
+    public void delete() {
+        this.value = null;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(value);
@@ -48,6 +52,6 @@ public class Name {
 
     @Override
     public String toString() {
-        return "Name value: " + value;
+        return value.toString();
     }
 }

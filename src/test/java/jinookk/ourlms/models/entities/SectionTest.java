@@ -1,6 +1,6 @@
 package jinookk.ourlms.models.entities;
 
-import jinookk.ourlms.dtos.SectionDto;
+import jinookk.ourlms.dtos.SectionWithProgressDto;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -14,19 +14,19 @@ class SectionTest {
 
         Progress progress = Progress.fake("1강");
 
-        SectionDto sectionDto = section.toSectionDto(List.of(progress));
+        SectionWithProgressDto sectionWithProgressDto = section.toSectionWithProgressDto(List.of(progress));
 
-        assertThat(sectionDto.getProgresses()).hasSize(1);
-        assertThat(sectionDto.getTitle()).isEqualTo("section");
+        assertThat(sectionWithProgressDto.getProgresses()).hasSize(1);
+        assertThat(sectionWithProgressDto.getTitle()).isEqualTo("section");
     }
 
     @Test
     void convertToDtoWithInvalidLectureProducts() {
         Section section = Section.fake("section");
 
-        SectionDto sectionDto = section.toSectionDto(null);
+        SectionWithProgressDto sectionWithProgressDto = section.toSectionWithProgressDto(null);
 
-        assertThat(sectionDto.getProgresses()).hasSize(0);
-        assertThat(sectionDto.getTitle()).isEqualTo("section");
+        assertThat(sectionWithProgressDto.getProgresses()).hasSize(0);
+        assertThat(sectionWithProgressDto.getTitle()).isEqualTo("section");
     }
 }

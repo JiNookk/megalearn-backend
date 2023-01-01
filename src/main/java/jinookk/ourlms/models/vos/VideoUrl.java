@@ -18,6 +18,14 @@ public class VideoUrl {
         return value;
     }
 
+    public void update(String value) {
+        this.value = value;
+    }
+
+    public void delete() {
+        this.value = null;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(value);

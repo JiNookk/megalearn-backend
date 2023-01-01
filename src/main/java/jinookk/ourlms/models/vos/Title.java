@@ -19,7 +19,15 @@ public class Title {
     }
 
     public void update(String value) {
+        if (value.isBlank() ) {
+            return;
+        }
+
         this.value = value;
+    }
+
+    public void delete() {
+        this.value = null;
     }
 
     @Override
