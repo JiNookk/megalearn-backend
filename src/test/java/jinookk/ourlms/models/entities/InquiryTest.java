@@ -30,7 +30,7 @@ class InquiryTest {
     void setup() {
         inquiry = new Inquiry(
                 1L, new CourseId(1L), new LectureId(2L), new AccountId(3L), new InquiryStatus(Status.CREATED), List.of(new HashTag("tag")),
-                List.of(new Like(1L)), new Title("title"), new Content("content"), new LectureTime(1L, 24L),
+                List.of(new Like(1L)), new Title("title"), new Content("content"), new LectureTime(1, 24),
                 new Name("post publisher"), false, LocalDateTime.now(), LocalDateTime.now());
 
         commentWithThirdAccountId = new Comment(1L, new InquiryId(2L), new AccountId(3L), new Status(Status.CREATED),

@@ -117,13 +117,13 @@ public class Inquiry {
     private static Inquiry fake(Content content) {
         return new Inquiry(1L, new CourseId(1L), new LectureId(1L), new AccountId(1L), new InquiryStatus(Status.CREATED),
                 List.of(new HashTag("hashTag")), List.of(new Like()), new Title("title"), content,
-                new LectureTime(1L, 24L), new Name("tester"), false, LocalDateTime.now(), LocalDateTime.now());
+                new LectureTime(1, 24), new Name("tester"), false, LocalDateTime.now(), LocalDateTime.now());
     }
 
     public static Inquiry fake(Name publisher) {
         return new Inquiry(1L, new CourseId(1L), new LectureId(1L), new AccountId(1L), new InquiryStatus(Status.CREATED),
                 List.of(new HashTag("hashTag")), List.of(new Like()), new Title("title"), new Content("hi"),
-                new LectureTime(1L, 24L), publisher, false, LocalDateTime.now(), LocalDateTime.now());
+                new LectureTime(1, 24), publisher, false, LocalDateTime.now(), LocalDateTime.now());
     }
 
     public static Inquiry of(InquiryRequestDto inquiryRequestDto, AccountId accountId, Name name) {

@@ -66,7 +66,7 @@ public class Note {
 
     private static Note fake(Content content) {
         return new Note(1L, new LectureId(1L), new AccountId(1L), new Status(Status.CREATED), content,
-                new LectureTime(1L, 24L), LocalDateTime.now());
+                new LectureTime(1, 24), LocalDateTime.now());
     }
 
     public static Note of(NoteRequestDto noteRequestDto, AccountId accountId) {

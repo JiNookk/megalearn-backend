@@ -1,5 +1,6 @@
 package jinookk.ourlms.models;
 
+import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MyCourseDto;
 import jinookk.ourlms.models.entities.Course;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -120,4 +122,64 @@ class CourseTest {
 
         assertThat(course.filterId(new CourseId(10L))).isFalse();
     }
+
+    @Test
+    void validatePayment() {
+        Course course = Course.fake("fake");
+
+        Payment payment = Payment.fake(35_000);
+
+        boolean validatePayment = course.validatePayment(Optional.of(payment));
+
+        assertThat(validatePayment).isTrue();
+    }
+
+    @Test
+    void validatePaymentWithNull() {
+        Course course = Course.fake("fake");
+
+        boolean validatePayment = course.validatePayment(Optional.empty());
+
+        assertThat(validatePayment).isFalse();
+    }
+
+    @Test
+    void validateInstructor() {
+        Course course = Course.fake("fake");
+
+        boolean validateInstructor = course.validateInstructor(new AccountId(1L));
+
+        assertThat(validateInstructor).isTrue();
+    }
+
+    @Test
+    void validateInstructorWithIncorrectId() {
+        Course course = Course.fake("fake");
+
+        assertThat(course.validateInstructor(new AccountId(2L))).isFalse();
+        assertThat(course.validateInstructor(new AccountId(null))).isFalse();
+        assertThat(course.validateInstructor(null)).isFalse();
+    }
+
+    @Test
+    void convertToDtoWithPayment() {
+        Course course = Course.fake("course");
+
+        Payment payment = Payment.fake(35000);
+
+        CourseDto courseDto = course.toCourseDto(Optional.of(payment), new AccountId(1L));
+
+        assertThat(courseDto.getIsPurchased()).isEqualTo(true);
+    }
+
+    @Test
+    void convertToDtoWithPaymentNull() {
+        Course course = Course.fake("course");
+
+        CourseDto courseDto = course.toCourseDto(Optional.empty(), new AccountId(1L));
+
+        assertThat(courseDto.getIsPurchased()).isEqualTo(false);
+    }
+
+
 }

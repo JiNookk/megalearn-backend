@@ -33,7 +33,7 @@ class ProgressControllerTest {
 
         given(progressService.detail(any())).willReturn(progressDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/progress"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/progresses"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"status\":\"unwatched\"")
@@ -46,6 +46,21 @@ class ProgressControllerTest {
 
         ProgressesDto progressesDto = new ProgressesDto(List.of(progressDto));
         given(progressService.list(any())).willReturn(progressesDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/progresses")
+                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"progresses\":[")
+                ));
+    }
+
+    @Test
+    void listByCourseId() throws Exception {
+        ProgressDto progressDto = Progress.fake("테스트 1강").toDto();
+
+        ProgressesDto progressesDto = new ProgressesDto(List.of(progressDto));
+        given(progressService.listByCourseId(any())).willReturn(progressesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/progresses"))
                 .andExpect(status().isOk())

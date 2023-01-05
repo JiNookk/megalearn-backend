@@ -43,7 +43,7 @@ public class InquiryController {
 
     @GetMapping("/inquiries")
     public InquiriesDto listWithInstructorId(
-            @RequestAttribute Long accountId,
+            @RequestAttribute(required = false) Long accountId,
             @RequestParam(required = false) Long courseId,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String order
@@ -59,6 +59,13 @@ public class InquiryController {
             @RequestParam(required = false) String content
     ) {
         return inquiryService.list(new LectureId(lectureId), lectureTime, content);
+    }
+
+    @GetMapping("/courses/{courseId}/inquiries")
+    public InquiriesDto listByCourseId(
+            @PathVariable Long courseId
+    ) {
+        return inquiryService.listByCourseId(new CourseId(courseId));
     }
 
     @PostMapping("/inquiries")

@@ -5,11 +5,13 @@ import jinookk.ourlms.dtos.CourseRequestDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MyCourseDto;
+import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.Category;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.ImagePath;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.Post;
 import jinookk.ourlms.models.vos.Price;
 import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -21,6 +23,8 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -28,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Course {
@@ -46,6 +51,13 @@ public class Course {
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "description"))
     private Content description;
+
+    @Column(name = "goal")
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<String> goals = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<Post> news = new ArrayList<>();
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "status"))
@@ -67,6 +79,9 @@ public class Course {
     @AttributeOverride(name = "value", column = @Column(name = "price"))
     private Price price;
 
+    @Enumerated(EnumType.STRING)
+    private Level level;
+
     @ElementCollection(fetch = FetchType.LAZY)
     private List<HashTag> hashTags = new ArrayList<>();
 
@@ -75,7 +90,7 @@ public class Course {
     }
 
     public Course(Long id, Title title, Content description, Status status, ImagePath imagePath, Category category,
-                  Name instructor, AccountId accountId, List<HashTag> hashTags, Price price) {
+                  Name instructor, AccountId accountId, Price price) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -84,7 +99,6 @@ public class Course {
         this.category = category;
         this.instructor = instructor;
         this.accountId = accountId;
-        this.hashTags = hashTags;
         this.price = price;
     }
 
@@ -101,14 +115,13 @@ public class Course {
         Content description = new Content("description");
         Price price = new Price(10000);
         Status status = new Status(Status.PROCESSING);
-        List<HashTag> hashTags = new ArrayList<>();
 
-        return new Course(id, title, description, status, imagePath, category, instructor, accountId, hashTags, price);
+        return new Course(id, title, description, status, imagePath, category, instructor, accountId, price);
     }
 
     public static Course of(CourseRequestDto courseRequestDto, Name instructor, AccountId accountId) {
         return new Course(null, new Title(courseRequestDto.getTitle()), new Content(""), new Status(Status.PROCESSING),
-                new ImagePath(""), new Category(""), instructor, accountId, List.of(), new Price(10000));
+                new ImagePath(""), new Category(""), instructor, accountId, new Price(10000));
     }
 
     public Long id() {
@@ -121,14 +134,6 @@ public class Course {
 
     public ImagePath imagePath() {
         return imagePath;
-    }
-
-    public MyCourseDto toMyCourseDto() {
-        return new MyCourseDto(id, title, imagePath);
-    }
-
-    public CourseDto toCourseDto() {
-        return new CourseDto(id, category, title, price, description, status, instructor, accountId, imagePath, hashTags);
     }
 
     public Double averageRating(List<Rating> ratings) {
@@ -205,5 +210,34 @@ public class Course {
 
     private boolean isCourseId(Long id) {
         return this.id.equals(id);
+    }
+
+    public boolean validatePayment(Optional<Payment> payment) {
+        return payment.isPresent();
+    }
+
+    public boolean validateInstructor(AccountId accountId) {
+        if (accountId == null || accountId.value() == null) {
+            return false;
+        }
+
+        return accountId.equals(this.accountId);
+    }
+
+    public CourseDto toCourseDto(Optional<Payment> payment, AccountId accountId) {
+        boolean isPurchased = validatePayment(payment);
+        boolean isInstructor = validateInstructor(accountId);
+
+        return new CourseDto(id, category, title, price, description, status, instructor, this.accountId,
+                imagePath, news, hashTags, isPurchased, isInstructor, level, goals);
+    }
+
+    public CourseDto toCourseDto() {
+        return new CourseDto(id, category, title, price, description, status, instructor, accountId,
+                imagePath, news, hashTags, level, goals);
+    }
+
+    public MyCourseDto toMyCourseDto() {
+        return new MyCourseDto(id, title, imagePath);
     }
 }
