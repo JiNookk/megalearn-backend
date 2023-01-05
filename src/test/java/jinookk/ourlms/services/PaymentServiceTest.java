@@ -76,9 +76,9 @@ class PaymentServiceTest {
 
     @Test
     void list() {
-        PaymentsDto paymentsDto = paymentService.list(new AccountId(1L), new CourseId(courseId));
+        PaymentsDto paymentsDto = paymentService.list(new AccountId(1L), new CourseId(1L));
 
-        assertThat(paymentsDto.getPayments()).hasSize(5);
+        assertThat(paymentsDto.getPayments()).hasSize(3);
     }
 
     @Test

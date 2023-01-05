@@ -62,6 +62,8 @@ class InquiryServiceTest {
         Lecture lecture1 = Lecture.fake("lecture1");
         Lecture lecture2 = Lecture.fake("lecture2");
         given(lectureRepository.findAllByCourseId(new CourseId(1L))).willReturn(List.of(lecture1, lecture2));
+
+        given(inquiryRepository.findAllByCourseId(new CourseId(1L))).willReturn(List.of(inquiry1, inquiry2));
     }
 
     @Test
@@ -79,9 +81,16 @@ class InquiryServiceTest {
     }
 
     @Test
+    void listByCourseId() {
+        InquiriesDto inquiriesDto = inquiryService.listByCourseId(new CourseId(1L));
+
+        assertThat(inquiriesDto.getInquiries()).hasSize(2);
+    }
+
+    @Test
     void create() {
         InquiryRequestDto inquiryRequestDto =
-                new InquiryRequestDto(new LectureId(1L), List.of("JPA"), "test", "tester", true, 1L, 24L, 1L);
+                new InquiryRequestDto(new LectureId(1L), List.of("JPA"), "test", "tester", true, 1, 24, 1L);
 
         AccountId userId = new AccountId(1L);
 

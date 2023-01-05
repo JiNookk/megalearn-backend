@@ -35,10 +35,10 @@ class PaymentControllerTest {
     void list() throws Exception {
         PaymentDto paymentDto = Payment.fake(35_000).toDto();
 
-        given(paymentService.list(new AccountId(1L), new CourseId(courseId)))
+        given(paymentService.list(new AccountId(1L), new CourseId(1L)))
                 .willReturn(new PaymentsDto(List.of(paymentDto)));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/instructor/payments")
+        mockMvc.perform(MockMvcRequestBuilders.get("/instructor/payments?courseId=1")
                         .header("Authorization", "Bearer ACCESS.TOKEN"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(

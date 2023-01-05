@@ -7,24 +7,24 @@ import java.util.Objects;
 @Embeddable
 public class LectureTime {
     @Column(name = "minutes")
-    private Long minute;
+    private Integer minute;
 
     @Column(name = "seconds")
-    private Long second;
+    private Integer second;
 
     public LectureTime() {
     }
 
-    public LectureTime(Long minute, Long second) {
+    public LectureTime(Integer minute, Integer second) {
         this.minute = minute;
         this.second = second;
     }
 
-    public Long minute() {
+    public Integer minute() {
         return minute;
     }
 
-    public Long second() {
+    public Integer second() {
         return second;
     }
 

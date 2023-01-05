@@ -115,7 +115,19 @@ public class InquiryService {
         return new InquiriesDto(inquiryDtos);
     }
 
+    public InquiriesDto listByCourseId(CourseId courseId) {
+        List<Inquiry> inquiries = inquiryRepository.findAllByCourseId(courseId);
+
+        List<InquiryDto> inquiryDtos = inquiries.stream().map(Inquiry::toInquiryDto).toList();
+
+        return new InquiriesDto(inquiryDtos);
+    }
+
     private List<Course> courses(AccountId accountId, CourseId courseId) {
+        if (accountId.value() == null) {
+            return courseRepository.findAll();
+        }
+
         List<Course> courses = courseRepository.findAllByAccountId(accountId);
 
         // 검색이 되려면 어떤식으로 진행해야 할까? 일단 제쳐두고 노아님에게 물어보는게 나을까?

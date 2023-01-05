@@ -3,8 +3,8 @@ package jinookk.ourlms.dtos;
 import jinookk.ourlms.models.vos.LectureTime;
 
 public class LectureTimeDto {
-    private Long minute;
-    private Long second;
+    private Integer minute;
+    private Integer second;
 
     public LectureTimeDto() {
     }
@@ -14,11 +14,11 @@ public class LectureTimeDto {
         this.second = lectureTime == null ? null : lectureTime.second();
     }
 
-    public Long getMinute() {
+    public Integer getMinute() {
         return minute;
     }
 
-    public Long getSecond() {
+    public Integer getSecond() {
         return second;
     }
 }

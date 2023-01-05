@@ -4,6 +4,7 @@ import jinookk.ourlms.dtos.InquiriesDto;
 import jinookk.ourlms.dtos.InquiryDeleteDto;
 import jinookk.ourlms.dtos.InquiryDto;
 import jinookk.ourlms.models.entities.Inquiry;
+import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.services.InquiryService;
@@ -52,6 +53,21 @@ class InquiryControllerTest {
         given(inquiryService.list(new LectureId(1L), null, null)).willReturn(inquiriesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/inquiries"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"inquiries\":[")
+                ));
+    }
+
+    @Test
+    void listByCourseId() throws Exception {
+        InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
+
+        InquiriesDto inquiriesDto = new InquiriesDto(List.of(inquiryDto));
+
+        given(inquiryService.listByCourseId(new CourseId(1L))).willReturn(inquiriesDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/inquiries"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"inquiries\":[")

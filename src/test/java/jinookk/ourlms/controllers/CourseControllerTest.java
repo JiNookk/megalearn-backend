@@ -5,6 +5,8 @@ import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.dtos.MyCourseDto;
 import jinookk.ourlms.dtos.MyCoursesDto;
 import jinookk.ourlms.models.entities.Course;
+import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CourseService;
 import jinookk.ourlms.services.MyCourseService;
 import org.junit.jupiter.api.Test;
@@ -54,9 +56,10 @@ class CourseControllerTest {
     void detail() throws Exception {
         CourseDto courseDto = Course.fake("test").toCourseDto();
 
-        given(courseService.detail(1L)).willReturn(courseDto);
+        given(courseService.detail(new AccountId(1L), new CourseId(1L))).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1")
+                        .header("Authorization", "Bearer ACCESS.TOKEN")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(

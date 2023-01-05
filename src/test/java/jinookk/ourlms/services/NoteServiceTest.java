@@ -45,7 +45,7 @@ class NoteServiceTest {
     void create() {
         String content = "content";
         long lectureId = 1L;
-        LectureTimeDto lectureTimeDto = new LectureTimeDto(new LectureTime(1L, 24L));
+        LectureTimeDto lectureTimeDto = new LectureTimeDto(new LectureTime(1, 24));
         NoteRequestDto noteRequestDto = new NoteRequestDto(content, lectureId, lectureTimeDto);
         AccountId accountId = new AccountId(1L);
 

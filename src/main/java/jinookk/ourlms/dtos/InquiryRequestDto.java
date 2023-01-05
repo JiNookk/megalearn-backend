@@ -24,15 +24,15 @@ public class InquiryRequestDto {
     @NotNull
     private Boolean anonymous;
 
-    private Long minute;
+    private Integer minute;
 
-    private Long second;
+    private Integer second;
 
     public InquiryRequestDto() {
     }
 
     public InquiryRequestDto(LectureId lectureId, List<String> hashTags, String title, String content,
-                             Boolean anonymous, Long minute, Long second, Long courseId) {
+                             Boolean anonymous, Integer minute, Integer second, Long courseId) {
         this.lectureId = lectureId;
         this.hashTags = hashTags;
         this.title = title;
@@ -63,11 +63,11 @@ public class InquiryRequestDto {
         return title;
     }
 
-    public Long getMinute() {
+    public Integer getMinute() {
         return minute;
     }
 
-    public Long getSecond() {
+    public Integer getSecond() {
         return second;
     }
 

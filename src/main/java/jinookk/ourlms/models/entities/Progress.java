@@ -53,7 +53,7 @@ public class Progress {
     }
 
     public Progress(Long id, CourseId courseId, SectionId sectionId, AccountId accountId,
-                    LectureId lectureId, Title title, Status status) {
+                    LectureId lectureId, Title title, Status status, LectureTime lectureTime) {
         this.id = id;
         this.courseId = courseId;
         this.sectionId = sectionId;
@@ -61,6 +61,7 @@ public class Progress {
         this.lectureId = lectureId;
         this.title = title;
         this.status = status;
+        this.lectureTime = lectureTime;
     }
 
     public static Progress fake(String lectureTitle) {
@@ -69,7 +70,7 @@ public class Progress {
 
     private static Progress fake(Title title) {
         return new Progress(31L, new CourseId(1L), new SectionId(1L), new AccountId(1L), new LectureId(1L),
-                title, new Status(Status.UNWATCHED));
+                title, new Status(Status.UNWATCHED), new LectureTime());
     }
 
     public Long id() {
@@ -85,7 +86,7 @@ public class Progress {
     }
 
     public ProgressDto toDto() {
-        return new ProgressDto(id, lectureId, title, status, lectureTime);
+        return new ProgressDto(id, lectureId, courseId, title, status, lectureTime);
     }
 
     public Status status() {

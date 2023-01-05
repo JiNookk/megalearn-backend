@@ -6,6 +6,7 @@ import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.dtos.MyCoursesDto;
 import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CourseService;
 import jinookk.ourlms.services.MyCourseService;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +25,11 @@ public class CourseController {
     private final CourseService courseService;
     private final MyCourseService myCourseService;
 
+    public CourseController(CourseService courseService, MyCourseService myCourseService) {
+        this.courseService = courseService;
+        this.myCourseService = myCourseService;
+    }
+
     @PostMapping("/courses")
     public CourseDto create(
             @Validated @RequestBody CourseRequestDto courseRequestDto,
@@ -32,16 +38,12 @@ public class CourseController {
         return courseService.create(courseRequestDto, new AccountId(accountId));
     }
 
-    public CourseController(CourseService courseService, MyCourseService myCourseService) {
-        this.courseService = courseService;
-        this.myCourseService = myCourseService;
-    }
-
     @GetMapping("/courses/{courseId}")
     public CourseDto course(
+            @RequestAttribute Long accountId,
             @PathVariable Long courseId
     ) {
-        return courseService.detail(courseId);
+        return courseService.detail(new AccountId(accountId), new CourseId(courseId));
     }
 
     @GetMapping("/courses")

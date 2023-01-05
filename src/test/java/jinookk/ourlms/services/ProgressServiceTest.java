@@ -3,8 +3,10 @@ package jinookk.ourlms.services;
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
 import jinookk.ourlms.models.entities.Progress;
+import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
+import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.ProgressRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,9 @@ class ProgressServiceTest {
 
         given(progressRepository.findAllByCourseId(new CourseId(1L)))
                 .willReturn(List.of(progress));
+
+        given(progressRepository.findAllByAccountId(new AccountId(1L)))
+                .willReturn(List.of(progress));
     }
 
     @Test
@@ -46,7 +51,14 @@ class ProgressServiceTest {
 
     @Test
     void list() {
-        ProgressesDto progressesDto = progressService.list(new CourseId(1L));
+        ProgressesDto progressesDto = progressService.list(new AccountId(1L));
+
+        assertThat(progressesDto.getProgresses()).hasSize(1);
+    }
+
+    @Test
+    void listByCourseId() {
+        ProgressesDto progressesDto = progressService.listByCourseId(new CourseId(1L));
 
         assertThat(progressesDto.getProgresses()).hasSize(1);
     }
