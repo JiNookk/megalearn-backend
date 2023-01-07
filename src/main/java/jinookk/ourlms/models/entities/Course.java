@@ -89,17 +89,38 @@ public class Course {
     public Course() {
     }
 
-    public Course(Long id, Title title, Content description, Status status, ImagePath imagePath, Category category,
+    public Course(Long id, Title title, Content description, Level level, Status status, ImagePath imagePath, Category category,
                   Name instructor, AccountId accountId, Price price) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.level = level;
         this.status = status;
         this.imagePath = imagePath;
         this.category = category;
         this.instructor = instructor;
         this.accountId = accountId;
         this.price = price;
+    }
+
+    public Long id() {
+        return id;
+    }
+
+    public Title title() {
+        return title;
+    }
+
+    public ImagePath imagePath() {
+        return imagePath;
+    }
+
+    public Level level() {
+        return level;
+    }
+
+    public Price price() {
+        return price;
     }
 
     public static Course fake(String title) {
@@ -115,26 +136,18 @@ public class Course {
         Content description = new Content("description");
         Price price = new Price(10000);
         Status status = new Status(Status.PROCESSING);
+        Level level = Level.INTERMEDIATE;
 
-        return new Course(id, title, description, status, imagePath, category, instructor, accountId, price);
+
+        return new Course(id, title, description, level, status, imagePath, category, instructor, accountId, price);
     }
 
     public static Course of(CourseRequestDto courseRequestDto, Name instructor, AccountId accountId) {
-        return new Course(null, new Title(courseRequestDto.getTitle()), new Content(""), new Status(Status.PROCESSING),
+        return new Course(null, new Title(courseRequestDto.getTitle()), new Content(""),
+                Level.of(courseRequestDto.getLevel()), new Status(Status.PROCESSING),
                 new ImagePath(""), new Category(""), instructor, accountId, new Price(10000));
     }
 
-    public Long id() {
-        return id;
-    }
-
-    public Title title() {
-        return title;
-    }
-
-    public ImagePath imagePath() {
-        return imagePath;
-    }
 
     public Double averageRating(List<Rating> ratings) {
         if (ratings.size() == 0) {

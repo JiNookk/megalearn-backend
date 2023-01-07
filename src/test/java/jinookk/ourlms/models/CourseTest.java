@@ -6,6 +6,7 @@ import jinookk.ourlms.dtos.MyCourseDto;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.entities.Rating;
+import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Price;
@@ -181,5 +182,10 @@ class CourseTest {
         assertThat(courseDto.getIsPurchased()).isEqualTo(false);
     }
 
+    @Test
+    void fake() {
+        Course course = Course.fake("fake");
 
+        assertThat(course.level()).isEqualTo(Level.INTERMEDIATE);
+    }
 }

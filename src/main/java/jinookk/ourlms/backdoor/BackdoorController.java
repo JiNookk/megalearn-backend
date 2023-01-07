@@ -7,6 +7,7 @@ import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Post;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.SectionId;
 import jinookk.ourlms.models.vos.status.Status;
@@ -300,6 +301,26 @@ public class BackdoorController {
         jdbcTemplate.execute("INSERT INTO " +
                 "account(id, name) " +
                 "VALUES(3, 'tester3')");
+
+        return "Ok";
+    }
+
+    @GetMapping("/setup-cart-db")
+    public String setupCarts() {
+        jdbcTemplate.execute("DELETE from cart_item_ids");
+        jdbcTemplate.execute("DELETE from cart");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "cart(id, account_id) " +
+                "VALUES(1, 1)");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "cart(id, account_id) " +
+                "VALUES(2, 2)");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "cart(id, account_id) " +
+                "VALUES(3, 3)");
 
         return "Ok";
     }
