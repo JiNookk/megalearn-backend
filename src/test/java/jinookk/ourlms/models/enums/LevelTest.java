@@ -8,5 +8,7 @@ class LevelTest {
     @Test
     void enums() {
         assertThat(Level.INTERMEDIATE.getName()).isEqualTo("초급");
+
+        assertThat(Level.of("초급")).isEqualTo(Level.INTERMEDIATE);
     }
 }

@@ -45,7 +45,7 @@ class CourseControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/courses")
                         .header("Authorization", "Bearer ACCESS.TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("\"title\":\"courseTitle\""))
+                        .content("{\"title\":\"courseTitle\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"title\":\"courseTitle\"")

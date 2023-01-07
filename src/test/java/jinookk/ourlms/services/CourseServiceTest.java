@@ -7,6 +7,7 @@ import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
+import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -70,7 +71,7 @@ class CourseServiceTest {
 
     @Test
     void create() {
-        courseService.create(new CourseRequestDto("title"), new AccountId(1L));
+        courseService.create(new CourseRequestDto("title", Level.BEGINNER.getName()), new AccountId(1L));
 
         verify(accountRepository).findById(1L);
         verify(courseRepository).save(any());

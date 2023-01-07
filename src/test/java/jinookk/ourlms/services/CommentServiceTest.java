@@ -100,11 +100,11 @@ class CommentServiceTest {
 
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 
-        commentService.update(1L, "update");
+        commentService.update(1L, "addItem");
 
         verify(commentRepository).findById(1L);
 
-        verify(comment).updateContent("update");
+        verify(comment).updateContent("addItem");
     }
 
     @Test
