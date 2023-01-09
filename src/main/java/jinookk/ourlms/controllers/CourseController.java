@@ -1,10 +1,12 @@
 package jinookk.ourlms.controllers;
 
 import jinookk.ourlms.dtos.CourseDto;
+import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.dtos.MyCoursesDto;
+import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CourseService;
@@ -47,8 +49,15 @@ public class CourseController {
     }
 
     @GetMapping("/courses")
-    public CoursesDto list() {
-        return courseService.list();
+    public CoursesDto list(
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false) String level,
+            @RequestParam(required = false) String cost,
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) String skill
+    ) {
+        CourseFilterDto courseFilterDto = new CourseFilterDto(level, cost, skill, content);
+        return courseService.list(page, courseFilterDto);
     }
 
     @GetMapping("/account/my-courses")
@@ -78,5 +87,13 @@ public class CourseController {
             @PathVariable Long courseId
     ) {
         return courseService.delete(courseId);
+    }
+
+    @DeleteMapping("/courses/{courseId}/skills/{skill}")
+    public CourseDto deleteSkill(
+            @PathVariable Long courseId,
+            @PathVariable String skill
+    ) {
+        return courseService.deleteSkill(new CourseId(courseId), new HashTag(skill));
     }
 }

@@ -52,9 +52,10 @@ public class Course {
     @AttributeOverride(name = "value", column = @Column(name = "description"))
     private Content description;
 
-    @Column(name = "goal")
+
+    @AttributeOverride(name = "value", column = @Column(name = "goal"))
     @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> goals = new ArrayList<>();
+    private List<Content> goals = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.LAZY)
     private List<Post> news = new ArrayList<>();
@@ -85,6 +86,8 @@ public class Course {
     @ElementCollection(fetch = FetchType.LAZY)
     private List<HashTag> hashTags = new ArrayList<>();
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<HashTag> skillSets = new ArrayList<>();
 
     public Course() {
     }
@@ -188,8 +191,12 @@ public class Course {
         title.update(courseUpdateRequestDto.getTitle());
         category.update(courseUpdateRequestDto.getCategory());
         description.update(courseUpdateRequestDto.getDescription());
-        imagePath.update(courseUpdateRequestDto.getThumbnailPath());
+        imagePath.update(courseUpdateRequestDto.getImagePath());
         price.update(courseUpdateRequestDto.getPrice());
+        level = Level.of(courseUpdateRequestDto.getLevel());
+        skillSets.add(new HashTag(courseUpdateRequestDto.getSkill()));
+
+        System.out.println(skillSets);
     }
 
     @Override
@@ -242,15 +249,23 @@ public class Course {
         boolean isInstructor = validateInstructor(accountId);
 
         return new CourseDto(id, category, title, price, description, status, instructor, this.accountId,
-                imagePath, news, hashTags, isPurchased, isInstructor, level, goals);
+                imagePath, news, hashTags, skillSets, isPurchased, isInstructor, level, goals);
     }
 
     public CourseDto toCourseDto() {
         return new CourseDto(id, category, title, price, description, status, instructor, accountId,
-                imagePath, news, hashTags, level, goals);
+                imagePath, news, hashTags, skillSets, level, goals);
     }
 
     public MyCourseDto toMyCourseDto() {
         return new MyCourseDto(id, title, imagePath);
+    }
+
+    public List<HashTag> skillSets() {
+        return skillSets;
+    }
+
+    public void deleteSkill(HashTag skill) {
+        this.skillSets.remove(skill);
     }
 }

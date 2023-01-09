@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 public enum Level {
     BEGINNER("입문"),
     INTERMEDIATE("초급"),
-    EXPERT("중급");
+    EXPERT("중급이상");
 
     private static final Map<String, String> CODE_MAP = Collections.unmodifiableMap(
             Stream.of(values()).collect(Collectors.toMap(Level::getName, Level::name))

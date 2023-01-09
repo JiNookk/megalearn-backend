@@ -27,6 +27,7 @@ public class CourseDto {
     private String instructor;
     private String coverImage;
     private List<String> hashTags;
+    private List<String> skillSets;
     private String level;
     private List<String> goals;
     private List<NewsDto> news;
@@ -36,7 +37,7 @@ public class CourseDto {
 
     public CourseDto(Long id, Category category, Title title, Price price, Content description, Status status,
                      Name instructor, AccountId instructorId, ImagePath coverImage, List<Post> news,
-                     List<HashTag> hashTags, Level level, List<String> goals) {
+                     List<HashTag> hashTags, List<HashTag> skillSets, Level level, List<Content> goals) {
         this.id = id;
         this.category = category.value();
         this.title = title.value();
@@ -48,13 +49,14 @@ public class CourseDto {
         this.coverImage = coverImage.value();
         this.news = news.stream().map(Post::toDto).toList();
         this.hashTags = hashTags.stream().map(HashTag::tagName).toList();
+        this.skillSets = skillSets.stream().map(HashTag::tagName).toList();
         this.level = level.getName();
-        this.goals = goals;
+        this.goals = goals.stream().map(Content::value).toList();
     }
 
     public CourseDto(Long id, Category category, Title title, Price price, Content description, Status status,
                      Name instructor, AccountId instructorId, ImagePath coverImage, List<Post> news,
-                     List<HashTag> hashTags, Boolean isPurchased, Boolean isInstructor, Level level, List<String> goals) {
+                     List<HashTag> hashTags, List<HashTag> skillSets, Boolean isPurchased, Boolean isInstructor, Level level, List<Content> goals) {
         this.id = id;
         this.category = category.value();
         this.title = title.value();
@@ -66,10 +68,11 @@ public class CourseDto {
         this.coverImage = coverImage.value();
         this.news = news.stream().map(Post::toDto).toList();
         this.hashTags = hashTags.stream().map(HashTag::tagName).toList();
+        this.skillSets = skillSets.stream().map(HashTag::tagName).toList();
         this.isPurchased = isPurchased;
         this.isInstructor = isInstructor;
         this.level = level.getName();
-        this.goals = goals;
+        this.goals = goals.stream().map(Content::value).toList();
     }
 
     public Long getId() {
@@ -130,5 +133,9 @@ public class CourseDto {
 
     public List<String> getGoals() {
         return goals;
+    }
+
+    public List<String> getSkillSets() {
+        return skillSets;
     }
 }
