@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -31,13 +32,21 @@ public class BackdoorController {
     }
 
     @GetMapping("/setup-course-db")
-    public String setupCourses() {
+    public String setupCourses(
+            @RequestParam(required = false) Integer count
+    ) {
         List<HashTag> hashTags = List.of(new HashTag("운동"), new HashTag("프로틴"));
 
         List<Post> news = List.of(
                 new Post("News1", LocalDateTime.of(2022, 12, 26, 1, 1), "content1"),
                 new Post("News2", LocalDateTime.of(2022, 12, 31, 1, 1), "content2")
         );
+
+        List<HashTag> skillSets1 = List.of(new HashTag("React"), new HashTag("JavaScript"));
+        List<HashTag> skillSets2 = List.of(new HashTag("객체지향"), new HashTag("Spring"));
+        List<HashTag> skillSets3 = List.of(new HashTag("Python"), new HashTag("머신러닝"));
+
+        List<List<HashTag>> skillSetList = List.of(skillSets1, skillSets2, skillSets3);
 
         List<List<String>> goalList = List.of(
                 List.of(
@@ -58,6 +67,7 @@ public class BackdoorController {
                 ));
 
         jdbcTemplate.execute("DELETE from course_hash_tags");
+        jdbcTemplate.execute("DELETE from course_skill_sets");
         jdbcTemplate.execute("DELETE from course_news");
         jdbcTemplate.execute("DELETE from course_goals");
         jdbcTemplate.execute("DELETE from lecture");
@@ -84,12 +94,12 @@ public class BackdoorController {
                 ") " +
                 "VALUES(3, 1, '강의 3', '경로', '크리에이티브', '오진성', 'description', 24000, 'approved', 'EXPERT')");
 
-        for (HashTag hashTag : hashTags) {
-            jdbcTemplate.update("INSERT INTO " +
-                            "course_hash_tags(course_id, tag_name) " +
-                            "VALUES(1, ?)"
-                    , hashTag.tagName());
-        }
+            for (HashTag hashTag : hashTags) {
+                jdbcTemplate.update("INSERT INTO " +
+                                "course_hash_tags(course_id, tag_name) " +
+                                "VALUES(1, ?)"
+                        , hashTag.tagName());
+            }
 
         for (Post post : news) {
             jdbcTemplate.update("INSERT INTO " +
@@ -109,7 +119,37 @@ public class BackdoorController {
             }
         }
 
+        if (count != null) {
+            for (int i = 3; i < count; i += 1) {
+                int index = i + 1;
+                jdbcTemplate.update("INSERT INTO " +
+                        "course(" +
+                        "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
+                        "status, level" +
+                        ") " +
+                        "VALUES(?, 1, ?, '경로', '크리에이티브', '오진성', 'description', 24000, 'approved', 'EXPERT')"
+                , index, "강의 " + index);
+
+                setSkills(i, skillSets3);
+            }
+        }
+
+        for (int i = 0; i < skillSetList.size(); i += 1) {
+            List<HashTag> skillSets = skillSetList.get(i);
+
+            setSkills(i, skillSets);
+        }
+
         return "Ok";
+    }
+
+    private void setSkills(int i, List<HashTag> skillSets) {
+        for (HashTag skill : skillSets) {
+            jdbcTemplate.update("INSERT INTO " +
+                            "course_skill_sets(course_id, tag_name) " +
+                            "VALUES(?, ?)"
+                    , i + 1, skill.tagName());
+        }
     }
 
     @GetMapping("/setup-lecture-db")

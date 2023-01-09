@@ -13,10 +13,16 @@ public class CourseUpdateRequestDto {
     private String description;
 
     @NotNull
-    private String thumbnailPath;
+    private String imagePath;
 
     @NotNull
     private String status;
+
+    @NotNull
+    private String level;
+
+    @NotNull
+    private String skill;
 
     @NotNull
     private Integer price;
@@ -24,13 +30,15 @@ public class CourseUpdateRequestDto {
     public CourseUpdateRequestDto() {
     }
 
-    public CourseUpdateRequestDto(String title, String category, String description, String thumbnailPath,
-                                  String status, Integer price) {
+    public CourseUpdateRequestDto(String title, String category, String description, String imagePath,
+                                  String status, String level, String skill, Integer price) {
         this.title = title;
         this.category = category;
         this.description = description;
-        this.thumbnailPath = thumbnailPath;
+        this.imagePath = imagePath;
         this.status = status;
+        this.level = level;
+        this.skill = skill;
         this.price = price;
     }
 
@@ -46,8 +54,8 @@ public class CourseUpdateRequestDto {
         return description;
     }
 
-    public String getThumbnailPath() {
-        return thumbnailPath;
+    public String getImagePath() {
+        return imagePath;
     }
 
     public Integer getPrice() {
@@ -56,5 +64,13 @@ public class CourseUpdateRequestDto {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public String getSkill() {
+        return skill;
     }
 }

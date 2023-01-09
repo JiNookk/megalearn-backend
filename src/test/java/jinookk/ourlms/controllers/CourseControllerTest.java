@@ -21,6 +21,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,7 +72,7 @@ class CourseControllerTest {
     void list() throws Exception {
         CourseDto courseDto = Course.fake("test").toCourseDto();
 
-        given(courseService.list()).willReturn(new CoursesDto(List.of(courseDto)));
+        given(courseService.list(anyInt(), courseFilterDto)).willReturn(new CoursesDto(List.of(courseDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses"))
                 .andExpect(status().isOk())
@@ -106,10 +107,12 @@ class CourseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"description\":\"description\",\n" +
-                                "\"thumbnailPath\":\"path\",\n" +
+                                "\"imagePath\":\"path\",\n" +
                                 "\"status\":\"created\",\n" +
                                 "\"price\":10000," +
                                 "\"title\":\"updated\"," +
+                                "\"level\":\"초급\"," +
+                                "\"skill\":\"JS\"," +
                                 "\"category\":\"category\"" +
                                 "}"))
                 .andExpect(status().isOk())
@@ -125,6 +128,19 @@ class CourseControllerTest {
         given(courseService.delete(any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"title\":null")
+                ));
+    }
+
+    @Test
+    void deleteSkill() throws Exception {
+        CourseDto courseDto = Course.fake(null).toCourseDto();
+
+        given(courseService.deleteSkill(any(), any())).willReturn(courseDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1/skills/skill"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"title\":null")

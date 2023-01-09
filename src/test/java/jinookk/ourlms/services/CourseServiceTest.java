@@ -8,6 +8,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.enums.Level;
+import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -15,6 +16,10 @@ import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +47,13 @@ class CourseServiceTest {
         Account account = Account.fake("account");
 
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
-        given(courseRepository.findAll()).willReturn(List.of(course));
+
+        Page<Course> courses = new PageImpl<>(List.of(course));
+
+        Pageable pagable = PageRequest.of(0, 24);
+
+        given(courseRepository.findAll(pagable)).willReturn(courses);
+
         given(accountRepository.findById(1L)).willReturn(Optional.of(account));
         given(courseRepository.save(any())).willReturn(course);
 
@@ -64,7 +75,7 @@ class CourseServiceTest {
 
     @Test
     void list() {
-        CoursesDto coursesDto = courseService.list();
+        CoursesDto coursesDto = courseService.list(1, courseFilterDto);
 
         assertThat(coursesDto.getCourses()).hasSize(1);
     }
@@ -84,7 +95,8 @@ class CourseServiceTest {
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 
         CourseDto courseDto = courseService.update(
-                1L, new CourseUpdateRequestDto("updated", "category", "description", "thumbnailPath", "status", 0));
+                1L, new CourseUpdateRequestDto("updated", "category", "description", "thumbnailPath", "status",
+                        "초급", "skill", 0));
 
         assertThat(courseDto.getTitle()).isEqualTo("updated");
     }
@@ -98,5 +110,23 @@ class CourseServiceTest {
         CourseDto courseDto = courseService.delete(1L);
 
         assertThat(courseDto.getTitle()).isEqualTo(null);
+    }
+
+    @Test
+    void deleteSkill() {
+        Course course = Course.fake("updated");
+
+        CourseUpdateRequestDto courseUpdateRequestDto = new CourseUpdateRequestDto(
+                "updated", "category", "description", "thumbnailPath", "", "초급", "skill", 0);
+
+        course.update(courseUpdateRequestDto);
+
+        assertThat(course.skillSets()).hasSize(1);
+
+        given(courseRepository.findById(1L)).willReturn(Optional.of(course));
+
+        CourseDto courseDto = courseService.deleteSkill(new CourseId(1L), new HashTag("skill"));
+
+        assertThat(courseDto.getSkillSets()).hasSize(0);
     }
 }
