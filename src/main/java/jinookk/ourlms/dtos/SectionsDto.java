@@ -3,16 +3,16 @@ package jinookk.ourlms.dtos;
 import java.util.List;
 
 public class SectionsDto {
-    private List<SectionWithProgressDto> sections;
+    private List<SectionDto> sections;
 
     public SectionsDto() {
     }
 
-    public SectionsDto(List<SectionWithProgressDto> sections) {
+    public SectionsDto(List<SectionDto> sections) {
         this.sections = sections;
     }
 
-    public List<SectionWithProgressDto> getSections() {
+    public List<SectionDto> getSections() {
         return sections;
     }
 }

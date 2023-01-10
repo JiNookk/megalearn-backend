@@ -1,15 +1,12 @@
 package jinookk.ourlms.services;
 
-import jinookk.ourlms.dtos.LectureDto;
-import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.dtos.SectionDto;
 import jinookk.ourlms.dtos.SectionUpdateRequestDto;
 import jinookk.ourlms.dtos.SectionWithProgressDto;
 import jinookk.ourlms.dtos.SectionRequestDto;
 import jinookk.ourlms.dtos.SectionsDto;
-import jinookk.ourlms.exceptions.LectureNotFound;
+import jinookk.ourlms.dtos.SectionsWithProgressDto;
 import jinookk.ourlms.exceptions.SectionNotFound;
-import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -33,7 +30,17 @@ public class SectionService {
         this.progressRepository = progressRepository;
     }
 
-    public SectionsDto listWithProgress(CourseId courseId, AccountId accountId) {
+    public SectionsDto list() {
+        List<Section> sections = sectionRepository.findAll();
+
+        List<SectionDto> sectionDtos = sections.stream()
+                .map(Section::toSectionDto)
+                .toList();
+
+        return new SectionsDto(sectionDtos);
+    }
+
+    public SectionsWithProgressDto listWithProgress(CourseId courseId, AccountId accountId) {
         List<Section> sections = sectionRepository.findAllByCourseId(courseId);
 
         List<SectionWithProgressDto> sectionWithProgressDtos = sections.stream()
@@ -42,7 +49,7 @@ public class SectionService {
                                 accountId, new SectionId(section.id()))))
                 .toList();
 
-        return new SectionsDto(sectionWithProgressDtos);
+        return new SectionsWithProgressDto(sectionWithProgressDtos);
     }
 
     public SectionDto create(SectionRequestDto sectionRequestDto) {

@@ -3,7 +3,6 @@ package jinookk.ourlms.dtos;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.LectureTime;
-import jinookk.ourlms.models.vos.Like;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -20,7 +19,7 @@ public class InquiryDto {
     private List<String> hashTag;
     private InquiryStatusDto status;
     private String title;
-    private Integer likes;
+    private Integer hits;
     private String content;
     private String publisher;
     private LocalDateTime publishTime;
@@ -30,14 +29,14 @@ public class InquiryDto {
     }
 
     public InquiryDto(Long id, LectureId lectureId, CourseId courseId, List<HashTag> hashTag, InquiryStatus status, Title title,
-                      List<Like> likes, Content content, Name publisher, LocalDateTime publishTime, LectureTime lectureTime) {
+                      Integer hits, Content content, Name publisher, LocalDateTime publishTime, LectureTime lectureTime) {
         this.id = id;
         this.lectureId = lectureId.value();
         this.courseId = courseId.value();
         this.hashTag = hashTag.stream().map(HashTag::tagName).toList();
         this.status = new InquiryStatusDto(status.value(), status.replied(), status.solved());
         this.title = title.value();
-        this.likes = likes.size();
+        this.hits = hits;
         this.content = content.value();
         this.publisher = publisher.value();
         this.publishTime = publishTime;
@@ -80,11 +79,11 @@ public class InquiryDto {
         return lectureId;
     }
 
-    public Integer getLikes() {
-        return likes;
-    }
-
     public Long getCourseId() {
         return courseId;
+    }
+
+    public Integer getHits() {
+        return hits;
     }
 }

@@ -6,14 +6,17 @@ import jinookk.ourlms.dtos.CommentRequestDto;
 import jinookk.ourlms.dtos.CommentsDto;
 import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.CommentNotFound;
+import jinookk.ourlms.exceptions.CourseNotFound;
 import jinookk.ourlms.exceptions.InquiryNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Comment;
+import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Inquiry;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CommentRepository;
+import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.InquiryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,17 +29,18 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final InquiryRepository inquiryRepository;
     private final AccountRepository accountRepository;
+    private final CourseRepository courseRepository;
 
     public CommentService(CommentRepository commentRepository, InquiryRepository inquiryRepository,
-                          AccountRepository accountRepository) {
+                          AccountRepository accountRepository, CourseRepository courseRepository) {
         this.commentRepository = commentRepository;
         this.inquiryRepository = inquiryRepository;
         this.accountRepository = accountRepository;
+        this.courseRepository = courseRepository;
     }
 
     public CommentsDto list(InquiryId inquiryId, AccountId accountId) {
         List<Comment> comments = commentRepository.findAllByInquiryId(inquiryId);
-
 
         List<CommentDto> commentDtos = comments.stream()
                 .map(comment -> comment.toCommentDto(accountId))
@@ -59,12 +63,15 @@ public class CommentService {
         Inquiry inquiry = inquiryRepository.findById(inquiryId.value())
                 .orElseThrow(() -> new InquiryNotFound(inquiryId));
 
+        Course course = courseRepository.findById(inquiry.courseId().value())
+                .orElseThrow(() -> new CourseNotFound(inquiry.courseId().value()));
+
         List<Comment> comments = commentRepository.findAllByInquiryId(inquiryId);
 
-        Comment comment = inquiry.createComment(comments, commentRequestDto, account);
+//        Comment comment = inquiry.createComment(comments, commentRequestDto, account);
 
         // 댓글이 만드는 방식으로 리팩토링하기
-//        Comment comment = Comment.of()
+        Comment comment = Comment.of(inquiry, comments, commentRequestDto, account, course);
 
         Comment saved = commentRepository.save(comment);
 

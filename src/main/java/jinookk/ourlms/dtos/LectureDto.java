@@ -1,5 +1,6 @@
 package jinookk.ourlms.dtos;
 
+import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.VideoUrl;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -11,16 +12,18 @@ public class LectureDto {
     private Long sectionId;
     private String title;
     private String videoUrl;
+    private LectureTimeDto lectureTime;
 
     public LectureDto() {
     }
 
-    public LectureDto(Long id, CourseId courseId, SectionId sectionId, Title title, VideoUrl videoUrl) {
+    public LectureDto(Long id, CourseId courseId, SectionId sectionId, Title title, VideoUrl videoUrl, LectureTime lectureTime) {
         this.id = id;
         this.courseId = courseId.value();
         this.sectionId = sectionId.value();
         this.title = title.value();
         this.videoUrl = videoUrl.value();
+        this.lectureTime = lectureTime.toDto();
     }
 
     public Long getId() {
@@ -41,5 +44,9 @@ public class LectureDto {
 
     public String getVideoUrl() {
         return videoUrl;
+    }
+
+    public LectureTimeDto getLectureTime() {
+        return lectureTime;
     }
 }

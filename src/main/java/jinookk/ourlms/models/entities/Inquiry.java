@@ -9,14 +9,12 @@ import jinookk.ourlms.dtos.InquiryUpdateDto;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.LectureTime;
-import jinookk.ourlms.models.vos.Like;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.status.InquiryStatus;
-import jinookk.ourlms.models.vos.status.Status;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 
@@ -53,13 +51,10 @@ public class Inquiry {
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "status"))
-    private InquiryStatus status;
+    private InquiryStatus status = new InquiryStatus();
 
     @ElementCollection(fetch = FetchType.LAZY)
     private List<HashTag> hashTags = new ArrayList<>();
-
-    @ElementCollection(fetch = FetchType.LAZY)
-    private List<Like> likes = new ArrayList<>();
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "title"))
@@ -78,6 +73,8 @@ public class Inquiry {
 
     private Boolean anonymous;
 
+    private Integer hits = 0;
+
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime publishTime;
@@ -85,22 +82,20 @@ public class Inquiry {
     private LocalDateTime repliedAt;
 
     // accountId가 존재하는 inquiryId의 수를 찾아라.
-    @Formula("(SELECT COUNT(*) FROM inquiry_likes l WHERE l.inquiry_id = id)")
-    private int countOfLikes;
+//    @Formula("(SELECT COUNT(*) FROM inquiry_likes l WHERE l.inquiry_id = id)")
+//    private int countOfLikes;
 
     public Inquiry() {
     }
 
-    public Inquiry(Long id, CourseId courseId, LectureId lectureId, AccountId accountId, InquiryStatus status,
-                   List<HashTag> hashTags, List<Like> likes, Title title, Content content, LectureTime lectureTime,
+    public Inquiry(Long id, CourseId courseId, LectureId lectureId, AccountId accountId,
+                   List<HashTag> hashTags, Title title, Content content, LectureTime lectureTime,
                    Name publisher, Boolean anonymous, LocalDateTime publishTime, LocalDateTime repliedAt) {
         this.id = id;
         this.courseId = courseId;
         this.lectureId = lectureId;
         this.accountId = accountId;
-        this.status = status;
-        this.hashTags = hashTags;
-        this.likes = likes;
+        this.hashTags = new ArrayList<>(hashTags);
         this.title = title;
         this.content = content;
         this.lectureTime = lectureTime;
@@ -115,25 +110,20 @@ public class Inquiry {
     }
 
     private static Inquiry fake(Content content) {
-        return new Inquiry(1L, new CourseId(1L), new LectureId(1L), new AccountId(1L), new InquiryStatus(Status.CREATED),
-                List.of(new HashTag("hashTag")), List.of(new Like()), new Title("title"), content,
+        return new Inquiry(1L, new CourseId(1L), new LectureId(1L), new AccountId(1L), List.of(), new Title("title"), content,
                 new LectureTime(1, 24), new Name("tester"), false, LocalDateTime.now(), LocalDateTime.now());
     }
 
     public static Inquiry fake(Name publisher) {
-        return new Inquiry(1L, new CourseId(1L), new LectureId(1L), new AccountId(1L), new InquiryStatus(Status.CREATED),
-                List.of(new HashTag("hashTag")), List.of(new Like()), new Title("title"), new Content("hi"),
-                new LectureTime(1, 24), publisher, false, LocalDateTime.now(), LocalDateTime.now());
+        return new Inquiry(1L, new CourseId(1L), new LectureId(1L), new AccountId(1L), List.of(), new Title("title"),
+                new Content("hi"), new LectureTime(1, 24), publisher, false, LocalDateTime.now(), LocalDateTime.now());
     }
 
     public static Inquiry of(InquiryRequestDto inquiryRequestDto, AccountId accountId, Name name) {
         Long id = null;
         LectureId lectureId = inquiryRequestDto.getLectureId();
-        InquiryStatus status = new InquiryStatus(Status.CREATED);
         Title title = new Title(inquiryRequestDto.getTitle());
-        List<HashTag> hashTags = new ArrayList<>();
-        inquiryRequestDto.getHashTags().forEach(hashTag -> hashTags.add(new HashTag(hashTag)));
-        List<Like> likes = new ArrayList<>();
+        List<HashTag> hashTags = new ArrayList<>(inquiryRequestDto.getHashTags().stream().map(HashTag::new).toList());
         Content content = new Content(inquiryRequestDto.getContent());
         Boolean anonymous = inquiryRequestDto.getAnonymous();
         Name publisher = new Name(name.value(), anonymous);
@@ -142,7 +132,7 @@ public class Inquiry {
         LocalDateTime repliedAt = null;
         CourseId courseId = new CourseId(inquiryRequestDto.getCourseId());
 
-        return new Inquiry(id, courseId, lectureId, accountId, status, hashTags, likes, title, content,
+        return new Inquiry(id, courseId, lectureId, accountId,  hashTags, title, content,
                 lectureTime, publisher, anonymous, publishTime, repliedAt);
     }
 
@@ -158,6 +148,10 @@ public class Inquiry {
         return accountId;
     }
 
+    public CourseId courseId() {
+        return courseId;
+    }
+
     public Boolean anonymous() {
         return anonymous;
     }
@@ -170,12 +164,16 @@ public class Inquiry {
         return content;
     }
 
-    public int countOfLikes() {
-        return countOfLikes;
-    }
+//    public int countOfLikes() {
+//        return countOfLikes;
+//    }
 
     public LocalDateTime repliedAt() {
         return repliedAt;
+    }
+
+    public Integer hits() {
+        return hits;
     }
 
     public InquiryStatus status() {
@@ -196,7 +194,7 @@ public class Inquiry {
 
     public InquiryDto toInquiryDto() {
         return new InquiryDto(
-                id, lectureId, courseId, hashTags, status, title, likes, content, publisher, publishTime, lectureTime);
+                id, lectureId, courseId, hashTags, status, title, hits, content, publisher, publishTime, lectureTime);
     }
 
     public InquiryDeleteDto toInquiryDeleteDto() {
@@ -235,6 +233,7 @@ public class Inquiry {
         }
 
         Name author = new Name(account.name().value(), anonymous);
+
         return Comment.of(commentRequestDto, author, new AccountId(account.id()));
     }
 
@@ -250,5 +249,24 @@ public class Inquiry {
 
     public boolean filter(String condition) {
         return this.status.filter(condition);
+    }
+
+    public Inquiry toggleSolved() {
+        this.status = this.status.toggleSolved();
+
+        return this;
+    }
+
+    public Inquiry reply() {
+        this.status = this.status.reply();
+        this.repliedAt = LocalDateTime.now();
+
+        return this;
+    }
+
+    public Inquiry increaseHits() {
+        this.hits += 1;
+
+        return this;
     }
 }

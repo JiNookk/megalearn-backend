@@ -8,9 +8,9 @@ public class Status {
     public static final String CREATED = "created";
     public static final String UNWATCHED = "unwatched";
     public static final String PROCESSING = "processing";
+    public static final String COMPLETED = "completed";
     public static final String APPROVED = "approved";
     public static final String DELETED = "deleted";
-    public static final String COMPLETED = "completed";
     public static final String SUBMITTED = "submitted";
     private static final String ALL = "all";
 

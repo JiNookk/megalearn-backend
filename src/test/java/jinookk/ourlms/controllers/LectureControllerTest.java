@@ -2,8 +2,6 @@ package jinookk.ourlms.controllers;
 
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LecturesDto;
-import jinookk.ourlms.dtos.LectureDto;
-import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -67,15 +65,31 @@ class LectureControllerTest {
     }
 
     @Test
+    void listByCourseId() throws Exception {
+        LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
+
+        LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
+
+        given(lectureService.listByCourseId(new CourseId(1L)))
+                .willReturn(lecturesDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/lectures"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"lectures\":[")
+                ));
+    }
+
+    @Test
     void list() throws Exception {
         LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
-        given(lectureService.list(new CourseId(1L)))
+        given(lectureService.list())
                 .willReturn(lecturesDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/lectures"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/lectures"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"lectures\":[")
@@ -91,7 +105,24 @@ class LectureControllerTest {
         given(lectureService.listByInstructorId(new AccountId(1L)))
                 .willReturn(lecturesDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/lectures")
+        mockMvc.perform(MockMvcRequestBuilders.get("/lectures/instructor")
+                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"lectures\":[")
+                ));
+    }
+
+    @Test
+    void myLectures() throws Exception {
+        LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
+
+        LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
+
+        given(lectureService.myLectures(new AccountId(1L)))
+                .willReturn(lecturesDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/lectures/me")
                         .header("Authorization", "Bearer ACCESS.TOKEN"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(

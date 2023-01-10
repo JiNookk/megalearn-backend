@@ -1,13 +1,16 @@
 package jinookk.ourlms.models.entities;
 
+import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.models.vos.LectureTime;
+import jinookk.ourlms.models.vos.status.ProgressStatus;
 import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.SectionId;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -15,6 +18,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Entity
 public class Progress {
@@ -44,16 +48,19 @@ public class Progress {
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "status"))
-    private Status status;
+    private ProgressStatus status;
 
     @Embedded
-    private LectureTime lectureTime;
+    private LectureTime currentLectureTime;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public Progress() {
     }
 
     public Progress(Long id, CourseId courseId, SectionId sectionId, AccountId accountId,
-                    LectureId lectureId, Title title, Status status, LectureTime lectureTime) {
+                    LectureId lectureId, Title title, ProgressStatus status, LectureTime currentLectureTime) {
         this.id = id;
         this.courseId = courseId;
         this.sectionId = sectionId;
@@ -61,7 +68,7 @@ public class Progress {
         this.lectureId = lectureId;
         this.title = title;
         this.status = status;
-        this.lectureTime = lectureTime;
+        this.currentLectureTime = currentLectureTime;
     }
 
     public static Progress fake(String lectureTitle) {
@@ -70,7 +77,7 @@ public class Progress {
 
     private static Progress fake(Title title) {
         return new Progress(31L, new CourseId(1L), new SectionId(1L), new AccountId(1L), new LectureId(1L),
-                title, new Status(Status.UNWATCHED), new LectureTime());
+                title, new ProgressStatus(), new LectureTime());
     }
 
     public Long id() {
@@ -81,19 +88,29 @@ public class Progress {
         return sectionId;
     }
 
+    public LectureTime lectureTime() {
+        return currentLectureTime;
+    }
+
     public Title title() {
         return title;
     }
 
     public ProgressDto toDto() {
-        return new ProgressDto(id, lectureId, courseId, title, status, lectureTime);
+        return new ProgressDto(id, lectureId, courseId, title, status, currentLectureTime, updatedAt);
     }
 
-    public Status status() {
+    public ProgressStatus status() {
         return status;
     }
 
     public void complete() {
         this.status.complete();
+    }
+
+    public Progress updateTime(LectureTimeDto lectureTimeDto) {
+        this.currentLectureTime = new LectureTime(lectureTimeDto.getMinute(), lectureTimeDto.getSecond());
+
+        return this;
     }
 }

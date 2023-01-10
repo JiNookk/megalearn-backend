@@ -1,11 +1,35 @@
 package jinookk.ourlms.models.entities;
 
+import jinookk.ourlms.dtos.CommentRequestDto;
+import jinookk.ourlms.models.vos.Content;
+import jinookk.ourlms.models.vos.HashTag;
+import jinookk.ourlms.models.vos.LectureTime;
+import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.ids.CourseId;
+import jinookk.ourlms.models.vos.ids.InquiryId;
+import jinookk.ourlms.models.vos.ids.LectureId;
+import jinookk.ourlms.models.vos.status.Status;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CommentTest {
+    Inquiry inquiry;
+
+    @BeforeEach
+    void setup() {
+        inquiry = new Inquiry(
+                1L, new CourseId(1L), new LectureId(2L), new AccountId(3L), List.of(new HashTag("tag")),
+                new Title("title"), new Content("content"), new LectureTime(1, 24),
+                new Name("post publisher"), false, LocalDateTime.now(), LocalDateTime.now());
+    }
+
     @Test
     void removeAllProperties() {
         Comment comment = Comment.fake("hi");
@@ -26,4 +50,50 @@ class CommentTest {
         assertThat(comment.isMyComment(new AccountId(1L))).isTrue();
         assertThat(comment.isMyComment(new AccountId(2L))).isFalse();
     }
+
+    @Test
+    void createCommentWithSameAccountIdWithInquiry() {
+        Account account = new Account(3L, new Name("tester"));
+        CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
+        List<Comment> comments = List.of(Comment.fake("hi"));
+        Course course = Course.fake("course");
+
+        Comment comment = Comment.of(inquiry, comments, commentRequestDto, account, course);
+
+        assertThat(comment).isNotNull();
+        assertThat(comment.author()).isEqualTo(new Name("post publisher"));
+    }
+
+    @Test
+    void createCommentWithPreviousCommentAndNotPublisher() {
+        Account account = new Account(1L, new Name("tester"));
+        CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
+
+        Comment commentWithFirstAccountId = Comment.fake("hi");
+        List<Comment> comments = List.of(commentWithFirstAccountId);
+        Course course = Course.fake("course");
+
+        Comment comment = Comment.of(inquiry, comments, commentRequestDto, account, course);
+
+        assertThat(comment).isNotNull();
+        assertThat(comment.author()).isEqualTo(new Name("1st Tester"));
+    }
+
+    @Test
+    void createCommentWithoutPreviousCommentAndNotPublisher() {
+        Account account = new Account(2L, new Name("2nd Tester"));
+        CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
+
+        Comment commentWithThirdAccountId = new Comment(1L, new InquiryId(2L), new AccountId(3L), new Status(Status.CREATED),
+                new Name("3rd Author"), new Content("content"), LocalDateTime.now());
+
+        List<Comment> comments = List.of(commentWithThirdAccountId);
+        Course course = Course.fake("course");
+
+        Comment comment = Comment.of(inquiry, comments, commentRequestDto, account, course);
+
+        assertThat(comment).isNotNull();
+        assertThat(comment.author()).isEqualTo(new Name("2nd Tester"));
+    }
+
 }

@@ -50,7 +50,7 @@ class PaymentServiceTest {
         accountRepository = mock(AccountRepository.class);
         kakaoService = mock(KakaoService.class);
         paymentService = new PaymentService(
-                paymentRepository,cartRepository, courseRepository, accountRepository, kakaoService);
+                paymentRepository, cartRepository, courseRepository, accountRepository, kakaoService);
 
         Course course1 = new Course(1L, new Title("courseTitle1"), new Content("description"),
                 Level.BEGINNER, new Status(Status.APPROVED), new ImagePath("imagePath"), new Category("category"),
@@ -88,6 +88,10 @@ class PaymentServiceTest {
                         new Payment(5L, new CourseId(3L), new AccountId(2L), new Price(49_000),
                                 new Title("courseTitle3"), new Name("purchaser"), LocalDateTime.now())
                 ));
+
+
+        given(paymentRepository.findAllByAccountId(new AccountId(any())))
+                .willReturn(List.of(Payment.fake(24000), Payment.fake(35000), Payment.fake(49000)));
     }
 
     @Test
@@ -123,6 +127,13 @@ class PaymentServiceTest {
     @Test
     void list() {
         PaymentsDto paymentsDto = paymentService.list(new AccountId(1L), new CourseId(1L));
+
+        assertThat(paymentsDto.getPayments()).hasSize(3);
+    }
+
+    @Test
+    void myPayments() {
+        PaymentsDto paymentsDto = paymentService.list(new AccountId(1L));
 
         assertThat(paymentsDto.getPayments()).hasSize(3);
     }

@@ -6,6 +6,7 @@ import jinookk.ourlms.dtos.LectureRequestDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HandOutUrl;
+import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.VideoUrl;
@@ -41,6 +42,9 @@ public class Lecture {
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "lecture_title"))
     private Title title;
+
+    @Embedded
+    private LectureTime lectureTime;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "lecture_note"))
@@ -116,7 +120,7 @@ public class Lecture {
     }
 
     public LectureDto toLectureDto() {
-        return new LectureDto(id, courseId, sectionId, title, videoUrl);
+        return new LectureDto(id, courseId, sectionId, title, videoUrl, lectureTime);
     }
 
     public void update(LectureUpdateRequestDto lectureUpdateRequestDto) {
@@ -134,9 +138,5 @@ public class Lecture {
         this.videoUrl.delete();
         this.lectureNote.delete();
         this.handOutUrl.delete();
-    }
-
-    public InstructorInquiryDto toInstructorInquiryDto(List<Inquiry> inquiries) {
-        return new InstructorInquiryDto();
     }
 }

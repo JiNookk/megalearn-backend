@@ -10,25 +10,16 @@ class InquiryStatusTest {
 
     @BeforeEach
     void setup() {
-        inquiryStatus = new InquiryStatus(Status.CREATED);
+        inquiryStatus = new InquiryStatus();
     }
 
     @Test
     void reply() {
         assertThat(inquiryStatus.replied()).isEqualTo("processing");
 
-        inquiryStatus.reply();
+        InquiryStatus replied = inquiryStatus.reply();
 
-        assertThat(inquiryStatus.replied()).isEqualTo("completed");
-    }
-
-    @Test
-    void solve() {
-        assertThat(inquiryStatus.solved()).isEqualTo("processing");
-
-        inquiryStatus.solve();
-
-        assertThat(inquiryStatus.solved()).isEqualTo("completed");
+        assertThat(replied.replied()).isEqualTo("completed");
     }
 
     @Test
@@ -59,8 +50,23 @@ class InquiryStatusTest {
     void filterWithSolved() {
         assertThat(inquiryStatus.filter("solved")).isFalse();
 
-        inquiryStatus.solve();
+        InquiryStatus solved = inquiryStatus.toggleSolved();
 
-        assertThat(inquiryStatus.filter("solved")).isTrue();
+        assertThat(solved.filter("solved")).isTrue();
+    }
+
+    @Test
+    void toggleSolved() {
+        InquiryStatus inquiryStatus = new InquiryStatus();
+
+        assertThat(inquiryStatus.solved()).isEqualTo(InquiryStatus.PROCESSING);
+
+        InquiryStatus toggled = inquiryStatus.toggleSolved();
+
+        assertThat(toggled.solved()).isEqualTo(InquiryStatus.COMPLETED);
+
+        InquiryStatus doubleToggled = toggled.toggleSolved();
+
+        assertThat(doubleToggled.solved()).isEqualTo(InquiryStatus.PROCESSING);
     }
 }

@@ -9,6 +9,7 @@ import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.CourseNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
+import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.HashTag;
@@ -16,6 +17,7 @@ import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
+import jinookk.ourlms.repositories.LikeRepository;
 import jinookk.ourlms.repositories.PaymentRepository;
 import jinookk.ourlms.specifications.CourseSpecification;
 import org.springframework.data.domain.Page;
@@ -34,11 +36,14 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final AccountRepository accountRepository;
     private final PaymentRepository paymentRepository;
+    private final LikeRepository likeRepository;
 
-    public CourseService(CourseRepository courseRepository, AccountRepository accountRepository, PaymentRepository paymentRepository) {
+    public CourseService(CourseRepository courseRepository, AccountRepository accountRepository,
+                         PaymentRepository paymentRepository, LikeRepository likeRepository) {
         this.courseRepository = courseRepository;
         this.accountRepository = accountRepository;
         this.paymentRepository = paymentRepository;
+        this.likeRepository = likeRepository;
     }
 
     public CourseDto detail(AccountId accountId, CourseId courseId) {
@@ -47,9 +52,7 @@ public class CourseService {
 
         Optional<Payment> payment = paymentRepository.findByAccountIdAndCourseId(accountId, courseId);
 
-        CourseDto courseDto = course.toCourseDto(payment, accountId);
-
-        return courseDto;
+        return course.toCourseDto(payment, accountId);
     }
 
     public CourseDto create(CourseRequestDto courseRequestDto, AccountId accountId) {
@@ -90,8 +93,6 @@ public class CourseService {
         }
 
         if (courseFilterDto.getContent()!= null) {
-            System.out.println(courseFilterDto.getContent());
-
             // join시 일치하는 모든 칼럼을 가져온다.
             // elementCollection의 값 하나당 하나의 칼럼을 가져옴
             // 어떻게 막을 수 있을까?
@@ -127,5 +128,20 @@ public class CourseService {
         course.deleteSkill(hashTag);
 
         return course.toCourseDto();
+    }
+
+    public CoursesDto wishList(AccountId accountId) {
+        List<Like> likes = likeRepository.findAllByAccountId(accountId);
+
+        List<Long> courseIds = likes.stream()
+                .filter(Like::clicked)
+                .map(like -> like.courseId().value())
+                .toList();
+
+        List<CourseDto> courseDtos = courseRepository.findAllById(courseIds).stream()
+                .map(Course::toCourseDto)
+                .toList();
+
+        return new CoursesDto(courseDtos);
     }
 }

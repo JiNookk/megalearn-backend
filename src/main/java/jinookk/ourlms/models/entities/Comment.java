@@ -17,7 +17,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 public class Comment {
@@ -60,6 +62,28 @@ public class Comment {
         this.author = author;
         this.content = content;
         this.publishTime = publishTime;
+    }
+
+    public static Comment of(Inquiry inquiry, List<Comment> comments, CommentRequestDto commentRequestDto,
+                             Account account, Course course) {
+        if (course.isInstructor(new AccountId(account.id()))) {
+            inquiry.reply();
+        }
+
+        if (inquiry.isPublisherId(new AccountId(account.id()))) {
+            return Comment.of(commentRequestDto, inquiry.publisher(), inquiry.accountId());
+        }
+
+        Optional<Comment> previousComment = inquiry.previousComment(comments, new AccountId(account.id()));
+
+        if (previousComment.isPresent()) {
+            Name author = previousComment.get().author();
+            return Comment.of(commentRequestDto, author, new AccountId(account.id()));
+        }
+
+        Name author = new Name(account.name().value(), inquiry.anonymous());
+
+        return Comment.of(commentRequestDto, author, new AccountId(account.id()));
     }
 
     public Long id() {

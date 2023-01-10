@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -31,9 +32,10 @@ class ProgressControllerTest {
     void progress() throws Exception {
         ProgressDto progressDto = Progress.fake("테스트 1강").toDto();
 
-        given(progressService.detail(any())).willReturn(progressDto);
+        given(progressService.detail(any(), any())).willReturn(progressDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/progresses"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/progress")
+                        .header("Authorization", "Bearer ACCESS.TOKEN"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"status\":\"unwatched\"")
@@ -45,7 +47,7 @@ class ProgressControllerTest {
         ProgressDto progressDto = Progress.fake("테스트 1강").toDto();
 
         ProgressesDto progressesDto = new ProgressesDto(List.of(progressDto));
-        given(progressService.list(any())).willReturn(progressesDto);
+        given(progressService.list(any(), date)).willReturn(progressesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/progresses")
                         .header("Authorization", "Bearer ACCESS.TOKEN"))
@@ -82,6 +84,23 @@ class ProgressControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"status\":\"completed\"")
+                ));
+    }
+
+    @Test
+    void updateTime() throws Exception {
+        Progress progress = Progress.fake("테스트 1강");
+
+        ProgressDto progressDto = progress.toDto();
+
+        given(progressService.updateTime(any(), any())).willReturn(progressDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/progresses/1/time")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"minute\":1,\"second\":24}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"lectureTime\":{")
                 ));
     }
 }

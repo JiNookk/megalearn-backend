@@ -11,6 +11,8 @@ import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.NoteId;
 import jinookk.ourlms.repositories.NoteRepository;
+import jinookk.ourlms.specifications.NoteSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,22 @@ public class NoteService {
 
     public NotesDto list(LectureId lectureId, AccountId accountId) {
         List<Note> notes = noteRepository.findAllByLectureIdAndAccountId(lectureId, accountId);
+
+        List<NoteDto> noteDtos = notes.stream()
+                .map(Note::toNoteDto)
+                .toList();
+
+        return new NotesDto(noteDtos);
+    }
+
+    public NotesDto myNotes(AccountId accountId, String date) {
+        Specification<Note> spec = Specification.where(NoteSpecification.equalAccountId(accountId));
+
+        if (date != null) {
+            spec = spec.and(NoteSpecification.betweenCurrentWeek(date));
+        }
+
+        List<Note> notes = noteRepository.findAll(spec);
 
         List<NoteDto> noteDtos = notes.stream()
                 .map(Note::toNoteDto)
