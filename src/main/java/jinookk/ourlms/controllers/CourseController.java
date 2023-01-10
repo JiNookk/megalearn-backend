@@ -61,9 +61,10 @@ public class CourseController {
     }
 
     @GetMapping("/account/my-courses")
-    public MyCoursesDto myCourses() {
-        // TODO : 헤더로 유저 아이디 보내줄 것!!, 인자로 전달
-        return myCourseService.purchasedList();
+    public CoursesDto myCourses(
+            @RequestAttribute Long accountId
+    ) {
+        return myCourseService.myCourses(new AccountId(accountId));
     }
 
     @GetMapping("/instructor/my-courses")

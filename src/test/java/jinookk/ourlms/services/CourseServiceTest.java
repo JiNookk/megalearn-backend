@@ -1,6 +1,7 @@
 package jinookk.ourlms.services;
 
 import jinookk.ourlms.dtos.CourseDto;
+import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.CoursesDto;
@@ -75,7 +76,7 @@ class CourseServiceTest {
 
     @Test
     void list() {
-        CoursesDto coursesDto = courseService.list(1, courseFilterDto);
+        CoursesDto coursesDto = courseService.list(1, new CourseFilterDto("level", "cost", "skill", "content"));
 
         assertThat(coursesDto.getCourses()).hasSize(1);
     }

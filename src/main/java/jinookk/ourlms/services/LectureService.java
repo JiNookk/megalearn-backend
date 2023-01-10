@@ -35,7 +35,7 @@ public class LectureService {
         return lecture.toLectureDto();
     }
 
-    public LecturesDto list(CourseId courseId) {
+    public LecturesDto listByCourseId(CourseId courseId) {
         List<Lecture> lectures = lectureRepository.findAllByCourseId(courseId);
 
         List<LectureDto> lectureDtos = lectures.stream()
@@ -81,5 +81,15 @@ public class LectureService {
         lecture.delete();
 
         return lecture.toLectureDto();
+    }
+
+    public LecturesDto list() {
+        List<Lecture> lectures = lectureRepository.findAll();
+
+        List<LectureDto> lectureDtos = lectures.stream()
+                .map(Lecture::toLectureDto)
+                .toList();
+
+        return new LecturesDto(lectureDtos);
     }
 }

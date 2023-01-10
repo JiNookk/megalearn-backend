@@ -4,7 +4,6 @@ import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LectureRequestDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.dtos.LecturesDto;
-import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -39,6 +38,9 @@ class LectureServiceTest {
         given(lectureRepository.findById(1L))
                 .willReturn(Optional.of(lecture));
 
+        given(lectureRepository.findAll())
+                .willReturn(List.of(lecture));
+
         given(lectureRepository.findAllByCourseId(new CourseId(1L)))
                 .willReturn(List.of(lecture));
 
@@ -70,7 +72,16 @@ class LectureServiceTest {
 
     @Test
     void list() {
-        LecturesDto lecturesDto = lectureService.list(new CourseId(1L));
+        LecturesDto lecturesDto = lectureService.list();
+
+        assertThat(lecturesDto).isNotNull();
+
+        assertThat(lecturesDto.getLectures()).hasSize(1);
+    }
+
+    @Test
+    void listByCourseId() {
+        LecturesDto lecturesDto = lectureService.listByCourseId(new CourseId(1L));
 
         assertThat(lecturesDto).isNotNull();
 

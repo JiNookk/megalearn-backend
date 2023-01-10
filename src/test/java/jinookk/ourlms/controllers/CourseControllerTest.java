@@ -72,7 +72,7 @@ class CourseControllerTest {
     void list() throws Exception {
         CourseDto courseDto = Course.fake("test").toCourseDto();
 
-        given(courseService.list(anyInt(), courseFilterDto)).willReturn(new CoursesDto(List.of(courseDto)));
+        given(courseService.list(anyInt(), any())).willReturn(new CoursesDto(List.of(courseDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses"))
                 .andExpect(status().isOk())
@@ -83,13 +83,14 @@ class CourseControllerTest {
 
     @Test
     void purchasedMyCourses() throws Exception {
-        MyCourseDto myCourseDto = Course.fake("my-courses").toMyCourseDto();
-        List<MyCourseDto> dtos = List.of(myCourseDto);
+        CourseDto myCourseDto = Course.fake("my-courses").toCourseDto();
+        List<CourseDto> dtos = List.of(myCourseDto);
 
-        given(myCourseService.purchasedList())
-                .willReturn(new MyCoursesDto(dtos));
+        given(myCourseService.myCourses(any()))
+                .willReturn(new CoursesDto(dtos));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/account/my-courses"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/account/my-courses")
+                        .header("Authorization", "Bearer ACCESS.TOKEN"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"myCourses\":[")
