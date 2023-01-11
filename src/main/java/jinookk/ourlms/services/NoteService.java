@@ -35,13 +35,14 @@ public class NoteService {
     }
 
     public NotesDto list(LectureId lectureId, AccountId accountId) {
-        List<Note> notes = noteRepository.findAllByLectureIdAndAccountId(lectureId, accountId);
+//        List<Note> notes = noteRepository.findAllByLectureIdAndAccountId(lectureId, accountId);
 
-        List<NoteDto> noteDtos = notes.stream()
-                .map(Note::toNoteDto)
-                .toList();
-
-        return new NotesDto(noteDtos);
+//        List<NoteDto> noteDtos = notes.stream()
+//                .map(Note::toNoteDto)
+//                .toList();
+//
+//        return new NotesDto(noteDtos);
+        return null;
     }
 
     public NoteDeleteDto delete(NoteId noteId) {
@@ -53,12 +54,22 @@ public class NoteService {
         return note.toNoteDeleteDto();
     }
 
-    public NoteDto update(NoteId noteId, NoteUpdateDto noteUpdateDto) {
-        Note note = noteRepository.findById(noteId.value())
-                .orElseThrow(() -> new NoteNotFound(noteId));
+    public NotesDto myNotes(AccountId accountId) {
+        List<Note> notes = noteRepository.findAllByAccountId(accountId);
 
-        note.update(noteUpdateDto);
+        List<NoteDto> noteDtos = notes.stream()
+                .map(Note::toNoteDto)
+                .toList();
 
-        return note.toNoteDto();
+        return new NotesDto(noteDtos);
     }
+
+//    public NoteDto update(NoteId noteId, NoteUpdateDto noteUpdateDto) {
+//        Note note = noteRepository.findById(noteId.value())
+//                .orElseThrow(() -> new NoteNotFound(noteId));
+//
+//        note.update(noteUpdateDto);
+//
+//        return note.toNoteDto();
+//    }
 }

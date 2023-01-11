@@ -44,6 +44,13 @@ public class LectureController {
         return lectureService.list();
     }
 
+    @GetMapping("/lectures/me")
+    public LecturesDto myLectures(
+            @RequestAttribute Long accountId
+    ) {
+        return lectureService.myLectures(new AccountId(accountId));
+    }
+
     @GetMapping("/courses/{courseId}/lectures")
     public LecturesDto listByCourseId(
             @PathVariable Long courseId
@@ -51,7 +58,7 @@ public class LectureController {
         return lectureService.listByCourseId(new CourseId(courseId));
     }
 
-    @GetMapping("/lectures/me")
+    @GetMapping("/instructor/lectures")
     public LecturesDto listByInstructorId(
             @RequestAttribute Long accountId
     ) {

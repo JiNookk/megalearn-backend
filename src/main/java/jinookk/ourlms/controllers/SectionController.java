@@ -4,6 +4,7 @@ import jinookk.ourlms.dtos.SectionDto;
 import jinookk.ourlms.dtos.SectionRequestDto;
 import jinookk.ourlms.dtos.SectionUpdateRequestDto;
 import jinookk.ourlms.dtos.SectionsDto;
+import jinookk.ourlms.dtos.SectionsWithProgressDto;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.SectionService;
@@ -36,8 +37,13 @@ public class SectionController {
         return sectionService.create(sectionRequestDto);
     }
 
+    @GetMapping("/sections")
+    public SectionsDto list() {
+        return sectionService.list();
+    }
+
     @GetMapping("/courses/{courseId}/sections")
-    public SectionsDto list(
+    public SectionsWithProgressDto list(
             @RequestAttribute("accountId") Long accountId,
             @PathVariable Long courseId
     ) {

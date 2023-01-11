@@ -97,6 +97,23 @@ class LectureControllerTest {
     }
 
     @Test
+    void myLectures() throws Exception {
+        LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
+
+        LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
+
+        given(lectureService.myLectures(any()))
+                .willReturn(lecturesDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/lectures/me")
+                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"lectures\":[")
+                ));
+    }
+
+    @Test
     void listByInstructorId() throws Exception {
         LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
 
@@ -105,7 +122,7 @@ class LectureControllerTest {
         given(lectureService.listByInstructorId(new AccountId(1L)))
                 .willReturn(lecturesDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/lectures/me")
+        mockMvc.perform(MockMvcRequestBuilders.get("/instructor/lectures")
                         .header("Authorization", "Bearer ACCESS.TOKEN"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(

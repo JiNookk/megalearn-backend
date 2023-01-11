@@ -4,6 +4,7 @@ import jinookk.ourlms.dtos.SectionDto;
 import jinookk.ourlms.dtos.SectionRequestDto;
 import jinookk.ourlms.dtos.SectionUpdateRequestDto;
 import jinookk.ourlms.dtos.SectionsDto;
+import jinookk.ourlms.dtos.SectionsWithProgressDto;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -38,6 +39,9 @@ class SectionServiceTest {
         given(sectionRepository.findById(1L))
                 .willReturn(Optional.of(section));
 
+        given(sectionRepository.findAll())
+                .willReturn(List.of(section));
+
         given(sectionRepository.findAllByCourseId(new CourseId(1L)))
                 .willReturn(List.of(section));
 
@@ -49,10 +53,17 @@ class SectionServiceTest {
 
     @Test
     void list() {
-        SectionsDto sectionsDto = sectionService.listWithProgress(new CourseId(1L), new AccountId(1L));
+        SectionsDto sectionsDto = sectionService.list();
 
         assertThat(sectionsDto.getSections()).hasSize(1);
-        assertThat(sectionsDto.getSections().get(0).getProgresses()).hasSize(1);
+    }
+
+    @Test
+    void listWithProgress() {
+        SectionsWithProgressDto sectionsWithProgressDto = sectionService.listWithProgress(new CourseId(1L), new AccountId(1L));
+
+        assertThat(sectionsWithProgressDto.getSections()).hasSize(1);
+        assertThat(sectionsWithProgressDto.getSections().get(0).getProgresses()).hasSize(1);
     }
 
     @Test

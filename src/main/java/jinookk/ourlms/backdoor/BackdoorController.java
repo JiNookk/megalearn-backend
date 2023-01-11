@@ -3,6 +3,7 @@ package jinookk.ourlms.backdoor;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Like;
+import jinookk.ourlms.models.vos.Log;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Post;
 import jinookk.ourlms.models.vos.Title;
@@ -11,6 +12,8 @@ import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.SectionId;
 import jinookk.ourlms.models.vos.status.Status;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +21,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -280,21 +291,30 @@ public class BackdoorController {
                 "payment(id, course_id, account_id, purchaser, price, course_title, created_at) " +
                 "VALUES(1, 1, 1, 'tester1', 35000, '테스트 1강', ?)", LocalDateTime.now());
 
-        jdbcTemplate.update("INSERT INTO " +
-                "payment(id, course_id, account_id, purchaser, price, course_title, created_at) " +
-                "VALUES(2, 1, 2, 'tester2', 35000, '테스트 1강', ?)", LocalDateTime.now());
 
         jdbcTemplate.update("INSERT INTO " +
                 "payment(id, course_id, account_id, purchaser, price, course_title, created_at) " +
-                "VALUES(3, 1, 3, 'tester3', 35000, '테스트 1강', ?)", LocalDateTime.now());
+                "VALUES(2, 2, 1, 'tester3', 24000, '테스트 2강', ?)", LocalDateTime.now());
 
         jdbcTemplate.update("INSERT INTO " +
                 "payment(id, course_id, account_id, purchaser, price, course_title, created_at) " +
-                "VALUES(4, 2, 3, 'tester3', 24000, '테스트 2강', ?)", LocalDateTime.now());
+                "VALUES(3, 3, 1, 'tester3', 49000, '테스트 3강', ?)", LocalDateTime.now());
 
         jdbcTemplate.update("INSERT INTO " +
                 "payment(id, course_id, account_id, purchaser, price, course_title, created_at) " +
-                "VALUES(5, 3, 3, 'tester3', 49000, '테스트 3강', ?)", LocalDateTime.now());
+                "VALUES(4, 1, 2, 'tester2', 35000, '테스트 1강', ?)", LocalDateTime.now());
+
+        jdbcTemplate.update("INSERT INTO " +
+                "payment(id, course_id, account_id, purchaser, price, course_title, created_at) " +
+                "VALUES(5, 1, 3, 'tester3', 35000, '테스트 1강', ?)", LocalDateTime.now());
+
+        jdbcTemplate.update("INSERT INTO " +
+                "payment(id, course_id, account_id, purchaser, price, course_title, created_at) " +
+                "VALUES(6, 2, 3, 'tester3', 24000, '테스트 2강', ?)", LocalDateTime.now());
+
+        jdbcTemplate.update("INSERT INTO " +
+                "payment(id, course_id, account_id, purchaser, price, course_title, created_at) " +
+                "VALUES(7, 3, 3, 'tester3', 49000, '테스트 3강', ?)", LocalDateTime.now());
 
         return "Ok";
     }
@@ -361,6 +381,46 @@ public class BackdoorController {
         jdbcTemplate.execute("INSERT INTO " +
                 "cart(id, account_id) " +
                 "VALUES(3, 3)");
+
+        return "Ok";
+    }
+
+    @GetMapping("/setup-note-db")
+    public String setupNotes() {
+        jdbcTemplate.execute("DELETE from note_logs");
+        jdbcTemplate.execute("DELETE from note");
+
+        jdbcTemplate.update("INSERT INTO " +
+                "note(id, course_id, account_id, publish_time, updated_at) " +
+                "VALUES(1, 1, 1, ?, ?)",
+                LocalDateTime.now(), LocalDateTime.now());
+
+        jdbcTemplate.update("INSERT INTO " +
+                "note(id, course_id, account_id, publish_time, updated_at) " +
+                "VALUES(2, 2, 1, ?, ?)",
+                LocalDateTime.now(), LocalDateTime.now());
+
+        jdbcTemplate.update("INSERT INTO " +
+                "note(id, course_id, account_id, publish_time, updated_at) " +
+                "VALUES(3, 3, 1, ?, ?)",
+                LocalDateTime.now(), LocalDateTime.now());
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "note_logs(note_id, content, lecture_id, seconds, minutes) " +
+                "VALUES(1, '노트 1', 1, 24, 1)");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "note_logs(note_id, content, lecture_id, seconds, minutes) " +
+                "VALUES(1, '노트 4', 1, 44, 3)");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "note_logs(note_id, content, lecture_id, seconds, minutes) " +
+                "VALUES(2, '노트 2', 2, 24, 1)");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "note_logs(note_id, content, lecture_id, seconds, minutes) " +
+                "VALUES(3, '노트 3', 3, 24, 1)");
+
 
         return "Ok";
     }

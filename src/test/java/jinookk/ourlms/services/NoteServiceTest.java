@@ -8,6 +8,7 @@ import jinookk.ourlms.dtos.NoteUpdateDto;
 import jinookk.ourlms.dtos.NotesDto;
 import jinookk.ourlms.models.entities.Note;
 import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.ids.NoteId;
@@ -32,13 +33,15 @@ class NoteServiceTest {
         noteRepository = mock(NoteRepository.class);
         noteService = new NoteService(noteRepository);
 
-        Note note = Note.fake("content");
+        Note note = Note.fake(1L);
         given(noteRepository.save(any())).willReturn(note);
 
         given(noteRepository.findById(any())).willReturn(Optional.of(note));
 
-        given(noteRepository.findAllByLectureIdAndAccountId(new LectureId(1L), new AccountId(1L)))
-                .willReturn(List.of(note));
+        given(noteRepository.findAllByAccountId(any())).willReturn(List.of(note));
+
+//        given(noteRepository.findAllByLectureIdAndAccountId(new LectureId(1L), new AccountId(1L)))
+//                .willReturn(List.of(note));
     }
 
     @Test
@@ -52,7 +55,6 @@ class NoteServiceTest {
         NoteDto noteDto = noteService.create(noteRequestDto, accountId);
 
         assertThat(noteDto).isNotNull();
-        assertThat(noteDto.getLectureTime().getMinute()).isEqualTo(1L);
     }
 
     @Test
@@ -63,15 +65,24 @@ class NoteServiceTest {
     }
 
     @Test
-    void update() {
-        NoteId noteId = new NoteId(1L);
-        NoteUpdateDto updated = new NoteUpdateDto("updated");
+    void myNotes() {
+        NotesDto notesDto = noteService.myNotes(new AccountId(1L));
 
-        NoteDto noteDto = noteService.update(noteId, updated);
-
-        assertThat(noteDto).isNotNull();
-        assertThat(noteDto.getContent()).isEqualTo("updated");
+        assertThat(notesDto.getNotes()).hasSize(1);
     }
+
+
+    // TODO : 수정 기능 구현시 업데이트 할 것!
+//    @Test
+//    void update() {
+//        NoteId noteId = new NoteId(1L);
+//        NoteUpdateDto updated = new NoteUpdateDto("updated");
+//
+////        NoteDto noteDto = noteService.update(noteId, updated);
+//
+//        assertThat(noteDto).isNotNull();
+//        assertThat(noteDto.getContent()).isEqualTo("updated");
+//    }
 
     @Test
     void delete() {

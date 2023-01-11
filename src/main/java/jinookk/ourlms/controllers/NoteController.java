@@ -37,6 +37,13 @@ public class NoteController {
         return noteService.list(new LectureId(lectureId), new AccountId(accountId));
     }
 
+    @GetMapping("/notes/me")
+    public NotesDto myNotes(
+            @RequestAttribute Long accountId
+    ) {
+        return noteService.myNotes(new AccountId(accountId));
+    }
+
     @PostMapping("/notes")
     @ResponseStatus(HttpStatus.CREATED)
     public NoteDto post(
@@ -46,13 +53,14 @@ public class NoteController {
         return noteService.create(noteRequestDto, new AccountId(accountId));
     }
 
-    @PatchMapping("/notes/{noteId}")
-    public NoteDto update(
-            @PathVariable Long noteId,
-            @RequestBody NoteUpdateDto noteUpdateDto
-    ) {
-        return noteService.update(new NoteId(noteId), noteUpdateDto);
-    }
+    // TODO : 나중에 노트 수정시 수정할 것!
+//    @PatchMapping("/notes/{noteId}")
+//    public NoteDto update(
+//            @PathVariable Long noteId,
+//            @RequestBody NoteUpdateDto noteUpdateDto
+//    ) {
+//        return noteService.update(new NoteId(noteId), noteUpdateDto);
+//    }
 
 
     @DeleteMapping("/notes/{noteId}")

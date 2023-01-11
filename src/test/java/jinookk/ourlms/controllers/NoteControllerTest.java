@@ -32,7 +32,7 @@ class NoteControllerTest {
 
     @Test
     void post() throws Exception {
-        NoteDto noteDto = Note.fake("hi").toNoteDto();
+        NoteDto noteDto = Note.fake(1L).toNoteDto();
         given(noteService.create(any(), any())).willReturn(noteDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/notes")
@@ -41,20 +41,17 @@ class NoteControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"content\":\"hi\"," +
-                                "\"lectureId\":1," +
-                                "\"lectureTime\":{" +
-                                "\"minute\":1," +
-                                "\"second\":24" +
-                                "}" +
+                                "\"lectureId\":1" +
                                 "}"))
                 .andExpect(status().isCreated())
                 .andExpect(content().string(
-                        containsString("\"minute\":1")
+                        containsString("\"logs\":[")
                 ));
     }
+
     @Test
     void list() throws Exception {
-        NoteDto noteDto = Note.fake("hi").toNoteDto();
+        NoteDto noteDto = Note.fake(1L).toNoteDto();
         given(noteService.list(any(), any())).willReturn(new NotesDto(List.of(noteDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/notes")
@@ -66,22 +63,36 @@ class NoteControllerTest {
     }
 
     @Test
-    void update() throws Exception {
-        NoteDto noteDto = Note.fake("updated").toNoteDto();
-        given(noteService.update(any(), any())).willReturn(noteDto);
+    void myNotes() throws Exception {
+        NoteDto noteDto = Note.fake(1L).toNoteDto();
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/notes/1")
-                        .header("Authorization", "Bearer ACCESS.TOKEN")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{" +
-                                "\"content\":\"updated\"" +
-                                "}"))
+        given(noteService.myNotes(any())).willReturn(new NotesDto(List.of(noteDto)));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/notes/me")
+                        .header("Authorization", "Bearer ACCESS.TOKEN"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
-                        containsString("\"content\":\"updated\"")
+                        containsString("\"notes\":[")
                 ));
     }
+
+//    @Test
+//    void update() throws Exception {
+//        NoteDto noteDto = Note.fake(1L).toNoteDto();
+//        given(noteService.update(any(), any())).willReturn(noteDto);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.patch("/notes/1")
+//                        .header("Authorization", "Bearer ACCESS.TOKEN")
+//                        .accept(MediaType.APPLICATION_JSON)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("{" +
+//                                "\"content\":\"updated\"" +
+//                                "}"))
+//                .andExpect(status().isOk())
+//                .andExpect(content().string(
+//                        containsString("\"content\":\"updated\"")
+//                ));
+//    }
 
     @Test
     void delete() throws Exception {
