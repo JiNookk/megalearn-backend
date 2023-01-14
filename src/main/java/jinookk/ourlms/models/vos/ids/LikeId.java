@@ -2,18 +2,17 @@ package jinookk.ourlms.models.vos.ids;
 
 import java.util.Objects;
 
-public class NoteId {
+public class LikeId {
     private Long value;
 
-    public NoteId() {
+    public LikeId() {
     }
 
-    public NoteId(Long value) {
+    public LikeId(Long value) {
         this.value = value;
     }
 
-
-    public Long value() {
+    public Long getValue() {
         return value;
     }
 
@@ -26,7 +25,7 @@ public class NoteId {
     public boolean equals(Object other) {
         return other != null &&
                 other.getClass().equals(NoteId.class) &&
-                ((NoteId) other).value.equals(this.value);
+                ((LikeId) other).value.equals(this.value);
     }
 
     @Override

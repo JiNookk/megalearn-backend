@@ -97,7 +97,7 @@ public class Note {
     }
 
     public NoteDto toNoteDto() {
-        return new NoteDto(id, lectureTime, content, publishTime);
+        return new NoteDto(id, lectureId, lectureTime, content, publishTime);
     }
 
     public AccountId accountId() {

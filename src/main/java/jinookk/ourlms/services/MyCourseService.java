@@ -2,10 +2,11 @@ package jinookk.ourlms.services;
 
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CoursesDto;
-import jinookk.ourlms.dtos.MyCoursesDto;
 import jinookk.ourlms.models.entities.Course;
+import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.repositories.CourseRepository;
+import jinookk.ourlms.repositories.PaymentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,23 +16,27 @@ import java.util.List;
 @Transactional
 public class MyCourseService {
     private final CourseRepository courseRepository;
+    private final PaymentRepository paymentRepository;
 
-    public MyCourseService(CourseRepository courseRepository) {
+    public MyCourseService(CourseRepository courseRepository, PaymentRepository paymentRepository) {
         this.courseRepository = courseRepository;
+        this.paymentRepository = paymentRepository;
     }
 
-    public MyCoursesDto purchasedList() {
-        Long userId = 1L;
+    public CoursesDto myCourses(AccountId accountId) {
+        List<Payment> payments = paymentRepository.findAllByAccountId(accountId);
 
-        // TODO: 나중에 로그인 구현시 유저 아이디로 찾아오는 메서드 구현
-//        List<Course> courses = courseRepository.findAllByUserId(userId);
-        List<Course> courses = courseRepository.findAll();
+        List<Long> courseIds = payments.stream()
+                .map(payment -> payment.courseId().value())
+                .toList();
 
-        return new MyCoursesDto(
-                courses.stream()
-                .map(Course::toMyCourseDto)
-                .toList()
-        );
+        List<Course> courses = courseRepository.findAllById(courseIds);
+
+        List<CourseDto> courseDtos = courses.stream()
+                .map(Course::toCourseDto)
+                .toList();
+
+        return new CoursesDto(courseDtos);
     }
 
     public CoursesDto uploadedList(AccountId accountId, String type) {

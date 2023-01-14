@@ -3,6 +3,7 @@ package jinookk.ourlms.controllers;
 import jinookk.ourlms.dtos.SectionDto;
 import jinookk.ourlms.dtos.SectionWithProgressDto;
 import jinookk.ourlms.dtos.SectionsDto;
+import jinookk.ourlms.dtos.SectionsWithProgressDto;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.services.SectionService;
@@ -52,12 +53,27 @@ class SectionControllerTest {
 
     @Test
     void list() throws Exception {
+        SectionDto sectionDto = Section.fake("hi").toSectionDto();
+
+        given(sectionService.list())
+                .willReturn(new SectionsDto(List.of(sectionDto)));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/sections")
+                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"sections\":[")
+                ));
+    }
+
+    @Test
+    void listByCourseId() throws Exception {
         List<Progress> progresses = List.of(Progress.fake("hi"));
 
         SectionWithProgressDto sectionWithProgressDto = Section.fake("hi").toSectionWithProgressDto(progresses);
 
         given(sectionService.listWithProgress(any(), any()))
-                .willReturn(new SectionsDto(List.of(sectionWithProgressDto)));
+                .willReturn(new SectionsWithProgressDto(List.of(sectionWithProgressDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/sections")
                         .header("Authorization", "Bearer ACCESS.TOKEN"))
@@ -66,7 +82,6 @@ class SectionControllerTest {
                         containsString("\"sections\":[")
                 ));
     }
-
 
     @Test
     void update() throws Exception {

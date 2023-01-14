@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -159,9 +160,9 @@ public class InquiryService {
     private Comparator<Inquiry> comparator(String order) {
         Comparator<Inquiry> comparator = Comparator.comparing(Inquiry::publishTime);
 
-        if (order != null && order.equals("like")) {
-            comparator = (p1, p2) -> Integer.compare(p2.countOfLikes(), p1.countOfLikes());
-        }
+//        if (order != null && order.equals("like")) {
+//            comparator = (p1, p2) -> Integer.compare(p2.countOfLikes(), p1.countOfLikes());
+//        }
 
         if (order != null && order.equals("reply")) {
             comparator = Comparator.comparing(Inquiry::repliedAt);
@@ -174,5 +175,33 @@ public class InquiryService {
         return inquiries.stream()
                 .map(Inquiry::toInquiryDto)
                 .toList();
+    }
+
+    public InquiriesDto myInquiries(AccountId accountId) {
+        List<Inquiry> inquiries = inquiryRepository.findAllByAccountId(accountId);
+
+        List<InquiryDto> inquiryDtos = inquiries.stream()
+                .map(Inquiry::toInquiryDto)
+                .toList();
+
+        return new InquiriesDto(inquiryDtos);
+    }
+
+    public InquiryDto toggleSolved(InquiryId inquiryId) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryId.value())
+                .orElseThrow(() -> new InquiryNotFound(inquiryId));
+
+        Inquiry toggled = inquiry.toggleSolved();
+
+        return toggled.toInquiryDto();
+    }
+
+    public InquiryDto increaseHits(InquiryId inquiryId) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryId.value())
+                .orElseThrow(() -> new InquiryNotFound(inquiryId));
+
+        Inquiry increased = inquiry.increaseHits();
+
+        return increased.toInquiryDto();
     }
 }

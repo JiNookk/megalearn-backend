@@ -4,8 +4,6 @@ import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LectureRequestDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.dtos.LecturesDto;
-import jinookk.ourlms.dtos.SectionDto;
-import jinookk.ourlms.dtos.SectionRequestDto;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.LectureService;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,18 +39,30 @@ public class LectureController {
         return lectureService.detail(lectureId);
     }
 
-    @GetMapping("/courses/{courseId}/lectures")
-    public LecturesDto list(
-            @PathVariable Long courseId
-    ) {
-        return lectureService.list(new CourseId(courseId));
+    @GetMapping("/lectures")
+    public LecturesDto list() {
+        return lectureService.list();
     }
 
-    @GetMapping("/lectures")
+    @GetMapping("/courses/{courseId}/lectures")
+    public LecturesDto listByCourseId(
+            @PathVariable Long courseId
+    ) {
+        return lectureService.listByCourseId(new CourseId(courseId));
+    }
+
+    @GetMapping("/lectures/instructor")
     public LecturesDto listByInstructorId(
             @RequestAttribute Long accountId
     ) {
         return lectureService.listByInstructorId(new AccountId(accountId));
+    }
+
+    @GetMapping("/lectures/me")
+    public LecturesDto myLectures(
+            @RequestAttribute Long accountId
+    ) {
+        return lectureService.myLectures(new AccountId(accountId));
     }
 
     @PatchMapping("/lectures/{lectureId}")

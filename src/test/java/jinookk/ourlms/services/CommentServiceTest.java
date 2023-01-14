@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.CommentRequestDto;
 import jinookk.ourlms.dtos.CommentsDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Comment;
+import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Inquiry;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Content;
@@ -13,9 +14,11 @@ import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CommentRepository;
+import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.InquiryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,13 +36,15 @@ class CommentServiceTest {
     CommentRepository commentRepository;
     InquiryRepository inquiryRepository;
     AccountRepository accountRepository;
+    CourseRepository courseRepository;
 
     @BeforeEach
     void setup() {
         accountRepository = mock(AccountRepository.class);
         inquiryRepository = mock(InquiryRepository.class);
         commentRepository = mock(CommentRepository.class);
-        commentService = new CommentService(commentRepository, inquiryRepository, accountRepository);
+        courseRepository = mock(CourseRepository.class);
+        commentService = new CommentService(commentRepository, inquiryRepository, accountRepository, courseRepository);
 
         Comment comment = Comment.fake("hi");
         Comment comment2 = Comment.fake("hi2");
@@ -47,6 +52,9 @@ class CommentServiceTest {
         given(commentRepository.save(any())).willReturn(comment);
 
         given(commentRepository.findAllByInquiryId(new InquiryId(1L))).willReturn(List.of(comment, comment2, comment3));
+
+        Course course = Course.fake("course");
+        given(courseRepository.findById(any())).willReturn(Optional.of(course));
 
         Inquiry inquiry = Inquiry.fake("inquiry");
         given(inquiryRepository.findById(1L)).willReturn(Optional.of(inquiry));

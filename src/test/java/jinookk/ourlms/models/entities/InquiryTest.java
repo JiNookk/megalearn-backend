@@ -1,7 +1,5 @@
 package jinookk.ourlms.models.entities;
 
-import jinookk.ourlms.dtos.CommentRequestDto;
-import jinookk.ourlms.models.vos.Like;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
@@ -10,7 +8,6 @@ import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.status.InquiryStatus;
 import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.models.vos.Title;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,8 +26,8 @@ class InquiryTest {
     @BeforeEach
     void setup() {
         inquiry = new Inquiry(
-                1L, new CourseId(1L), new LectureId(2L), new AccountId(3L), new InquiryStatus(Status.CREATED), List.of(new HashTag("tag")),
-                List.of(new Like(1L)), new Title("title"), new Content("content"), new LectureTime(1, 24),
+                1L, new CourseId(1L), new LectureId(2L), new AccountId(3L), List.of(new HashTag("tag")),
+                 new Title("title"), new Content("content"), new LectureTime(1, 24),
                 new Name("post publisher"), false, LocalDateTime.now(), LocalDateTime.now());
 
         commentWithThirdAccountId = new Comment(1L, new InquiryId(2L), new AccountId(3L), new Status(Status.CREATED),
@@ -43,44 +40,6 @@ class InquiryTest {
         assertThat(inquiry.isPublisherId(new AccountId(2L))).isFalse();
     }
 
-    @Test
-    void createCommentWithSameAccountIdWithInquiry() {
-        Account account = new Account(3L, new Name("tester"));
-        CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
-        List<Comment> comments = List.of(Comment.fake("hi"));
-
-        Comment comment = inquiry.createComment(comments, commentRequestDto, account);
-
-        assertThat(comment).isNotNull();
-        assertThat(comment.author()).isEqualTo(new Name("post publisher"));
-    }
-
-    @Test
-    void createCommentWithPreviousCommentAndNotPublisher() {
-        Account account = new Account(1L, new Name("tester"));
-        CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
-
-        Comment commentWithFirstAccountId = Comment.fake("hi");
-        List<Comment> comments = List.of(commentWithFirstAccountId);
-
-        Comment comment = inquiry.createComment(comments, commentRequestDto, account);
-
-        assertThat(comment).isNotNull();
-        assertThat(comment.author()).isEqualTo(new Name("1st Tester"));
-    }
-
-    @Test
-    void createCommentWithoutPreviousCommentAndNotPublisher() {
-        Account account = new Account(2L, new Name("2nd Tester"));
-        CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
-
-        List<Comment> comments = List.of(commentWithThirdAccountId);
-
-        Comment comment = inquiry.createComment(comments, commentRequestDto, account);
-
-        assertThat(comment).isNotNull();
-        assertThat(comment.author()).isEqualTo(new Name("2nd Tester"));
-    }
 
     @Test
     void validatePreviousCommentWithSameAccountId() {
@@ -102,5 +61,38 @@ class InquiryTest {
         Optional<Comment> comment = inquiry.previousComment(comments, accountId);
 
         assertThat(comment.isPresent()).isFalse();
+    }
+
+    @Test
+    void toggleSolved() {
+        Inquiry inquiry = Inquiry.fake("fake");
+
+        assertThat(inquiry.status().solved()).isEqualTo("processing");
+
+        Inquiry toggled = inquiry.toggleSolved();
+
+        assertThat(toggled.status().solved()).isEqualTo("completed");
+    }
+
+    @Test
+    void reply() {
+        Inquiry inquiry = Inquiry.fake("fake");
+
+        assertThat(inquiry.status().replied()).isEqualTo("processing");
+
+        Inquiry replied = inquiry.reply();
+
+        assertThat(replied.status().replied()).isEqualTo("completed");
+    }
+
+    @Test
+    void increaseHits() {
+        Inquiry fake = Inquiry.fake("fake");
+
+        assertThat(fake.hits()).isEqualTo(0);
+
+        Inquiry increased = fake.increaseHits();
+
+        assertThat(increased.hits()).isEqualTo(1);
     }
 }

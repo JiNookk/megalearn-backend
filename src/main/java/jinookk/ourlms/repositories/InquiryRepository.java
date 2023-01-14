@@ -1,6 +1,7 @@
 package jinookk.ourlms.repositories;
 
 import jinookk.ourlms.models.entities.Inquiry;
+import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import org.springframework.data.domain.Sort;
@@ -24,4 +25,6 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long>, JpaSpec
 
     List<Inquiry> findAllByTitle_ValueContainsOrContent_ValueContainsOrPublisher_ValueContainsAndLectureTime_MinuteAndLectureId
             (String title, String content, String publisher, Long lectureTime, LectureId lectureId);
+
+    List<Inquiry> findAllByAccountId(AccountId accountId);
 }

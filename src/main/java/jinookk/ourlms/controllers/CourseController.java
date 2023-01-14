@@ -5,7 +5,6 @@ import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.CoursesDto;
-import jinookk.ourlms.dtos.MyCoursesDto;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -48,6 +47,13 @@ public class CourseController {
         return courseService.detail(new AccountId(accountId), new CourseId(courseId));
     }
 
+    @GetMapping("/courses/wishes")
+    public CoursesDto wishList(
+            @RequestAttribute Long accountId
+    ) {
+        return courseService.wishList(new AccountId(accountId));
+    }
+
     @GetMapping("/courses")
     public CoursesDto list(
             @RequestParam(required = false, defaultValue = "1") Integer page,
@@ -61,9 +67,10 @@ public class CourseController {
     }
 
     @GetMapping("/account/my-courses")
-    public MyCoursesDto myCourses() {
-        // TODO : 헤더로 유저 아이디 보내줄 것!!, 인자로 전달
-        return myCourseService.purchasedList();
+    public CoursesDto myCourses(
+            @RequestAttribute Long accountId
+    ) {
+        return myCourseService.myCourses(new AccountId(accountId));
     }
 
     @GetMapping("/instructor/my-courses")

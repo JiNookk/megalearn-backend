@@ -148,7 +148,7 @@ class CourseTest {
     void validateInstructor() {
         Course course = Course.fake("fake");
 
-        boolean validateInstructor = course.validateInstructor(new AccountId(1L));
+        boolean validateInstructor = course.isInstructor(new AccountId(1L));
 
         assertThat(validateInstructor).isTrue();
     }
@@ -157,9 +157,9 @@ class CourseTest {
     void validateInstructorWithIncorrectId() {
         Course course = Course.fake("fake");
 
-        assertThat(course.validateInstructor(new AccountId(2L))).isFalse();
-        assertThat(course.validateInstructor(new AccountId(null))).isFalse();
-        assertThat(course.validateInstructor(null)).isFalse();
+        assertThat(course.isInstructor(new AccountId(2L))).isFalse();
+        assertThat(course.isInstructor(new AccountId(null))).isFalse();
+        assertThat(course.isInstructor(null)).isFalse();
     }
 
     @Test

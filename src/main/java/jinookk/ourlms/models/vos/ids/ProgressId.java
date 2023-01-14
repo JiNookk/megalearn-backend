@@ -2,13 +2,13 @@ package jinookk.ourlms.models.vos.ids;
 
 import java.util.Objects;
 
-public class NoteId {
+public class ProgressId {
     private Long value;
 
-    public NoteId() {
+    public ProgressId() {
     }
 
-    public NoteId(Long value) {
+    public ProgressId(Long value) {
         this.value = value;
     }
 
@@ -25,8 +25,8 @@ public class NoteId {
     @Override
     public boolean equals(Object other) {
         return other != null &&
-                other.getClass().equals(NoteId.class) &&
-                ((NoteId) other).value.equals(this.value);
+                other.getClass().equals(ProgressId.class) &&
+                ((ProgressId) other).value.equals(this.value);
     }
 
     @Override

@@ -4,13 +4,15 @@ import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LectureRequestDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.dtos.LecturesDto;
-import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Lecture;
+import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.CourseRepository;
+import jinookk.ourlms.repositories.InquiryRepository;
 import jinookk.ourlms.repositories.LectureRepository;
+import jinookk.ourlms.repositories.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,23 +29,31 @@ class LectureServiceTest {
     LectureService lectureService;
     LectureRepository lectureRepository;
     CourseRepository courseRepository;
+    PaymentRepository paymentRepository;
 
     @BeforeEach
     void setup() {
+        paymentRepository = mock(PaymentRepository.class);
         courseRepository = mock(CourseRepository.class);
         lectureRepository = mock(LectureRepository.class);
-        lectureService = new LectureService(lectureRepository, courseRepository);
+        lectureService = new LectureService(lectureRepository, courseRepository, paymentRepository);
 
         Lecture lecture = Lecture.fake("테스트 1강");
 
         given(lectureRepository.findById(1L))
                 .willReturn(Optional.of(lecture));
 
-        given(lectureRepository.findAllByCourseId(new CourseId(1L)))
+        given(lectureRepository.findAll())
+                .willReturn(List.of(lecture));
+
+        given(lectureRepository.findAllByCourseId(any()))
                 .willReturn(List.of(lecture));
 
         Course course = Course.fake("course");
         given(courseRepository.findAllByAccountId(new AccountId(1L))).willReturn(List.of(course));
+
+        Payment payment = Payment.fake(35000);
+        given(paymentRepository.findAllByAccountId(any())).willReturn(List.of(payment));
     }
 
     @Test
@@ -70,7 +80,16 @@ class LectureServiceTest {
 
     @Test
     void list() {
-        LecturesDto lecturesDto = lectureService.list(new CourseId(1L));
+        LecturesDto lecturesDto = lectureService.list();
+
+        assertThat(lecturesDto).isNotNull();
+
+        assertThat(lecturesDto.getLectures()).hasSize(1);
+    }
+
+    @Test
+    void listByCourseId() {
+        LecturesDto lecturesDto = lectureService.listByCourseId(new CourseId(1L));
 
         assertThat(lecturesDto).isNotNull();
 
@@ -80,6 +99,13 @@ class LectureServiceTest {
     @Test
     void listByInstructorId() {
         LecturesDto lecturesDto = lectureService.listByInstructorId(new AccountId(1L));
+
+        assertThat(lecturesDto.getLectures()).hasSize(1);
+    }
+
+    @Test
+    void myLectures() {
+        LecturesDto lecturesDto = lectureService.myLectures(new AccountId(1L));
 
         assertThat(lecturesDto.getLectures()).hasSize(1);
     }

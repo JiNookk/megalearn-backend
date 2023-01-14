@@ -52,6 +52,13 @@ public class InquiryController {
                 new InquiryFilterDto(courseId, type, order));
     }
 
+    @GetMapping("/inquiries/me")
+    public InquiriesDto myInquiries(
+            @RequestAttribute Long accountId
+    ) {
+        return inquiryService.myInquiries(new AccountId(accountId));
+    }
+
     @GetMapping("/lectures/{lectureId}/inquiries")
     public InquiriesDto list(
             @PathVariable Long lectureId,
@@ -83,6 +90,20 @@ public class InquiryController {
             @RequestBody InquiryUpdateDto inquiryUpdateDto
     ) {
         return inquiryService.update(new InquiryId(inquiryId), inquiryUpdateDto);
+    }
+
+    @PatchMapping("/inquiries/{inquiryId}/solved")
+    public InquiryDto toggle(
+            @PathVariable Long inquiryId
+    ) {
+        return inquiryService.toggleSolved(new InquiryId(inquiryId));
+    }
+
+    @PatchMapping("/inquiries/{inquiryId}/hits")
+    public InquiryDto increaseHits(
+            @PathVariable Long inquiryId
+    ) {
+        return inquiryService.increaseHits(new InquiryId(inquiryId));
     }
 
     @DeleteMapping("/inquiries/{inquiryId}")

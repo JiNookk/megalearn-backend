@@ -4,6 +4,7 @@ import jinookk.ourlms.dtos.InquiriesDto;
 import jinookk.ourlms.dtos.InquiryDeleteDto;
 import jinookk.ourlms.dtos.InquiryDto;
 import jinookk.ourlms.models.entities.Inquiry;
+import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.ids.LectureId;
@@ -53,6 +54,22 @@ class InquiryControllerTest {
         given(inquiryService.list(new LectureId(1L), null, null)).willReturn(inquiriesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/inquiries"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"inquiries\":[")
+                ));
+    }
+
+    @Test
+    void myInquiries() throws Exception {
+        InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
+
+        InquiriesDto inquiriesDto = new InquiriesDto(List.of(inquiryDto));
+
+        given(inquiryService.myInquiries(new AccountId(1L))).willReturn(inquiriesDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/inquiries/me")
+                        .header("Authorization", "Bearer ACCESS.TOKEN"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"inquiries\":[")
@@ -133,6 +150,22 @@ class InquiryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"content\":\"test\"")));
+    }
+
+    @Test
+    void increaseHits() throws Exception {
+        Inquiry inquiry = Inquiry.fake("test");
+
+        Inquiry increased = inquiry.increaseHits();
+
+        InquiryDto inquiryDto = increased.toInquiryDto();
+
+        given(inquiryService.increaseHits(any())).willReturn(inquiryDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/inquiries/1/hits"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"hits\":1")));
     }
 
     @Test

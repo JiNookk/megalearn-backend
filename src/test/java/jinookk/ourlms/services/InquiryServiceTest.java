@@ -53,6 +53,8 @@ class InquiryServiceTest {
 
         given(inquiryRepository.findById(1L)).willReturn(Optional.of(inquiry1));
 
+        given(inquiryRepository.findAllByAccountId(any())).willReturn(List.of(inquiry1, inquiry2));
+
         Account account = Account.fake("user");
         given(accountRepository.findById(1L)).willReturn(Optional.of(account));
 
@@ -76,6 +78,13 @@ class InquiryServiceTest {
     @Test
     void list() {
         InquiriesDto inquiriesDto = inquiryService.list(new LectureId(1L), null, null);
+
+        assertThat(inquiriesDto.getInquiries()).hasSize(2);
+    }
+
+    @Test
+    void myInquiries() {
+        InquiriesDto inquiriesDto = inquiryService.myInquiries(new AccountId(1L));
 
         assertThat(inquiriesDto.getInquiries()).hasSize(2);
     }
@@ -110,6 +119,20 @@ class InquiryServiceTest {
         InquiryDto inquiryDto = inquiryService.update(new InquiryId(1L), inquiryUpdateDto);
 
         assertThat(inquiryDto.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void toggleSolved() {
+        InquiryDto inquiryDto = inquiryService.toggleSolved(new InquiryId(1L));
+
+        assertThat(inquiryDto.getStatus().getSolved()).isEqualTo("completed");
+    }
+
+    @Test
+    void increaseHits() {
+        InquiryDto inquiryDto = inquiryService.increaseHits(new InquiryId(1L));
+
+        assertThat(inquiryDto.getHits()).isEqualTo(1);
     }
 
     @Test

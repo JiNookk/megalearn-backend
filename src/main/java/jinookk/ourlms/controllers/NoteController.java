@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
 
 @RestController
 public class NoteController {
@@ -35,6 +38,14 @@ public class NoteController {
             @PathVariable Long lectureId
     ) {
         return noteService.list(new LectureId(lectureId), new AccountId(accountId));
+    }
+
+    @GetMapping("/notes/me")
+    public NotesDto myNotes(
+            @RequestAttribute Long accountId,
+            @RequestParam(required = false) String date
+    ) {
+        return noteService.myNotes(new AccountId(accountId), date);
     }
 
     @PostMapping("/notes")

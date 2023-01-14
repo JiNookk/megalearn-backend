@@ -3,8 +3,10 @@ package jinookk.ourlms.dtos;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class CommentRequestDto {
+    @NotNull
     private InquiryId inquiryId;
 
     @NotBlank

@@ -98,4 +98,14 @@ public class PaymentService {
 
         return new PaymentsDto(paymentDtos);
     }
+
+    public PaymentsDto list(AccountId accountId) {
+        List<Payment> payments = paymentRepository.findAllByAccountId(accountId);
+
+        List<PaymentDto> paymentDtos = payments.stream()
+                .map(Payment::toDto)
+                .toList();
+
+        return new PaymentsDto(paymentDtos);
+    }
 }

@@ -236,7 +236,7 @@ public class Course {
         return payment.isPresent();
     }
 
-    public boolean validateInstructor(AccountId accountId) {
+    public boolean isInstructor(AccountId accountId) {
         if (accountId == null || accountId.value() == null) {
             return false;
         }
@@ -246,7 +246,7 @@ public class Course {
 
     public CourseDto toCourseDto(Optional<Payment> payment, AccountId accountId) {
         boolean isPurchased = validatePayment(payment);
-        boolean isInstructor = validateInstructor(accountId);
+        boolean isInstructor = isInstructor(accountId);
 
         return new CourseDto(id, category, title, price, description, status, instructor, this.accountId,
                 imagePath, news, hashTags, skillSets, isPurchased, isInstructor, level, goals);

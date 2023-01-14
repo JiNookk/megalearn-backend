@@ -54,6 +54,13 @@ public class PaymentController {
         return paymentService.list(new AccountId(accountId), new CourseId(courseId));
     }
 
+    @GetMapping("/payments/me")
+    public PaymentsDto list(
+            @RequestAttribute Long accountId
+    ) {
+        return paymentService.list(new AccountId(accountId));
+    }
+
     @GetMapping("/instructor/monthly-total-payments")
     public MonthlyPaymentsDto monthlyList(
             @RequestAttribute Long accountId

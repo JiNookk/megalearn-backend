@@ -1,17 +1,21 @@
 package jinookk.ourlms.models.vos.status;
 
+import java.util.Objects;
+
 public class InquiryStatus {
+    public static final String CREATED = "created";
+    public static final String COMPLETED = "completed";
+    public static final String DELETED = "deleted";
+    public static final String PROCESSING = "processing";
+
     private String replied;
     private String solved;
     private String value;
 
     public InquiryStatus() {
-    }
-
-    public InquiryStatus(String value) {
-        this.value = value;
-        this.replied = Status.PROCESSING;
-        this.solved = Status.PROCESSING;
+        this.value = CREATED;
+        this.replied = PROCESSING;
+        this.solved = PROCESSING;
     }
 
     public String replied() {
@@ -27,7 +31,7 @@ public class InquiryStatus {
     }
 
     public void delete() {
-        this.value = Status.DELETED;
+        this.value = DELETED;
     }
 
     public boolean filter(String status) {
@@ -36,29 +40,35 @@ public class InquiryStatus {
         }
 
         if (status.equals("unreplied")) {
-            return replied.equals(Status.PROCESSING);
+            return replied.equals(PROCESSING);
         }
 
         if (status.equals("replied")) {
-            return replied.equals(Status.COMPLETED);
+            return replied.equals(COMPLETED);
         }
 
         if (status.equals("unsolved")) {
-            return solved.equals(Status.PROCESSING);
+            return solved.equals(PROCESSING);
         }
 
         if (status.equals("solved")) {
-            return solved.equals(Status.COMPLETED);
+            return solved.equals(COMPLETED);
         }
 
         return true;
     }
 
-    public void reply() {
-        this.replied = Status.COMPLETED;
+    public InquiryStatus reply() {
+        this.replied = COMPLETED;
+
+        return this;
     }
 
-    public void solve() {
-        this.solved = Status.COMPLETED;
+    public InquiryStatus toggleSolved() {
+        this.solved = Objects.equals(this.solved(), COMPLETED)
+                ? PROCESSING
+                : COMPLETED;
+
+        return this;
     }
 }

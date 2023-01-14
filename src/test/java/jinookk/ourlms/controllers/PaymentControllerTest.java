@@ -91,6 +91,21 @@ class PaymentControllerTest {
     }
 
     @Test
+    void myPayments() throws Exception {
+        PaymentDto paymentDto = Payment.fake(35_000).toDto();
+
+        given(paymentService.list(new AccountId(1L)))
+                .willReturn(new PaymentsDto(List.of(paymentDto)));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/payments/me")
+                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"payments\":[")
+                ));
+    }
+
+    @Test
     void monthlyList() throws Exception {
         MonthlyPaymentDto paymentDto = new MonthlyPaymentDto(new CourseId(1L), new Title("test"), 35_000);
 
