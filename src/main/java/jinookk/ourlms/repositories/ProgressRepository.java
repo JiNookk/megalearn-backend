@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProgressRepository extends JpaRepository<Progress, Long>, JpaSpecificationExecutor<Progress> {
-    List<Progress> findAllByAccountIdAndSectionId(AccountId accountId, SectionId sectionId);
-
     Optional<Progress> findByLectureId(LectureId lectureId);
 
     List<Progress> findAllByCourseId(CourseId courseId);

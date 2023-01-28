@@ -12,6 +12,7 @@ import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Title;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class CourseDto {
@@ -30,14 +31,15 @@ public class CourseDto {
     private List<String> skillSets;
     private String level;
     private List<String> goals;
+    private LocalDateTime createdAt;
     private List<NewsDto> news;
 
     public CourseDto() {
     }
 
     public CourseDto(Long id, Category category, Title title, Price price, Content description, Status status,
-                     Name instructor, AccountId instructorId, ImagePath coverImage, List<Post> news,
-                     List<HashTag> hashTags, List<HashTag> skillSets, Level level, List<Content> goals) {
+                     Name instructor, AccountId instructorId, ImagePath coverImage, List<Post> news, List<HashTag> hashTags,
+                     List<HashTag> skillSets, Level level, List<Content> goals, LocalDateTime createdAt) {
         this.id = id;
         this.category = category.value();
         this.title = title.value();
@@ -52,11 +54,13 @@ public class CourseDto {
         this.skillSets = skillSets.stream().map(HashTag::tagName).toList();
         this.level = level.getName();
         this.goals = goals.stream().map(Content::value).toList();
+        this.createdAt = createdAt;
     }
 
     public CourseDto(Long id, Category category, Title title, Price price, Content description, Status status,
-                     Name instructor, AccountId instructorId, ImagePath coverImage, List<Post> news,
-                     List<HashTag> hashTags, List<HashTag> skillSets, Boolean isPurchased, Boolean isInstructor, Level level, List<Content> goals) {
+                     Name instructor, AccountId instructorId, ImagePath coverImage, List<Post> news, List<HashTag> hashTags,
+                     List<HashTag> skillSets, Boolean isPurchased, Boolean isInstructor, Level level, List<Content> goals,
+                     LocalDateTime createdAt) {
         this.id = id;
         this.category = category.value();
         this.title = title.value();
@@ -73,6 +77,7 @@ public class CourseDto {
         this.isInstructor = isInstructor;
         this.level = level.getName();
         this.goals = goals.stream().map(Content::value).toList();
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -137,5 +142,9 @@ public class CourseDto {
 
     public List<String> getSkillSets() {
         return skillSets;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }

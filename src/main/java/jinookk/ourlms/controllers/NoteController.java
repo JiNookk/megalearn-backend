@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NoteRequestDto;
 import jinookk.ourlms.dtos.NoteUpdateDto;
 import jinookk.ourlms.dtos.NotesDto;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.NoteId;
@@ -34,27 +35,27 @@ public class NoteController {
 
     @GetMapping("/lectures/{lectureId}/notes")
     public NotesDto list(
-            @RequestAttribute("accountId") Long accountId,
+            @RequestAttribute Name userName,
             @PathVariable Long lectureId
     ) {
-        return noteService.list(new LectureId(lectureId), new AccountId(accountId));
+        return noteService.list(new LectureId(lectureId), userName);
     }
 
     @GetMapping("/notes/me")
     public NotesDto myNotes(
-            @RequestAttribute Long accountId,
+            @RequestAttribute Name userName,
             @RequestParam(required = false) String date
     ) {
-        return noteService.myNotes(new AccountId(accountId), date);
+        return noteService.myNotes(userName, date);
     }
 
     @PostMapping("/notes")
     @ResponseStatus(HttpStatus.CREATED)
     public NoteDto post(
-            @RequestAttribute("accountId") Long accountId,
+            @RequestAttribute Name userName,
             @Validated @RequestBody NoteRequestDto noteRequestDto
     ) {
-        return noteService.create(noteRequestDto, new AccountId(accountId));
+        return noteService.create(noteRequestDto, userName);
     }
 
     @PatchMapping("/notes/{noteId}")

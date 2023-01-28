@@ -2,6 +2,7 @@ package jinookk.ourlms.controllers;
 
 import jinookk.ourlms.dtos.LikeDto;
 import jinookk.ourlms.dtos.LikesDto;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LikeId;
@@ -31,10 +32,10 @@ public class LikeController {
 
     @GetMapping("/courses/{courseId}/likes/me")
     public LikeDto like(
-            @RequestAttribute Long accountId,
+            @RequestAttribute Name userName,
             @PathVariable Long courseId
     ) {
-        return likeService.detail(new AccountId(accountId), new CourseId(courseId));
+        return likeService.detail(userName, new CourseId(courseId));
     }
 
     @PatchMapping("/likes/{likeId}")

@@ -12,6 +12,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Comment;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Inquiry;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -39,7 +40,12 @@ public class CommentService {
         this.courseRepository = courseRepository;
     }
 
-    public CommentsDto list(InquiryId inquiryId, AccountId accountId) {
+    public CommentsDto list(InquiryId inquiryId, Name userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        AccountId accountId = new AccountId(account.id());
+
         List<Comment> comments = commentRepository.findAllByInquiryId(inquiryId);
 
         List<CommentDto> commentDtos = comments.stream()
@@ -54,11 +60,11 @@ public class CommentService {
     // TODO : 테스트 필요 -> 도메인 모델에서 비즈니스 로직테스트 하고 나머지 부분 테스트하기
     // TODO : 지금 가지고 있는 객체들 사이에서 어떤게 가장 적합할지 고민해보기
     // TODO : 행동을 정하고 적합한 객체를 양쪽에 배치하자.
-    public CommentDto create(CommentRequestDto commentRequestDto, AccountId accountId) {
+    public CommentDto create(CommentRequestDto commentRequestDto, Name userName) {
         InquiryId inquiryId = commentRequestDto.getInquiryId();
 
-        Account account = accountRepository.findById(accountId.value())
-                .orElseThrow(() -> new AccountNotFound(accountId));
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
 
         Inquiry inquiry = inquiryRepository.findById(inquiryId.value())
                 .orElseThrow(() -> new InquiryNotFound(inquiryId));
@@ -68,14 +74,11 @@ public class CommentService {
 
         List<Comment> comments = commentRepository.findAllByInquiryId(inquiryId);
 
-//        Comment comment = inquiry.createComment(comments, commentRequestDto, account);
-
-        // 댓글이 만드는 방식으로 리팩토링하기
         Comment comment = Comment.of(inquiry, comments, commentRequestDto, account, course);
 
         Comment saved = commentRepository.save(comment);
 
-        return saved.toCommentDto(accountId);
+        return saved.toCommentDto(new AccountId(account.id()));
     }
 
     public CommentDeleteDto delete(Long commentId) {

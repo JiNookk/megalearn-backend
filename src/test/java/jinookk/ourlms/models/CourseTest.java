@@ -3,6 +3,7 @@ package jinookk.ourlms.models;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MyCourseDto;
+import jinookk.ourlms.dtos.StatusUpdateDto;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.entities.Rating;
@@ -36,13 +37,11 @@ class CourseTest {
         Course course = Course.fake("course");
 
         List<Rating> ratings = List.of(
-                new Rating(1L, new AccountId(1L), new CourseId(1L), new Name("name1"), new Content("content1"),
-                        LocalDateTime.now(), 4.0),
-                new Rating(2L, new AccountId(2L), new CourseId(1L), new Name("name2"), new Content("content2"),
-                        LocalDateTime.now(), 4.3),
-                new Rating(3L, new AccountId(3L), new CourseId(1L), new Name("name3"), new Content("content3"),
-                        LocalDateTime.now(), 3.7)
+                new Rating(1L, new AccountId(1L), new CourseId(1L), new Name("name1"), new Content("content1"), 4.0),
+                new Rating(2L, new AccountId(2L), new CourseId(1L), new Name("name2"), new Content("content2"), 4.3),
+                new Rating(3L, new AccountId(3L), new CourseId(1L), new Name("name3"), new Content("content3"), 3.7)
         );
+
         Double rating = course.averageRating(ratings);
 
         assertThat(rating).isEqualTo(4.0);
@@ -186,6 +185,28 @@ class CourseTest {
     void fake() {
         Course course = Course.fake("fake");
 
-        assertThat(course.level()).isEqualTo(Level.INTERMEDIATE);
+        assertThat(course.level()).isEqualTo(Level.TOBEDETERMINED);
+    }
+
+    @Test
+    void changeLevel() {
+        Course course = Course.fake("fake");
+
+        assertThat(course.level()).isEqualTo(Level.TOBEDETERMINED);
+
+        Course changed = course.changeLevel(Level.EXPERT);
+
+        assertThat(changed.level()).isEqualTo(Level.EXPERT);
+    }
+
+    @Test
+    void updateStatus() {
+        Course course = Course.fake("fake");
+
+        assertThat(course.status().value()).isEqualTo("processing");
+
+        Course approved = course.updateStatus(new StatusUpdateDto("approved"));
+
+        assertThat(approved.status().value()).isEqualTo("approved");
     }
 }

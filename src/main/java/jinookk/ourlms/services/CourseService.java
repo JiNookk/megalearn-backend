@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.CoursesDto;
+import jinookk.ourlms.dtos.StatusUpdateDto;
 import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.CourseNotFound;
 import jinookk.ourlms.models.entities.Account;
@@ -13,8 +14,10 @@ import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.HashTag;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
+import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.LikeRepository;
@@ -23,6 +26,7 @@ import jinookk.ourlms.specifications.CourseSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,39 +50,33 @@ public class CourseService {
         this.likeRepository = likeRepository;
     }
 
-    public CourseDto detail(AccountId accountId, CourseId courseId) {
-        Course course = courseRepository.findById(courseId.value())
-                .orElseThrow(()-> new CourseNotFound(courseId.value()));
+    public CourseDto create(CourseRequestDto courseRequestDto, Name userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
 
-        Optional<Payment> payment = paymentRepository.findByAccountIdAndCourseId(accountId, courseId);
-
-        return course.toCourseDto(payment, accountId);
-    }
-
-    public CourseDto create(CourseRequestDto courseRequestDto, AccountId accountId) {
-        Account account = accountRepository.findById(accountId.value())
-                .orElseThrow(() -> new AccountNotFound(accountId));
-
-        Course course = Course.of(courseRequestDto, account.name(), accountId);
+        Course course = Course.of(courseRequestDto, account.name(), new AccountId(account.id()));
 
         Course saved = courseRepository.save(course);
 
         return saved.toCourseDto();
     }
 
-    public CourseDto update(Long courseId, CourseUpdateRequestDto courseUpdateRequestDto) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new CourseNotFound(courseId));
+    public CourseDto detail(Name userName, CourseId courseId) {
+        Course course = courseRepository.findById(courseId.value())
+                .orElseThrow(()-> new CourseNotFound(courseId.value()));
 
-        course.update(courseUpdateRequestDto);
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
 
-        return course.toCourseDto();
+        Optional<Payment> payment = paymentRepository.findByAccountIdAndCourseId(new AccountId(account.id()), courseId);
+
+        return course.toCourseDto(payment, new AccountId(account.id()));
     }
 
     public CoursesDto list(Integer page, CourseFilterDto courseFilterDto) {
         Pageable pageable = PageRequest.of(page -1, 24);
 
-        Specification<Course> spec = (root, query, criteriaBuilder) -> null;
+        Specification<Course> spec = Specification.where(CourseSpecification.notEqualDeleted());
 
         if (courseFilterDto.getLevel() != null) {
             spec = spec.and(CourseSpecification.equalLevel(Level.of(courseFilterDto.getLevel())));
@@ -96,6 +94,7 @@ public class CourseService {
             // join시 일치하는 모든 칼럼을 가져온다.
             // elementCollection의 값 하나당 하나의 칼럼을 가져옴
             // 어떻게 막을 수 있을까?
+
             spec = spec.and(
             CourseSpecification.likeTitle(courseFilterDto.getContent())
                     .or(CourseSpecification.likeContent(courseFilterDto.getContent()))
@@ -110,6 +109,50 @@ public class CourseService {
                 .toList();
 
         return new CoursesDto(courseDtos, courses.getTotalPages());
+    }
+
+    public CoursesDto wishList(Name userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        List<Like> likes = likeRepository.findAllByAccountId(new AccountId(account.id()));
+
+        List<Long> courseIds = likes.stream()
+                .filter(Like::clicked)
+                .map(like -> like.courseId().value())
+                .toList();
+
+        List<CourseDto> courseDtos = courseRepository.findAllById(courseIds).stream()
+                .filter(course -> !course.status().equals(new Status(Status.DELETED)))
+                .map(Course::toCourseDto)
+                .toList();
+
+        return new CoursesDto(courseDtos);
+    }
+
+    public CoursesDto listForAdmin(Integer page) {
+        Sort sort = Sort.by("createdAt").descending();
+
+        Pageable pageable = PageRequest.of(page - 1, 6, sort);
+
+        Specification<Course> spec = Specification.where(CourseSpecification.notEqualDeleted());
+
+        Page<Course> courses = courseRepository.findAll(spec, pageable);
+
+        List<CourseDto> courseDtos = courses.stream()
+                .map(Course::toCourseDto)
+                .toList();
+
+        return new CoursesDto(courseDtos, courses.getTotalPages());
+    }
+
+    public CourseDto update(Long courseId, CourseUpdateRequestDto courseUpdateRequestDto) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new CourseNotFound(courseId));
+
+        course.update(courseUpdateRequestDto);
+
+        return course.toCourseDto();
     }
 
     public CourseDto delete(Long courseId) {
@@ -130,18 +173,12 @@ public class CourseService {
         return course.toCourseDto();
     }
 
-    public CoursesDto wishList(AccountId accountId) {
-        List<Like> likes = likeRepository.findAllByAccountId(accountId);
+    public CourseDto updateStatus(Long courseId, StatusUpdateDto statusUpdateDto) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new CourseNotFound(courseId));
 
-        List<Long> courseIds = likes.stream()
-                .filter(Like::clicked)
-                .map(like -> like.courseId().value())
-                .toList();
+        Course updated = course.updateStatus(statusUpdateDto);
 
-        List<CourseDto> courseDtos = courseRepository.findAllById(courseIds).stream()
-                .map(Course::toCourseDto)
-                .toList();
-
-        return new CoursesDto(courseDtos);
+        return updated.toCourseDto();
     }
 }

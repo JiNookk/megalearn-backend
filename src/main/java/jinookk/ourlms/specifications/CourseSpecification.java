@@ -2,6 +2,7 @@ package jinookk.ourlms.specifications;
 
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.enums.Level;
+import jinookk.ourlms.models.vos.status.Status;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -85,6 +86,18 @@ public class CourseSpecification {
                                          CriteriaBuilder criteriaBuilder) {
 
                 return criteriaBuilder.like(root.get("title").get("value"), "%" + content + "%");
+            }
+        };
+    }
+
+    public static Specification<Course> notEqualDeleted() {
+        return new Specification<Course>() {
+            @Override
+            public Predicate toPredicate(Root<Course> root,
+                                         CriteriaQuery<?> query,
+                                         CriteriaBuilder criteriaBuilder) {
+
+                return criteriaBuilder.notEqual(root.get("status").get("value"), Status.DELETED);
             }
         };
     }

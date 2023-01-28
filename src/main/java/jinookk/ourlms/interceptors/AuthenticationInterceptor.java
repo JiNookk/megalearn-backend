@@ -1,11 +1,19 @@
 package jinookk.ourlms.interceptors;
 
+import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.utils.JwtUtil;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class AuthenticationInterceptor implements HandlerInterceptor{
+    private final JwtUtil jwtUtil;
+
+    public AuthenticationInterceptor(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
@@ -18,19 +26,23 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
 
         String accessToken = authorization.substring("Bearer ".length());
 
-        if (accessToken.equals("ACCESS.TOKEN")) {
-            request.setAttribute("accountId", 1L);
-        }
+        Name userName = jwtUtil.decode(accessToken);
 
-        if (accessToken.equals("ACCESS.TOKEN2")) {
-            request.setAttribute("accountId", 2L);
-        }
+        request.setAttribute("userName", userName);
+        System.out.println(userName);
 
-        if (accessToken.equals("ACCESS.TOKEN3")) {
-            request.setAttribute("accountId", 3L);
-        }
-
-        System.out.println(accessToken);
+//        if (accessToken.equals("ACCESS.TOKEN")) {
+//            request.setAttribute("accountId", 1L);
+//        }
+//
+//        if (accessToken.equals("ACCESS.TOKEN2")) {
+//            request.setAttribute("accountId", 2L);
+//        }
+//
+//        if (accessToken.equals("ACCESS.TOKEN3")) {
+//            request.setAttribute("accountId", 3L);
+//        }
+//
 
         return true;
     }

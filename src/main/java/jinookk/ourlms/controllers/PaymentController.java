@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.KakaoRequestDto;
 import jinookk.ourlms.dtos.MonthlyPaymentsDto;
 import jinookk.ourlms.dtos.PaymentRequestDto;
 import jinookk.ourlms.dtos.PaymentsDto;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.KakaoService;
@@ -31,40 +32,45 @@ public class PaymentController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/payments/kakao-ready")
     public KakaoReadyDto paymentReady(
-            @RequestAttribute Long accountId,
+            @RequestAttribute Name userName,
             @RequestBody KakaoRequestDto kakaoRequestDto
     ) {
-        return kakaoService.paymentUrl(new AccountId(accountId), kakaoRequestDto.getCourseIds());
+        return kakaoService.paymentUrl(userName, kakaoRequestDto.getCourseIds());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/payments")
     public PaymentsDto purchase(
-            @RequestAttribute Long accountId,
+            @RequestAttribute Name userName,
             @RequestBody PaymentRequestDto paymentRequestDto
     ) {
-        return paymentService.purchase(paymentRequestDto, new AccountId(accountId));
+        return paymentService.purchase(paymentRequestDto, userName);
+    }
+
+    @GetMapping("/payments")
+    public PaymentsDto list() {
+        return paymentService.list();
     }
 
     @GetMapping("/instructor/payments")
     public PaymentsDto list(
-            @RequestAttribute Long accountId,
+            @RequestAttribute Name userName,
             @RequestParam(required = false) Long courseId
     ) {
-        return paymentService.list(new AccountId(accountId), new CourseId(courseId));
+        return paymentService.list(userName, new CourseId(courseId));
     }
 
     @GetMapping("/payments/me")
     public PaymentsDto list(
-            @RequestAttribute Long accountId
+            @RequestAttribute Name userName
     ) {
-        return paymentService.list(new AccountId(accountId));
+        return paymentService.list(userName);
     }
 
     @GetMapping("/instructor/monthly-total-payments")
     public MonthlyPaymentsDto monthlyList(
-            @RequestAttribute Long accountId
+            @RequestAttribute Name userName
     ) {
-        return paymentService.monthlyList(new AccountId(accountId));
+        return paymentService.monthlyList(userName);
     }
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum Level {
+    TOBEDETERMINED("미정"),
     BEGINNER("입문"),
     INTERMEDIATE("초급"),
     EXPERT("중급이상");
@@ -18,6 +19,10 @@ public enum Level {
 
     Level(String name) {
         this.name = name;
+    }
+
+    public static Level of(String level, Level prevLevel) {
+        return level.isBlank() ? prevLevel : of(level);
     }
 
     public static Level of(String level) {

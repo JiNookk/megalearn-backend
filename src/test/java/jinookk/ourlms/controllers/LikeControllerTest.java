@@ -3,11 +3,15 @@ package jinookk.ourlms.controllers;
 import jinookk.ourlms.dtos.LikeDto;
 import jinookk.ourlms.dtos.LikesDto;
 import jinookk.ourlms.models.entities.Like;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.LikeId;
 import jinookk.ourlms.services.LikeService;
+import jinookk.ourlms.utils.JwtUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,6 +33,16 @@ class LikeControllerTest {
     @MockBean
     private LikeService likeService;
 
+    @SpyBean
+    private JwtUtil jwtUtil;
+
+    private String accessToken;
+
+    @BeforeEach
+    void setup() {
+        accessToken = jwtUtil.encode(new Name("userName"));
+    }
+
     @Test
     void list() throws Exception {
         LikeDto likeDto = Like.fake(true).toDto();
@@ -49,7 +63,7 @@ class LikeControllerTest {
         given(likeService.detail(any(), any())).willReturn(likeDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/likes/me")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"clicked\":true")

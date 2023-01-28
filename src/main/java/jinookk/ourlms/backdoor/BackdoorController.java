@@ -28,121 +28,60 @@ public class BackdoorController {
     public String setupCourses(
             @RequestParam(required = false) Integer count
     ) {
-        List<HashTag> hashTags = List.of(new HashTag("운동"), new HashTag("프로틴"));
-
-        List<Post> news = List.of(
-                new Post("News1", LocalDateTime.of(2022, 12, 26, 1, 1), "content1"),
-                new Post("News2", LocalDateTime.of(2022, 12, 31, 1, 1), "content2")
-        );
-
-        List<HashTag> skillSets1 = List.of(new HashTag("React"), new HashTag("JavaScript"));
-        List<HashTag> skillSets2 = List.of(new HashTag("객체지향"), new HashTag("Spring"));
-        List<HashTag> skillSets3 = List.of(new HashTag("Python"), new HashTag("머신러닝"), new HashTag("JavaScript"));
-
-        List<List<HashTag>> skillSetList = List.of(skillSets1, skillSets2, skillSets3);
-
-        List<List<String>> goalList = List.of(
-                List.of(
-                        "자바의 기초 문법 완벽 마스터",
-                        "객체 지향 프로그래밍에 대한 이해",
-                        "장마다 제공되는 실력 다지기 퀴즈 및 해설",
-                        "IntelliJ 의 주요 단축키 및 강력한 기능 사용법"
-                ),
-                List.of(
-                        "하루 동안 섭취한 음식에 맞는 우리몸에 꼭 맞는 운동법을 영상을 통해 따라해 볼 수 있다.",
-                        "집에서 간단하게 맨몸 스트레칭 운동을 통해 건강한 하루로 마무리하자"
-                ),
-                List.of(
-                        "디자이너와 협업 시 빈번하게 발생하는 소통 문제 예방/해결할 수 있는 방법",
-                        "피그마에서 컴포넌트 세로정렬 값 확인하는 방법 ex. v-align: top / middle",
-                        "피그마에서 컴포넌트 다운로드 안될 때 5초 해결 방법",
-                        "피그마에서 인터랙션(애니메이션) 속성 확인하기 ex. 화면이 우에서 좌로 slide in"
-                ));
-
-        jdbcTemplate.execute("DELETE from course_hash_tags");
-        jdbcTemplate.execute("DELETE from course_skill_sets");
-        jdbcTemplate.execute("DELETE from course_news");
-        jdbcTemplate.execute("DELETE from course_goals");
-        jdbcTemplate.execute("DELETE from lecture");
-        jdbcTemplate.execute("DELETE from course");
-
-        jdbcTemplate.execute("INSERT INTO " +
-                "course(" +
-                "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
-                "status, level" +
-                ") " +
-                "VALUES(1, 1, '강의 1', '경로', '개발 • 프로그래밍', '오진성', 'description', 49000, 'approved', 'BEGINNER')");
-
-        jdbcTemplate.execute("INSERT INTO " +
-                "course(" +
-                "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
-                "status, level" +
-                ") " +
-                "VALUES(2, 1, '강의 2', '경로', '교양', '오진성', 'description', 35000, 'approved', 'INTERMEDIATE')");
-
-        jdbcTemplate.execute("INSERT INTO " +
-                "course(" +
-                "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
-                "status, level" +
-                ") " +
-                "VALUES(3, 1, '강의 3', '경로', '크리에이티브', '오진성', 'description', 24000, 'approved', 'EXPERT')");
-
-        for (HashTag hashTag : hashTags) {
+        for (int i = 0; i < 30; i += 3) {
             jdbcTemplate.update("INSERT INTO " +
-                            "course_hash_tags(course_id, tag_name) " +
-                            "VALUES(1, ?)"
-                    , hashTag.tagName());
-        }
+                            "course(" +
+                            "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
+                            "status, level, created_at" +
+                            ") " +
+                            "VALUES(?, 1, '테스트', '', '크리에이티브', '메가런', 'description', 49000, 'approved', 'BEGINNER', ?)"
+                    , i + 3000, LocalDateTime.now().minusDays(10));
 
-        for (Post post : news) {
             jdbcTemplate.update("INSERT INTO " +
-                            "course_news(course_id, title, created_at, content) " +
-                            "VALUES(1, ?, ?, ?)"
-                    , post.title(), post.createdAt(), post.content());
+                            "course(" +
+                            "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
+                            "status, level, created_at" +
+                            ") " +
+                            "VALUES(?, 1, '테스트', '', '개발 프로그래밍', '메가런', 'description', 49000, 'approved', 'BEGINNER', ?)"
+                    , i + 3001, LocalDateTime.now().minusDays(10));
+
+            jdbcTemplate.update("INSERT INTO " +
+                            "course(" +
+                            "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
+                            "status, level, created_at" +
+                            ") " +
+                            "VALUES(?, 1, '테스트', '', '커리어', '메가런', 'description', 49000, 'approved', 'BEGINNER', ?)"
+                    , i + 3002, LocalDateTime.now().minusDays(10));
+
         }
 
-        for (int i = 0; i < goalList.size(); i += 1) {
-            List<String> goals = goalList.get(i);
+        for (int i = 0; i < 30; i += 3) {
+            jdbcTemplate.update("INSERT INTO " +
+                            "course(" +
+                            "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
+                            "status, level, created_at" +
+                            ") " +
+                            "VALUES(?, 1, '테스트', '', '크리에이티브', '메가런', 'description', 49000, 'submitted', 'BEGINNER', ?)"
+                    , i + 6000, LocalDateTime.now().minusDays(10));
 
-            for (String goal : goals) {
-                jdbcTemplate.update("INSERT INTO " +
-                                "course_goals(course_id, goal) " +
-                                "VALUES(?, ?)"
-                        , i + 1, goal);
-            }
-        }
+            jdbcTemplate.update("INSERT INTO " +
+                            "course(" +
+                            "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
+                            "status, level, created_at" +
+                            ") " +
+                            "VALUES(?, 1, '테스트', '', '개발 프로그래밍', '메가런', 'description', 49000, 'processing', 'BEGINNER', ?)"
+                    , i + 6001, LocalDateTime.now().minusDays(10));
 
-        if (count != null) {
-            for (int i = 3; i < count; i += 1) {
-                int index = i + 1;
-                jdbcTemplate.update("INSERT INTO " +
-                                "course(" +
-                                "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
-                                "status, level" +
-                                ") " +
-                                "VALUES(?, 1, ?, '경로', '크리에이티브', '오진성', 'description', 24000, 'approved', 'EXPERT')"
-                        , index, "강의 " + index);
-
-                setSkills(i, skillSets3);
-            }
-        }
-
-        for (int i = 0; i < skillSetList.size(); i += 1) {
-            List<HashTag> skillSets = skillSetList.get(i);
-
-            setSkills(i, skillSets);
+            jdbcTemplate.update("INSERT INTO " +
+                            "course(" +
+                            "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
+                            "status, level, created_at" +
+                            ") " +
+                            "VALUES(?, 1, '테스트', '', '커리어', '메가런', 'description', 49000, 'submitted', 'BEGINNER', ?)"
+                    , i + 6002, LocalDateTime.now().minusDays(10));
         }
 
         return "Ok";
-    }
-
-    private void setSkills(int i, List<HashTag> skillSets) {
-        for (HashTag skill : skillSets) {
-            jdbcTemplate.update("INSERT INTO " +
-                            "course_skill_sets(course_id, tag_name) " +
-                            "VALUES(?, ?)"
-                    , i + 1, skill.tagName());
-        }
     }
 
     @GetMapping("/setup-lecture-db")
@@ -165,7 +104,31 @@ public class BackdoorController {
                 "lecture(" +
                 "id, course_id, section_id, minutes, seconds, lecture_title, video_url, handout_url, lecture_note, status" +
                 ") " +
-                "VALUES(3, 1, 3, 30, 24, '테스트 3강', 'quvgobYR8pA', 'handout', 'note', 'created')");
+                "VALUES(3, 1, 2, 30, 24, '테스트 3강', 'quvgobYR8pA', 'handout', 'note', 'created')");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "lecture(" +
+                "id, course_id, section_id, minutes, seconds, lecture_title, video_url, handout_url, lecture_note, status" +
+                ") " +
+                "VALUES(4, 2, 3, 20, 53, '나동빈', 'oFV00xfrQ9Y', 'handout', 'note', 'created')");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "lecture(" +
+                "id, course_id, section_id, minutes, seconds, lecture_title, video_url, handout_url, lecture_note, status" +
+                ") " +
+                "VALUES(5, 2, 3, 8, 32, '코딩 알려주는 누나', 'HFEurBNmMwM', 'handout', 'note', 'created')");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "lecture(" +
+                "id, course_id, section_id, minutes, seconds, lecture_title, video_url, handout_url, lecture_note, status" +
+                ") " +
+                "VALUES(6, 2, 4, 11, 51, '워키토키', 'fv5pIa_l7ns', 'handout', 'note', 'created')");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "lecture(" +
+                "id, course_id, section_id, minutes, seconds, lecture_title, video_url, handout_url, lecture_note, status" +
+                ") " +
+                "VALUES(7, 2, 4, 12, 50, '워키토키 x 샌드버드', 'i1HPaGDnocM', 'handout', 'note', 'created')");
 
         return "Ok";
     }
@@ -256,7 +219,11 @@ public class BackdoorController {
 
         jdbcTemplate.execute("INSERT INTO " +
                 "section(id, course_id, goal, status, title) " +
-                "VALUES(3, 2, 'goal', 'created', '섹션 1')");
+                "VALUES(3, 2, 'goal', 'created', '면접 특강')");
+
+        jdbcTemplate.execute("INSERT INTO " +
+                "section(id, course_id, goal, status, title) " +
+                "VALUES(4, 2, 'goal', 'created', '이력서 특강')");
 
         return "Ok";
     }

@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.CommentDto;
 import jinookk.ourlms.dtos.CommentRequestDto;
 import jinookk.ourlms.dtos.CommentUpdateDto;
 import jinookk.ourlms.dtos.CommentsDto;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.services.CommentService;
@@ -32,9 +33,9 @@ public class CommentController {
     @GetMapping("inquiries/{inquiryId}/comments")
     public CommentsDto list(
             @PathVariable Long inquiryId,
-            @RequestAttribute("accountId") Long accountId
+            @RequestAttribute Name userName
             ) {
-        return commentService.list(new InquiryId(inquiryId), new AccountId(accountId));
+        return commentService.list(new InquiryId(inquiryId), userName);
     }
 
     @PostMapping("comments")
@@ -42,9 +43,9 @@ public class CommentController {
     @Transactional
     public CommentDto post(
             @Validated @RequestBody CommentRequestDto commentRequestDto,
-            @RequestAttribute("accountId") AccountId accountId
+            @RequestAttribute Name userName
             ) {
-        return commentService.create(commentRequestDto, accountId);
+        return commentService.create(commentRequestDto, userName);
     }
 
     @PatchMapping("comments/{inquiryId}")

@@ -5,14 +5,18 @@ import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.dtos.MyCourseDto;
 import jinookk.ourlms.dtos.MyCoursesDto;
 import jinookk.ourlms.models.entities.Course;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CourseService;
 import jinookk.ourlms.services.MyCourseService;
+import jinookk.ourlms.utils.JwtUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -37,6 +41,16 @@ class CourseControllerTest {
     @MockBean
     private MyCourseService myCourseService;
 
+    @SpyBean
+    private JwtUtil jwtUtil;
+
+    private String accessToken;
+
+    @BeforeEach
+    void setup() {
+        accessToken = jwtUtil.encode(new Name("userName"));
+    }
+
     @Test
     void create() throws Exception {
         CourseDto courseDto = Course.fake("courseTitle").toCourseDto();
@@ -44,7 +58,7 @@ class CourseControllerTest {
         given(courseService.create(any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/courses")
-                        .header("Authorization", "Bearer ACCESS.TOKEN")
+                        .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\":\"courseTitle\"}"))
                 .andExpect(status().isOk())
@@ -57,10 +71,10 @@ class CourseControllerTest {
     void detail() throws Exception {
         CourseDto courseDto = Course.fake("test").toCourseDto();
 
-        given(courseService.detail(new AccountId(1L), new CourseId(1L))).willReturn(courseDto);
+        given(courseService.detail(any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1")
-                        .header("Authorization", "Bearer ACCESS.TOKEN")
+                        .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
@@ -88,7 +102,7 @@ class CourseControllerTest {
         given(courseService.wishList(any())).willReturn(new CoursesDto(List.of(courseDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/wishes")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"courses\":[")
@@ -104,7 +118,7 @@ class CourseControllerTest {
                 .willReturn(new CoursesDto(dtos));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/account/my-courses")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"courses\":[")
@@ -118,7 +132,7 @@ class CourseControllerTest {
         given(courseService.update(any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/courses/1")
-                        .header("Authorization", "Bearer ACCESS.TOKEN")
+                        .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"description\":\"description\",\n" +
@@ -129,6 +143,23 @@ class CourseControllerTest {
                                 "\"level\":\"초급\"," +
                                 "\"skill\":\"JS\"," +
                                 "\"category\":\"category\"" +
+                                "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"title\":\"updated\"")
+                ));
+    }
+
+    @Test
+    void updateStatus() throws Exception {
+        CourseDto courseDto = Course.fake("updated").toCourseDto();
+
+        given(courseService.updateStatus(any(), any())).willReturn(courseDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/courses/1/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"status\":\"processing\"" +
                                 "}"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
@@ -171,7 +202,7 @@ class CourseControllerTest {
                 .willReturn(new CoursesDto(dtos));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/instructor/my-courses")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"courses\":[")

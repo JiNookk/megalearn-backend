@@ -5,11 +5,15 @@ import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NoteRequestDto;
 import jinookk.ourlms.dtos.NoteUpdateDto;
 import jinookk.ourlms.dtos.NotesDto;
+import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.NoteNotFound;
+import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Note;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.NoteId;
+import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.NoteRepository;
 import jinookk.ourlms.specifications.NoteSpecification;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,13 +26,20 @@ import java.util.List;
 @Service
 public class NoteService {
     private final NoteRepository noteRepository;
+    private final AccountRepository accountRepository;
 
-    public NoteService(NoteRepository noteRepository) {
+    public NoteService(NoteRepository noteRepository, AccountRepository accountRepository) {
         this.noteRepository = noteRepository;
+        this.accountRepository = accountRepository;
     }
 
     // TODO : 사용자가 만드는 역할을 하기에 적합할 것 같다.
-    public NoteDto create(NoteRequestDto noteRequestDto, AccountId accountId) {
+    public NoteDto create(NoteRequestDto noteRequestDto, Name userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        AccountId accountId = new AccountId(account.id());
+
         Note note = Note.of(noteRequestDto, accountId);
 
         Note saved = noteRepository.save(note);
@@ -36,7 +47,12 @@ public class NoteService {
         return saved.toNoteDto();
     }
 
-    public NotesDto list(LectureId lectureId, AccountId accountId) {
+    public NotesDto list(LectureId lectureId, Name userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        AccountId accountId = new AccountId(account.id());
+
         List<Note> notes = noteRepository.findAllByLectureIdAndAccountId(lectureId, accountId);
 
         List<NoteDto> noteDtos = notes.stream()
@@ -46,7 +62,12 @@ public class NoteService {
         return new NotesDto(noteDtos);
     }
 
-    public NotesDto myNotes(AccountId accountId, String date) {
+    public NotesDto myNotes(Name userName, String date) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        AccountId accountId = new AccountId(account.id());
+
         Specification<Note> spec = Specification.where(NoteSpecification.equalAccountId(accountId));
 
         if (date != null) {

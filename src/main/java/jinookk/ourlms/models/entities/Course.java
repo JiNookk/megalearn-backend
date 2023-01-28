@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.CourseRequestDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MyCourseDto;
+import jinookk.ourlms.dtos.StatusUpdateDto;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.Category;
 import jinookk.ourlms.models.vos.Content;
@@ -33,6 +34,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Entity
 public class Course {
@@ -51,7 +53,6 @@ public class Course {
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "description"))
     private Content description;
-
 
     @AttributeOverride(name = "value", column = @Column(name = "goal"))
     @ElementCollection(fetch = FetchType.LAZY)
@@ -81,7 +82,7 @@ public class Course {
     private Price price;
 
     @Enumerated(EnumType.STRING)
-    private Level level;
+    private Level level = Level.TOBEDETERMINED;
 
     @ElementCollection(fetch = FetchType.LAZY)
     private List<HashTag> hashTags = new ArrayList<>();
@@ -89,15 +90,16 @@ public class Course {
     @ElementCollection(fetch = FetchType.LAZY)
     private List<HashTag> skillSets = new ArrayList<>();
 
+    private LocalDateTime createdAt;
+
     public Course() {
     }
 
-    public Course(Long id, Title title, Content description, Level level, Status status, ImagePath imagePath, Category category,
+    public Course(Long id, Title title, Content description, Status status, ImagePath imagePath, Category category,
                   Name instructor, AccountId accountId, Price price) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.level = level;
         this.status = status;
         this.imagePath = imagePath;
         this.category = category;
@@ -126,6 +128,10 @@ public class Course {
         return price;
     }
 
+    public Status status() {
+        return status;
+    }
+
     public static Course fake(String title) {
         return fake(new Title(title));
     }
@@ -139,18 +145,20 @@ public class Course {
         Content description = new Content("description");
         Price price = new Price(10000);
         Status status = new Status(Status.PROCESSING);
-        Level level = Level.INTERMEDIATE;
 
+        return new Course(id, title, description, status, imagePath, category, instructor, accountId, price);
+    }
 
-        return new Course(id, title, description, level, status, imagePath, category, instructor, accountId, price);
+    public Course changeLevel(Level level) {
+        this.level = level;
+
+        return this;
     }
 
     public static Course of(CourseRequestDto courseRequestDto, Name instructor, AccountId accountId) {
-        return new Course(null, new Title(courseRequestDto.getTitle()), new Content(""),
-                Level.of(courseRequestDto.getLevel()), new Status(Status.PROCESSING),
+        return new Course(null, new Title(courseRequestDto.getTitle()), new Content(""), new Status(Status.PROCESSING),
                 new ImagePath(""), new Category(""), instructor, accountId, new Price(10000));
     }
-
 
     public Double averageRating(List<Rating> ratings) {
         if (ratings.size() == 0) {
@@ -179,8 +187,15 @@ public class Course {
         return new MonthlyPaymentDto(courseId, title, cost);
     }
 
+    public Course updateStatus(StatusUpdateDto statusUpdateDto) {
+        this.status = new Status(statusUpdateDto.getStatus());
+
+        return this;
+    }
+
     public void update(CourseUpdateRequestDto courseUpdateRequestDto) {
         String status = courseUpdateRequestDto.getStatus();
+        List<String> skills = courseUpdateRequestDto.getSkills();
 
         if (!status.isBlank()) {
             this.status.update(status);
@@ -193,10 +208,13 @@ public class Course {
         description.update(courseUpdateRequestDto.getDescription());
         imagePath.update(courseUpdateRequestDto.getImagePath());
         price.update(courseUpdateRequestDto.getPrice());
-        level = Level.of(courseUpdateRequestDto.getLevel());
-        skillSets.add(new HashTag(courseUpdateRequestDto.getSkill()));
+        level = Level.of(courseUpdateRequestDto.getLevel(), level);
 
-        System.out.println(skillSets);
+        if (skills.size() > 1) {
+            skillSets = skills.stream()
+                    .map(HashTag::new)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
@@ -248,13 +266,15 @@ public class Course {
         boolean isPurchased = validatePayment(payment);
         boolean isInstructor = isInstructor(accountId);
 
-        return new CourseDto(id, category, title, price, description, status, instructor, this.accountId,
-                imagePath, news, hashTags, skillSets, isPurchased, isInstructor, level, goals);
+        return accountId == null
+                ? toCourseDto()
+                : new CourseDto(id, category, title, price, description, status, instructor, this.accountId,
+                imagePath, news, hashTags, skillSets, isPurchased, isInstructor, level, goals, createdAt);
     }
 
     public CourseDto toCourseDto() {
         return new CourseDto(id, category, title, price, description, status, instructor, accountId,
-                imagePath, news, hashTags, skillSets, level, goals);
+                imagePath, news, hashTags, skillSets, level, goals, createdAt);
     }
 
     public MyCourseDto toMyCourseDto() {

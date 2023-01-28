@@ -1,8 +1,10 @@
 package jinookk.ourlms.models.vos;
 
+import javax.persistence.Column;
 import java.util.Objects;
 
 public class Content {
+    @Column(length = 1000)
     private String value;
 
     public Content() {

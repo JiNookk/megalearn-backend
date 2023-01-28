@@ -5,12 +5,14 @@ import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.CoursesDto;
+import jinookk.ourlms.dtos.StatusUpdateDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.HashTag;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -56,9 +58,10 @@ class CourseServiceTest {
 
         Page<Course> courses = new PageImpl<>(List.of(course));
 
+        given(courseRepository.findAll((Pageable) any())).willReturn(courses);
         given(courseRepository.findAll((Specification<Course>) any(), (Pageable) any())).willReturn(courses);
 
-        given(accountRepository.findById(1L)).willReturn(Optional.of(account));
+        given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
         given(courseRepository.save(any())).willReturn(course);
 
         Payment payment = Payment.fake(35_000);
@@ -74,7 +77,7 @@ class CourseServiceTest {
 
     @Test
     void detail() {
-        CourseDto courseDto = courseService.detail(new AccountId(1L), new CourseId(1L));
+        CourseDto courseDto = courseService.detail(new Name("name"), new CourseId(1L));
 
         assertThat(courseDto).isNotNull();
         assertThat(courseDto.getIsPurchased()).isTrue();
@@ -89,23 +92,24 @@ class CourseServiceTest {
         assertThat(coursesDto.getCourses()).hasSize(1);
     }
 
+    @Test
+    void listForAdmin() {
+        CoursesDto coursesDto = courseService.listForAdmin(1);
 
-    // 좋아요 목록 => 일단 유저 아이디로 좋아요 목록을 불러온다.
-    // 좋아요 목록에 있는 courseId들을 list로 불러온다.
-    // courseId 컬렉션으로 강의들을 찾는다.
+        assertThat(coursesDto.getCourses()).hasSize(1);
+    }
 
     @Test
     void wishList() {
-        CoursesDto coursesDto = courseService.wishList(new AccountId(1L));
+        CoursesDto coursesDto = courseService.wishList(new Name("name"));
 
         assertThat(coursesDto.getCourses()).hasSize(1);
     }
 
     @Test
     void create() {
-        courseService.create(new CourseRequestDto("title", Level.BEGINNER.getName()), new AccountId(1L));
+        courseService.create(new CourseRequestDto("title", Level.BEGINNER.getName()), new Name("name"));
 
-        verify(accountRepository).findById(1L);
         verify(courseRepository).save(any());
     }
 
@@ -117,9 +121,20 @@ class CourseServiceTest {
 
         CourseDto courseDto = courseService.update(
                 1L, new CourseUpdateRequestDto("updated", "category", "description", "thumbnailPath", "status",
-                        "초급", "skill", 0));
+                        "초급", List.of(), 0));
 
         assertThat(courseDto.getTitle()).isEqualTo("updated");
+    }
+
+    @Test
+    void updateStatus() {
+        Course course = Course.fake("updated");
+
+        given(courseRepository.findById(1L)).willReturn(Optional.of(course));
+
+        CourseDto courseDto = courseService.updateStatus(1L, new StatusUpdateDto("approved"));
+
+        assertThat(courseDto.getStatus()).isEqualTo("approved");
     }
 
     @Test
@@ -138,7 +153,7 @@ class CourseServiceTest {
         Course course = Course.fake("updated");
 
         CourseUpdateRequestDto courseUpdateRequestDto = new CourseUpdateRequestDto(
-                "updated", "category", "description", "thumbnailPath", "", "초급", "skill", 0);
+                "updated", "category", "description", "thumbnailPath", "", "초급", List.of(), 0);
 
         course.update(courseUpdateRequestDto);
 

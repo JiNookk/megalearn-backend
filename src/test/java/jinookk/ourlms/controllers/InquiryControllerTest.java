@@ -4,15 +4,19 @@ import jinookk.ourlms.dtos.InquiriesDto;
 import jinookk.ourlms.dtos.InquiryDeleteDto;
 import jinookk.ourlms.dtos.InquiryDto;
 import jinookk.ourlms.models.entities.Inquiry;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.services.InquiryService;
+import jinookk.ourlms.utils.JwtUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -32,6 +36,16 @@ class InquiryControllerTest {
 
     @MockBean
     private InquiryService inquiryService;
+
+    @SpyBean
+    private JwtUtil jwtUtil;
+
+    private String accessToken;
+
+    @BeforeEach
+    void setup() {
+        accessToken = jwtUtil.encode(new Name("userName"));
+    }
 
     @Test
     void inquiry() throws Exception {
@@ -66,10 +80,10 @@ class InquiryControllerTest {
 
         InquiriesDto inquiriesDto = new InquiriesDto(List.of(inquiryDto));
 
-        given(inquiryService.myInquiries(new AccountId(1L))).willReturn(inquiriesDto);
+        given(inquiryService.myInquiries(new Name("userName"))).willReturn(inquiriesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/inquiries/me")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"inquiries\":[")
@@ -98,7 +112,7 @@ class InquiryControllerTest {
         given(inquiryService.create(any(), any())).willReturn(inquiryDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/inquiries")
-                        .header("Authorization", "Bearer ACCESS.TOKEN")
+                        .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"hashTag\": \"hashtag\", " +
@@ -121,7 +135,7 @@ class InquiryControllerTest {
         given(inquiryService.create(any(), any())).willReturn(inquiryDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/inquiries")
-                        .header("Authorization", "Bearer ACCESS.TOKEN")
+                        .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"hashTag\": \"hashtag\", " +

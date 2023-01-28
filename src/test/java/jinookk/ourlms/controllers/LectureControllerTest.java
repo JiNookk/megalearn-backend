@@ -3,13 +3,18 @@ package jinookk.ourlms.controllers;
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LecturesDto;
 import jinookk.ourlms.models.entities.Lecture;
+import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.LectureService;
+import jinookk.ourlms.utils.JwtUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,6 +34,16 @@ class LectureControllerTest {
 
     @MockBean
     private LectureService lectureService;
+
+    @SpyBean
+    private JwtUtil jwtUtil;
+
+    private String accessToken;
+
+    @BeforeEach
+    void setup() {
+        accessToken = jwtUtil.encode(new Name("userName"));
+    }
 
     @Test
     void create() throws Exception {
@@ -102,11 +117,11 @@ class LectureControllerTest {
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
-        given(lectureService.listByInstructorId(new AccountId(1L)))
+        given(lectureService.listByInstructorId(new Name("userName")))
                 .willReturn(lecturesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/instructor")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"lectures\":[")
@@ -119,11 +134,11 @@ class LectureControllerTest {
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
-        given(lectureService.myLectures(new AccountId(1L)))
+        given(lectureService.myLectures(new Name("userName")))
                 .willReturn(lecturesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/me")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"lectures\":[")
@@ -153,7 +168,7 @@ class LectureControllerTest {
 
     @Test
     void delete() throws Exception {
-        LectureDto lectureDto = Lecture.fake(null).toLectureDto();
+        LectureDto lectureDto = Lecture.fake((String) null).toLectureDto();
 
         given(lectureService.delete(any()))
                 .willReturn(lectureDto);

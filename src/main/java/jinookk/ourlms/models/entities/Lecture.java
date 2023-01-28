@@ -1,12 +1,12 @@
 package jinookk.ourlms.models.entities;
 
-import jinookk.ourlms.dtos.InstructorInquiryDto;
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LectureRequestDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HandOutUrl;
 import jinookk.ourlms.models.vos.LectureTime;
+import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.VideoUrl;
@@ -19,7 +19,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.List;
 
 @Entity
 public class Lecture {
@@ -33,7 +32,7 @@ public class Lecture {
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "status"))
-    private Status status;
+    private Status status = new Status(Status.CREATED);
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "section_id"))
@@ -44,7 +43,7 @@ public class Lecture {
     private Title title;
 
     @Embedded
-    private LectureTime lectureTime;
+    private LectureTime lectureTime = new LectureTime(0, 0);
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "lecture_note"))
@@ -62,11 +61,10 @@ public class Lecture {
     public Lecture() {
     }
 
-    public Lecture(Long id, CourseId courseId, Status status, SectionId sectionId, Title title, Content lectureNote,
+    public Lecture(Long id, CourseId courseId, SectionId sectionId, Title title, Content lectureNote,
                    HandOutUrl handOutUrl, VideoUrl videoUrl) {
         this.id = id;
         this.courseId = courseId;
-        this.status = status;
         this.sectionId = sectionId;
         this.title = title;
         this.lectureNote = lectureNote;
@@ -75,8 +73,7 @@ public class Lecture {
     }
 
     public static Lecture fake(String lectureTitle) {
-        Title title = new Title(lectureTitle);
-        return fake(title);
+        return fake(new Title(lectureTitle));
     }
 
     private static Lecture fake(Title title) {
@@ -86,16 +83,26 @@ public class Lecture {
         SectionId sectionId = new SectionId(1L);
         HandOutUrl handOutUrl = new HandOutUrl("url");
         VideoUrl videoUrl = new VideoUrl("video/url");
-        Status status = new Status(Status.CREATED);
 
-        return new Lecture(id, courseId, status, sectionId, title, lectureNote, handOutUrl, videoUrl);
+        return new Lecture(id, courseId, sectionId, title, lectureNote, handOutUrl, videoUrl);
+    }
+
+    public static Lecture fake(LectureId lectureId) {
+        Long id = lectureId.value();
+        CourseId courseId = new CourseId(1L);
+        Content lectureNote = new Content("lectureNote");
+        SectionId sectionId = new SectionId(1L);
+        Title title = new Title("title");
+        HandOutUrl handOutUrl = new HandOutUrl("url");
+        VideoUrl videoUrl = new VideoUrl("video/url");
+
+        return new Lecture(id, courseId, sectionId, title, lectureNote, handOutUrl, videoUrl);
     }
 
     public static Lecture of(LectureRequestDto lectureRequestDto) {
         return new Lecture(
                 null,
                 new CourseId(lectureRequestDto.getCourseId()),
-                new Status(Status.CREATED),
                 new SectionId(lectureRequestDto.getSectionId()),
                 new Title(lectureRequestDto.getTitle()),
                 new Content(""),
@@ -109,6 +116,10 @@ public class Lecture {
 
     public CourseId courseId() {
         return courseId;
+    }
+
+    public Status status() {
+        return status;
     }
 
     public Title title() {
@@ -128,6 +139,7 @@ public class Lecture {
         this.videoUrl.update(lectureUpdateRequestDto.getVideoUrl());
         this.lectureNote.update(lectureUpdateRequestDto.getLectureNote());
         this.handOutUrl.update(lectureUpdateRequestDto.getFilePath());
+        this.lectureTime = lectureTime.update(lectureUpdateRequestDto.getLectureTime());
     }
 
     public void delete() {

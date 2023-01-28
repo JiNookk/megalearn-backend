@@ -2,9 +2,13 @@ package jinookk.ourlms.services;
 
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CoursesDto;
+import jinookk.ourlms.exceptions.AccountNotFound;
+import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.PaymentRepository;
 import org.springframework.stereotype.Service;
@@ -17,14 +21,19 @@ import java.util.List;
 public class MyCourseService {
     private final CourseRepository courseRepository;
     private final PaymentRepository paymentRepository;
+    private AccountRepository accountRepository;
 
-    public MyCourseService(CourseRepository courseRepository, PaymentRepository paymentRepository) {
+    public MyCourseService(CourseRepository courseRepository, PaymentRepository paymentRepository, AccountRepository accountRepository) {
         this.courseRepository = courseRepository;
         this.paymentRepository = paymentRepository;
+        this.accountRepository = accountRepository;
     }
 
-    public CoursesDto myCourses(AccountId accountId) {
-        List<Payment> payments = paymentRepository.findAllByAccountId(accountId);
+    public CoursesDto myCourses(Name userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        List<Payment> payments = paymentRepository.findAllByAccountId(new AccountId(account.id()));
 
         List<Long> courseIds = payments.stream()
                 .map(payment -> payment.courseId().value())
@@ -39,8 +48,11 @@ public class MyCourseService {
         return new CoursesDto(courseDtos);
     }
 
-    public CoursesDto uploadedList(AccountId accountId, String type) {
-        List<Course> courses = courseRepository.findAllByAccountId(accountId);
+    public CoursesDto uploadedList(Name userName, String type) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        List<Course> courses = courseRepository.findAllByAccountId(new AccountId(account.id()));
 
         List<Course> filtered = filtered(courses, type);
 

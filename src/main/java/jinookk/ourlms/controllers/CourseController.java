@@ -5,7 +5,9 @@ import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.CoursesDto;
+import jinookk.ourlms.dtos.StatusUpdateDto;
 import jinookk.ourlms.models.vos.HashTag;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CourseService;
@@ -34,24 +36,24 @@ public class CourseController {
     @PostMapping("/courses")
     public CourseDto create(
             @Validated @RequestBody CourseRequestDto courseRequestDto,
-            @RequestAttribute Long accountId
+            @RequestAttribute Name userName
     ) {
-        return courseService.create(courseRequestDto, new AccountId(accountId));
+        return courseService.create(courseRequestDto, userName);
     }
 
     @GetMapping("/courses/{courseId}")
     public CourseDto course(
-            @RequestAttribute Long accountId,
+            @RequestAttribute(required = false) Name userName,
             @PathVariable Long courseId
     ) {
-        return courseService.detail(new AccountId(accountId), new CourseId(courseId));
+        return courseService.detail(userName, new CourseId(courseId));
     }
 
     @GetMapping("/courses/wishes")
     public CoursesDto wishList(
-            @RequestAttribute Long accountId
+            @RequestAttribute Name userName
     ) {
-        return courseService.wishList(new AccountId(accountId));
+        return courseService.wishList(userName);
     }
 
     @GetMapping("/courses")
@@ -66,19 +68,26 @@ public class CourseController {
         return courseService.list(page, courseFilterDto);
     }
 
+    @GetMapping("/admin/courses")
+    public CoursesDto listForAdmin(
+            @RequestParam(required = false, defaultValue = "1") Integer page
+    ) {
+        return courseService.listForAdmin(page);
+    }
+
     @GetMapping("/account/my-courses")
     public CoursesDto myCourses(
-            @RequestAttribute Long accountId
+            @RequestAttribute Name userName
     ) {
-        return myCourseService.myCourses(new AccountId(accountId));
+        return myCourseService.myCourses(userName);
     }
 
     @GetMapping("/instructor/my-courses")
     public CoursesDto uploadedCourses(
-            @RequestAttribute Long accountId,
+            @RequestAttribute Name userName,
             @RequestParam(required = false, defaultValue = "all") String type
     ) {
-        return myCourseService.uploadedList(new AccountId(accountId), type);
+        return myCourseService.uploadedList(userName, type);
     }
 
     @PatchMapping("/courses/{courseId}")
@@ -87,6 +96,14 @@ public class CourseController {
             @Validated @RequestBody CourseUpdateRequestDto courseUpdateRequestDto
     ) {
         return courseService.update(courseId, courseUpdateRequestDto);
+    }
+
+    @PatchMapping("/courses/{courseId}/status")
+    public CourseDto updateStatus(
+            @PathVariable Long courseId,
+            @Validated @RequestBody StatusUpdateDto statusUpdateDto
+    ) {
+        return courseService.updateStatus(courseId, statusUpdateDto);
     }
 
     @DeleteMapping("/courses/{courseId}")

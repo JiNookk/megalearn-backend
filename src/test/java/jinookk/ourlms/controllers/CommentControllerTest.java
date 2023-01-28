@@ -4,13 +4,17 @@ import jinookk.ourlms.dtos.CommentDeleteDto;
 import jinookk.ourlms.dtos.CommentDto;
 import jinookk.ourlms.dtos.CommentsDto;
 import jinookk.ourlms.models.entities.Comment;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.services.CommentService;
+import jinookk.ourlms.utils.JwtUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -31,15 +35,25 @@ class CommentControllerTest {
     @MockBean
     private CommentService commentService;
 
+    @SpyBean
+    private JwtUtil jwtUtil;
+
+    private String accessToken;
+
+    @BeforeEach
+    void setup() {
+        accessToken = jwtUtil.encode(new Name("userName"));
+    }
+
     @Test
     void list() throws Exception {
         CommentDto commentDto = Comment.fake("hi").toCommentDto();
 
         CommentsDto commentsDto = new CommentsDto(List.of(commentDto));
-        given(commentService.list(new InquiryId(1L), new AccountId(1L))).willReturn(commentsDto);
+        given(commentService.list(new InquiryId(1L), new Name("userName"))).willReturn(commentsDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/inquiries/1/comments")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"comments\":[")
@@ -53,7 +67,7 @@ class CommentControllerTest {
         given(commentService.create(any(), any())).willReturn(commentDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/comments")
-                        .header("Authorization", "Bearer ACCESS.TOKEN")
+                        .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"content\":\"hi\", " +

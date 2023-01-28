@@ -3,15 +3,18 @@ package jinookk.ourlms.services;
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
+import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.ProgressNotfound;
+import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Progress;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.ProgressId;
+import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.ProgressRepository;
 import jinookk.ourlms.specifications.ProgressSpecification;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -23,12 +26,19 @@ import java.util.List;
 @Service
 public class ProgressService {
     private final ProgressRepository progressRepository;
+    private final AccountRepository accountRepository;
 
-    public ProgressService(ProgressRepository progressRepository) {
+    public ProgressService(ProgressRepository progressRepository, AccountRepository accountRepository) {
         this.progressRepository = progressRepository;
+        this.accountRepository = accountRepository;
     }
 
-    public ProgressDto detail(LectureId lectureId, AccountId accountId) {
+    public ProgressDto detail(LectureId lectureId, Name userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        AccountId accountId = new AccountId(account.id());
+
         Progress progress = progressRepository.findByLectureIdAndAccountId(lectureId, accountId)
                 .orElseThrow(() -> new ProgressNotfound(lectureId, accountId));
 
@@ -52,10 +62,13 @@ public class ProgressService {
         return new ProgressesDto(progressDtos);
     }
 
-    public ProgressesDto list(AccountId accountId, String date) {
-        Sort sort = Sort.by("updatedAt").descending();
+    public ProgressesDto list(Name userName, String date) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
 
-//        List<Progress> progresses = progressRepository.findAllByAccountId(accountId, sort);
+        AccountId accountId = new AccountId(account.id());
+
+        Sort sort = Sort.by("updatedAt").descending();
 
         Specification<Progress> spec = Specification.where(ProgressSpecification.equalAccountId(accountId));
 
