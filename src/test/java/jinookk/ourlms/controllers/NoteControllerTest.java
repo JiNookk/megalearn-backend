@@ -4,12 +4,16 @@ import jinookk.ourlms.dtos.NoteDeleteDto;
 import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NotesDto;
 import jinookk.ourlms.models.entities.Note;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.NoteId;
 import jinookk.ourlms.services.NoteService;
+import jinookk.ourlms.utils.JwtUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,13 +34,23 @@ class NoteControllerTest {
     @MockBean
     private NoteService noteService;
 
+    @SpyBean
+    private JwtUtil jwtUtil;
+
+    private String accessToken;
+
+    @BeforeEach
+    void setup() {
+        accessToken = jwtUtil.encode(new Name("userName"));
+    }
+
     @Test
     void post() throws Exception {
         NoteDto noteDto = Note.fake("hi").toNoteDto();
         given(noteService.create(any(), any())).willReturn(noteDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/notes")
-                        .header("Authorization", "Bearer ACCESS.TOKEN")
+                        .header("Authorization", "Bearer " + accessToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -58,7 +72,7 @@ class NoteControllerTest {
         given(noteService.list(any(), any())).willReturn(new NotesDto(List.of(noteDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/notes")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"notes\":[")
@@ -71,7 +85,7 @@ class NoteControllerTest {
         given(noteService.update(any(), any())).willReturn(noteDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/notes/1")
-                        .header("Authorization", "Bearer ACCESS.TOKEN")
+                        .header("Authorization", "Bearer " + accessToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +

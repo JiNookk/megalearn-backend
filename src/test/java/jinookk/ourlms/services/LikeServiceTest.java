@@ -2,10 +2,13 @@ package jinookk.ourlms.services;
 
 import jinookk.ourlms.dtos.LikeDto;
 import jinookk.ourlms.dtos.LikesDto;
+import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Like;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LikeId;
+import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.LikeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,16 +24,21 @@ import static org.mockito.Mockito.mock;
 class LikeServiceTest {
     LikeService likeService;
     LikeRepository likeRepository;
+    AccountRepository accountRepository;
 
     @BeforeEach
     void setup() {
+        accountRepository = mock(AccountRepository.class);
         likeRepository = mock(LikeRepository.class);
-        likeService = new LikeService(likeRepository);
+        likeService = new LikeService(likeRepository, accountRepository);
 
         Like like = Like.fake(false);
         given(likeRepository.findById(any())).willReturn(Optional.of(like));
         given(likeRepository.findByAccountIdAndCourseId(any(), any())).willReturn(Optional.of(like));
         given(likeRepository.findAll()).willReturn(List.of(like));
+
+        Account account = Account.fake("account");
+        given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 
     @Test
@@ -42,7 +50,7 @@ class LikeServiceTest {
 
     @Test
     void detail() {
-        LikeDto likeDto = likeService.detail(new AccountId(1L), new CourseId(1L));
+        LikeDto likeDto = likeService.detail(new Name("userName"), new CourseId(1L));
 
         assertThat(likeDto.getClicked()).isFalse();
     }

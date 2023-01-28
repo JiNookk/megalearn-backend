@@ -4,6 +4,7 @@ import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
 import jinookk.ourlms.models.entities.Progress;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
@@ -28,17 +29,17 @@ public class ProgressController {
     @GetMapping("/lectures/{lectureId}/progress")
     public ProgressDto progress(
             @PathVariable Long lectureId,
-            @RequestAttribute Long accountId
+            @RequestAttribute Name userName
     ) {
-        return progressService.detail(new LectureId(lectureId), new AccountId(accountId));
+        return progressService.detail(new LectureId(lectureId), userName);
     }
 
     @GetMapping("/progresses")
     public ProgressesDto list(
-            @RequestAttribute Long accountId,
+            @RequestAttribute Name userName,
             @RequestParam(required = false) String date
     ) {
-        return progressService.list(new AccountId(accountId), date);
+        return progressService.list(userName, date);
     }
 
     @GetMapping("/courses/{courseId}/progresses")

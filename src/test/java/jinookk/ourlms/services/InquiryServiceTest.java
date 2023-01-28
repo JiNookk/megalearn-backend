@@ -10,6 +10,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Inquiry;
 import jinookk.ourlms.models.entities.Lecture;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
@@ -55,8 +56,8 @@ class InquiryServiceTest {
 
         given(inquiryRepository.findAllByAccountId(any())).willReturn(List.of(inquiry1, inquiry2));
 
-        Account account = Account.fake("user");
-        given(accountRepository.findById(1L)).willReturn(Optional.of(account));
+        Account account = Account.fake("account");
+        given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
 
         Course course = Course.fake("course");
         given(courseRepository.findAllByAccountId(new AccountId(1L))).willReturn(List.of(course));
@@ -84,7 +85,7 @@ class InquiryServiceTest {
 
     @Test
     void myInquiries() {
-        InquiriesDto inquiriesDto = inquiryService.myInquiries(new AccountId(1L));
+        InquiriesDto inquiriesDto = inquiryService.myInquiries(new Name("userName"));
 
         assertThat(inquiriesDto.getInquiries()).hasSize(2);
     }
@@ -101,9 +102,9 @@ class InquiryServiceTest {
         InquiryRequestDto inquiryRequestDto =
                 new InquiryRequestDto(new LectureId(1L), List.of("JPA"), "test", "tester", true, 1, 24, 1L);
 
-        AccountId userId = new AccountId(1L);
+        Name userName = new Name("userName");
 
-        InquiryDto inquiryDto = inquiryService.create(inquiryRequestDto, userId);
+        InquiryDto inquiryDto = inquiryService.create(inquiryRequestDto, userName);
 
         assertThat(inquiryDto.getContent()).isEqualTo("inquiry1");
     }
@@ -144,7 +145,7 @@ class InquiryServiceTest {
 
     @Test
     void listWithInstructorInquiries() {
-        InquiriesDto inquiriesDto = inquiryService.list(new AccountId(1L), new InquiryFilterDto(null, null, null));
+        InquiriesDto inquiriesDto = inquiryService.list(new Name("userName"), new InquiryFilterDto(null, null, null));
 
         assertThat(inquiriesDto.getInquiries()).hasSize(4);
     }

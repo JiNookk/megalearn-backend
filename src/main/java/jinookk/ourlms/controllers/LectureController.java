@@ -4,6 +4,7 @@ import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LectureRequestDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.dtos.LecturesDto;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.LectureService;
@@ -53,16 +54,16 @@ public class LectureController {
 
     @GetMapping("/lectures/instructor")
     public LecturesDto listByInstructorId(
-            @RequestAttribute Long accountId
+            @RequestAttribute Name userName
     ) {
-        return lectureService.listByInstructorId(new AccountId(accountId));
+        return lectureService.listByInstructorId(userName);
     }
 
     @GetMapping("/lectures/me")
     public LecturesDto myLectures(
-            @RequestAttribute Long accountId
+            @RequestAttribute Name userName
     ) {
-        return lectureService.myLectures(new AccountId(accountId));
+        return lectureService.myLectures(userName);
     }
 
     @PatchMapping("/lectures/{lectureId}")

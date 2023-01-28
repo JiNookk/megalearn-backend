@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.List;
 
 @Table(name = "like_table")
 @Entity
@@ -27,20 +28,29 @@ public class Like {
     @AttributeOverride(name = "value", column = @Column(name = "course_id"))
     private CourseId courseId;
 
-    private Boolean clicked;
+    private Boolean clicked = false;
 
     public Like() {
     }
 
-    public Like(Long id, AccountId accountId, CourseId courseId, Boolean clicked) {
-        this.id = id;
+    public Like(AccountId accountId, CourseId courseId, Boolean clicked) {
         this.accountId = accountId;
         this.courseId = courseId;
         this.clicked = clicked;
     }
 
     public static Like fake(Boolean clicked) {
-        return new Like(1L, new AccountId(1L), new CourseId(1L), clicked);
+        return new Like(new AccountId(1L), new CourseId(1L), clicked);
+    }
+
+    public static List<Like> listOf(AccountId accountId, List<CourseId> courseIds) {
+        return courseIds.stream()
+                .map(courseId -> Like.of(accountId, courseId))
+                .toList();
+    }
+
+    private static Like of(AccountId accountId, CourseId courseId) {
+        return new Like(accountId, courseId, false);
     }
 
     public Long id() {

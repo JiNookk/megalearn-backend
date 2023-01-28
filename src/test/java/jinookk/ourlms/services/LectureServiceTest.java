@@ -2,15 +2,19 @@ package jinookk.ourlms.services;
 
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LectureRequestDto;
+import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.dtos.LecturesDto;
+import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.entities.Payment;
+import jinookk.ourlms.models.vos.LectureTime;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
+import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
-import jinookk.ourlms.repositories.InquiryRepository;
 import jinookk.ourlms.repositories.LectureRepository;
 import jinookk.ourlms.repositories.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,13 +34,15 @@ class LectureServiceTest {
     LectureRepository lectureRepository;
     CourseRepository courseRepository;
     PaymentRepository paymentRepository;
+    AccountRepository accountRepository;
 
     @BeforeEach
     void setup() {
+        accountRepository = mock(AccountRepository.class);
         paymentRepository = mock(PaymentRepository.class);
         courseRepository = mock(CourseRepository.class);
         lectureRepository = mock(LectureRepository.class);
-        lectureService = new LectureService(lectureRepository, courseRepository, paymentRepository);
+        lectureService = new LectureService(lectureRepository, courseRepository, paymentRepository, accountRepository);
 
         Lecture lecture = Lecture.fake("테스트 1강");
 
@@ -54,6 +60,9 @@ class LectureServiceTest {
 
         Payment payment = Payment.fake(35000);
         given(paymentRepository.findAllByAccountId(any())).willReturn(List.of(payment));
+
+        Account account = Account.fake("account");
+        given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 
     @Test
@@ -62,7 +71,7 @@ class LectureServiceTest {
 
         given(lectureRepository.save(any())).willReturn(lecture);
 
-        LectureDto sectionDto = lectureService.create(new LectureRequestDto(1L, 1L, "title"));
+        LectureDto sectionDto = lectureService.create(new LectureRequestDto(1L, 1L, "title", 1, 24));
 
         assertThat(sectionDto.getTitle()).isEqualTo("title");
     }
@@ -98,14 +107,14 @@ class LectureServiceTest {
 
     @Test
     void listByInstructorId() {
-        LecturesDto lecturesDto = lectureService.listByInstructorId(new AccountId(1L));
+        LecturesDto lecturesDto = lectureService.listByInstructorId(new Name("userName"));
 
         assertThat(lecturesDto.getLectures()).hasSize(1);
     }
 
     @Test
     void myLectures() {
-        LecturesDto lecturesDto = lectureService.myLectures(new AccountId(1L));
+        LecturesDto lecturesDto = lectureService.myLectures(new Name("userName"));
 
         assertThat(lecturesDto.getLectures()).hasSize(1);
     }
@@ -115,7 +124,7 @@ class LectureServiceTest {
         long lectureId = 1L;
 
         LectureUpdateRequestDto lectureUpdateRequestDto =
-                new LectureUpdateRequestDto("updated", "url", "note", "path");
+                new LectureUpdateRequestDto("updated", "url", "note", new LectureTimeDto(new LectureTime(1, 24)), "path");
 
         LectureDto lectureDto = lectureService.update(lectureId, lectureUpdateRequestDto);
 

@@ -53,7 +53,7 @@ class CommentTest {
 
     @Test
     void createCommentWithSameAccountIdWithInquiry() {
-        Account account = new Account(3L, new Name("tester"));
+        Account account = new Account(new Name("tester"), new Name("userName"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
         List<Comment> comments = List.of(Comment.fake("hi"));
         Course course = Course.fake("course");
@@ -66,7 +66,7 @@ class CommentTest {
 
     @Test
     void createCommentWithPreviousCommentAndNotPublisher() {
-        Account account = new Account(1L, new Name("tester"));
+        Account account = new Account(new Name("tester"), new Name("userName"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
 
         Comment commentWithFirstAccountId = Comment.fake("hi");
@@ -81,7 +81,7 @@ class CommentTest {
 
     @Test
     void createCommentWithoutPreviousCommentAndNotPublisher() {
-        Account account = new Account(2L, new Name("2nd Tester"));
+        Account account = new Account(new Name("2nd Tester"), new Name("userName"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
 
         Comment commentWithThirdAccountId = new Comment(1L, new InquiryId(2L), new AccountId(3L), new Status(Status.CREATED),

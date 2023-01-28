@@ -16,7 +16,6 @@ import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.status.InquiryStatus;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -61,7 +60,7 @@ public class Inquiry {
     private Title title;
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "content"))
+    @AttributeOverride(name = "value", column = @Column(name = "content", length = 1000))
     private Content content;
 
     @Embedded
@@ -77,7 +76,7 @@ public class Inquiry {
 
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime publishTime;
+    private LocalDateTime publishTime = LocalDateTime.now();
 
     private LocalDateTime repliedAt;
 

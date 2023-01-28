@@ -7,10 +7,14 @@ import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.RatingService;
+import jinookk.ourlms.utils.JwtUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -18,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,18 +35,64 @@ class RatingControllerTest {
     @MockBean
     private RatingService ratingService;
 
+    @SpyBean
+    private JwtUtil jwtUtil;
+
+    private String accessToken;
+
+    @BeforeEach
+    void setup() {
+        accessToken = jwtUtil.encode(new Name("userName"));
+    }
+
+    @Test
+    void rate() throws Exception {
+        RatingDto ratingDto = new RatingDto(5.0);
+
+        given(ratingService.rate(any(), any()))
+                .willReturn(ratingDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/ratings")
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"content\":\"this is hi\"," +
+                                "\"courseId\":1," +
+                                "\"rating\":5" +
+                                "}"))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(
+                        containsString("\"rating\":5.0")
+                ));
+    }
+
     @Test
     void myRating() throws Exception {
         RatingDto ratingDto = new RatingDto(4.5);
 
-        given(ratingService.totalRating(new AccountId(1L)))
+        given(ratingService.totalRating(new Name("userName")))
                 .willReturn(ratingDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/instructor/my-rating")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"rating\":4.5")
+                ));
+    }
+
+    @Test
+    void myReviews() throws Exception {
+        RatingDto ratingDto = new RatingDto(4.5);
+
+        given(ratingService.myReviews(new Name("userName")))
+                .willReturn(new RatingsDto(List.of(ratingDto)));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/ratings/me")
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"ratings\":[")
                 ));
     }
 
@@ -54,7 +105,7 @@ class RatingControllerTest {
                 .willReturn(new RatingsDto(List.of(ratingDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/ratings")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"ratings\":[")

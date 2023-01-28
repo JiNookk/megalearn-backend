@@ -5,13 +5,17 @@ import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.vos.LectureTime;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.ProgressId;
+import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.ProgressRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,11 +29,13 @@ import static org.mockito.Mockito.mock;
 class ProgressServiceTest {
     ProgressRepository progressRepository;
     ProgressService progressService;
+    AccountRepository accountRepository;
 
     @BeforeEach
     void setup() {
+        accountRepository = mock(AccountRepository.class);
         progressRepository = mock(ProgressRepository.class);
-        progressService = new ProgressService(progressRepository);
+        progressService = new ProgressService(progressRepository, accountRepository);
 
         Progress progress = Progress.fake("1강");
 
@@ -44,18 +50,21 @@ class ProgressServiceTest {
 
         given(progressRepository.findAllByAccountId(any(), any()))
                 .willReturn(List.of(progress));
+
+        given(progressRepository.findAll((Specification<Progress>) any(), (Sort) any()))
+                .willReturn(List.of(progress));
     }
 
     @Test
     void detail() {
-        ProgressDto progressDto = progressService.detail(new LectureId(1L), new AccountId(1L));
+        ProgressDto progressDto = progressService.detail(new LectureId(1L), new Name("userName"));
 
         assertThat(progressDto).isNotNull();
     }
 
     @Test
     void list() {
-        ProgressesDto progressesDto = progressService.list(new AccountId(1L), LocalDateTime.now().toString());
+        ProgressesDto progressesDto = progressService.list(new Name("userName"), LocalDateTime.now().toString());
 
         assertThat(progressesDto.getProgresses()).hasSize(1);
     }

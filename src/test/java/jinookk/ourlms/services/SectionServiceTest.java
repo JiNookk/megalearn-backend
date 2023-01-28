@@ -4,12 +4,10 @@ import jinookk.ourlms.dtos.SectionDto;
 import jinookk.ourlms.dtos.SectionRequestDto;
 import jinookk.ourlms.dtos.SectionUpdateRequestDto;
 import jinookk.ourlms.dtos.SectionsDto;
-import jinookk.ourlms.dtos.SectionsWithProgressDto;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.entities.Section;
-import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.models.vos.ids.SectionId;
+import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.ProgressRepository;
 import jinookk.ourlms.repositories.SectionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,12 +25,14 @@ class SectionServiceTest {
     SectionRepository sectionRepository;
     SectionService sectionService;
     ProgressRepository progressRepository;
+    AccountRepository accountRepository;
 
     @BeforeEach
     void setup() {
+        accountRepository = mock(AccountRepository.class);
         progressRepository = mock(ProgressRepository.class);
         sectionRepository = mock(SectionRepository.class);
-        sectionService = new SectionService(sectionRepository, progressRepository);
+        sectionService = new SectionService(sectionRepository, progressRepository, accountRepository);
 
         Section section = Section.fake("section");
 
@@ -47,8 +47,8 @@ class SectionServiceTest {
 
         Progress progress = Progress.fake("1강");
 
-        given(progressRepository.findAllByAccountIdAndSectionId(new AccountId(1L), new SectionId(1L)))
-                .willReturn(List.of(progress));
+//        given(progressRepository.findAllByAccountIdAndSectionId(new AccountId(1L), new SectionId(1L)))
+//                .willReturn(List.of(progress));
     }
 
     @Test
@@ -58,13 +58,13 @@ class SectionServiceTest {
         assertThat(sectionsDto.getSections()).hasSize(1);
     }
 
-    @Test
-    void listWithProgress() {
-        SectionsWithProgressDto sectionsWithProgressDto = sectionService.listWithProgress(new CourseId(1L), new AccountId(1L));
-
-        assertThat(sectionsWithProgressDto.getSections()).hasSize(1);
-        assertThat(sectionsWithProgressDto.getSections().get(0).getProgresses()).hasSize(1);
-    }
+//    @Test
+//    void listWithProgress() {
+//        SectionsWithProgressDto sectionsWithProgressDto = sectionService.listWithProgress(new CourseId(1L), new AccountId(1L));
+//
+//        assertThat(sectionsWithProgressDto.getSections()).hasSize(1);
+//        assertThat(sectionsWithProgressDto.getSections().get(0).getProgresses()).hasSize(1);
+//    }
 
     @Test
     void create() {

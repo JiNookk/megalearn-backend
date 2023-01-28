@@ -6,6 +6,7 @@ import jinookk.ourlms.dtos.InquiryDto;
 import jinookk.ourlms.dtos.InquiryFilterDto;
 import jinookk.ourlms.dtos.InquiryRequestDto;
 import jinookk.ourlms.dtos.InquiryUpdateDto;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
@@ -34,6 +35,15 @@ public class InquiryController {
         this.inquiryService = inquiryService;
     }
 
+    @PostMapping("/inquiries")
+    @ResponseStatus(HttpStatus.CREATED)
+    public InquiryDto post(
+            @RequestAttribute Name userName,
+            @Validated @RequestBody InquiryRequestDto inquiryRequestDto
+    ) {
+        return inquiryService.create(inquiryRequestDto, userName);
+    }
+
     @GetMapping("/inquiries/{inquiryId}")
     public InquiryDto inquiry(
             @PathVariable Long inquiryId
@@ -43,20 +53,20 @@ public class InquiryController {
 
     @GetMapping("/inquiries")
     public InquiriesDto listWithInstructorId(
-            @RequestAttribute(required = false) Long accountId,
+            @RequestAttribute(required = false) Name userName,
             @RequestParam(required = false) Long courseId,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String order
     ) {
-        return inquiryService.list(new AccountId(accountId),
+        return inquiryService.list(userName,
                 new InquiryFilterDto(courseId, type, order));
     }
 
     @GetMapping("/inquiries/me")
     public InquiriesDto myInquiries(
-            @RequestAttribute Long accountId
+            @RequestAttribute Name userName
     ) {
-        return inquiryService.myInquiries(new AccountId(accountId));
+        return inquiryService.myInquiries(userName);
     }
 
     @GetMapping("/lectures/{lectureId}/inquiries")
@@ -73,15 +83,6 @@ public class InquiryController {
             @PathVariable Long courseId
     ) {
         return inquiryService.listByCourseId(new CourseId(courseId));
-    }
-
-    @PostMapping("/inquiries")
-    @ResponseStatus(HttpStatus.CREATED)
-    public InquiryDto post(
-            @RequestAttribute("accountId") Long accountId,
-            @Validated @RequestBody InquiryRequestDto inquiryRequestDto
-    ) {
-        return inquiryService.create(inquiryRequestDto, new AccountId(accountId));
     }
 
     @PatchMapping("/inquiries/{inquiryId}")

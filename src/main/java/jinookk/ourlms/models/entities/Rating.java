@@ -1,6 +1,7 @@
 package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.RatingDto;
+import jinookk.ourlms.dtos.RatingRequestDto;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -40,20 +41,27 @@ public class Rating {
     private Content content;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public Rating() {
     }
 
     public Rating(Long id, AccountId accountId, CourseId courseId, Name author, Content content,
-                  LocalDateTime createdAt, Double point) {
+                  Double point) {
         this.id = id;
         this.accountId = accountId;
         this.courseId = courseId;
         this.author = author;
         this.content = content;
-        this.createdAt = createdAt;
         this.point = point;
+    }
+
+    public static Rating of(Account account, RatingRequestDto ratingRequestDto) {
+        Long courseId = ratingRequestDto.getCourseId();
+        String content = ratingRequestDto.getContent();
+        Integer rating = ratingRequestDto.getRating();
+        return new Rating(null, new AccountId(account.id()), new CourseId(courseId), account.name(),
+                new Content(content), (double) rating);
     }
 
     public Long id() {

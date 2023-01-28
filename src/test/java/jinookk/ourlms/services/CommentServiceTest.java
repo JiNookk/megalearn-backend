@@ -60,12 +60,12 @@ class CommentServiceTest {
         given(inquiryRepository.findById(1L)).willReturn(Optional.of(inquiry));
 
         Account account = Account.fake("tester2");
-        given(accountRepository.findById(any())).willReturn(Optional.of(account));
+        given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 
     @Test
     void list() {
-        CommentsDto commentsDto = commentService.list(new InquiryId(1L), new AccountId(1L));
+        CommentsDto commentsDto = commentService.list(new InquiryId(1L), new Name("userName"));
 
         assertThat(commentsDto.getComments()).hasSize(3);
     }
@@ -74,8 +74,7 @@ class CommentServiceTest {
     void createWithExistingUserId() {
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "hi");
 
-        AccountId userId = new AccountId(1L);
-        CommentDto commentDto = commentService.create(commentRequestDto, userId);
+        CommentDto commentDto = commentService.create(commentRequestDto, new Name("userName"));
 
         assertThat(commentDto).isNotNull();
 
@@ -91,8 +90,8 @@ class CommentServiceTest {
         given(commentRepository.save(any())).willReturn(comment);
         CommentRequestDto commentRequestDto = new CommentRequestDto(inquiryId, "hi");
 
-        AccountId accountId = new AccountId(2L);
-        CommentDto commentDto = commentService.create(commentRequestDto, accountId);
+        Name userName = new Name("userName");
+        CommentDto commentDto = commentService.create(commentRequestDto, userName);
 
         assertThat(commentDto).isNotNull();
 

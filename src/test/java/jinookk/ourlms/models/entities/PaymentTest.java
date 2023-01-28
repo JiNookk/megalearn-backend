@@ -2,7 +2,9 @@ package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.models.exceptions.InvalidPaymentInformation;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,7 +13,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PaymentTest {
-    private Cart cart = Cart.fake(List.of(new CourseId(1L)));
+    private Cart cart;
+
+    @BeforeEach
+    void setup() {
+        cart = Cart.fake(new AccountId(1L));
+
+        cart = cart.addItem(1L);
+    }
 
     @Test
     void create() {
@@ -71,6 +80,4 @@ class PaymentTest {
             Payment.listOf(List.of(course), null, cart);
         });
     }
-
-
 }

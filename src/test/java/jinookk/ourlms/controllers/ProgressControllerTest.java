@@ -3,15 +3,20 @@ package jinookk.ourlms.controllers;
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
 import jinookk.ourlms.models.entities.Progress;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.services.ProgressService;
+import jinookk.ourlms.utils.JwtUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -28,6 +33,16 @@ class ProgressControllerTest {
     @MockBean
     private ProgressService progressService;
 
+    @SpyBean
+    private JwtUtil jwtUtil;
+
+    private String accessToken;
+
+    @BeforeEach
+    void setup() {
+        accessToken = jwtUtil.encode(new Name("userName"));
+    }
+
     @Test
     void progress() throws Exception {
         ProgressDto progressDto = Progress.fake("테스트 1강").toDto();
@@ -35,10 +50,10 @@ class ProgressControllerTest {
         given(progressService.detail(any(), any())).willReturn(progressDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/progress")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
-                        containsString("\"status\":\"unwatched\"")
+                        containsString("\"status\":\"processing\"")
                 ));
     }
 
@@ -47,10 +62,10 @@ class ProgressControllerTest {
         ProgressDto progressDto = Progress.fake("테스트 1강").toDto();
 
         ProgressesDto progressesDto = new ProgressesDto(List.of(progressDto));
-        given(progressService.list(any(), date)).willReturn(progressesDto);
+        given(progressService.list(any(), any())).willReturn(progressesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/progresses")
-                        .header("Authorization", "Bearer ACCESS.TOKEN"))
+                        .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"progresses\":[")

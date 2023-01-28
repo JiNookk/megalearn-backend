@@ -1,6 +1,7 @@
 package jinookk.ourlms.dtos;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public class CourseUpdateRequestDto {
     @NotNull
@@ -22,7 +23,7 @@ public class CourseUpdateRequestDto {
     private String level;
 
     @NotNull
-    private String skill;
+    private List<String> skills;
 
     @NotNull
     private Integer price;
@@ -31,14 +32,14 @@ public class CourseUpdateRequestDto {
     }
 
     public CourseUpdateRequestDto(String title, String category, String description, String imagePath,
-                                  String status, String level, String skill, Integer price) {
+                                  String status, String level, List<String> skills, Integer price) {
         this.title = title;
         this.category = category;
         this.description = description;
         this.imagePath = imagePath;
         this.status = status;
         this.level = level;
-        this.skill = skill;
+        this.skills = skills;
         this.price = price;
     }
 
@@ -70,7 +71,7 @@ public class CourseUpdateRequestDto {
         return level;
     }
 
-    public String getSkill() {
-        return skill;
+    public List<String> getSkills() {
+        return skills;
     }
 }

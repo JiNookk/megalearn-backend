@@ -53,4 +53,11 @@ public class LectureTime {
     public LectureTimeDto toDto() {
         return new LectureTimeDto(this);
     }
+
+    public LectureTime update(LectureTimeDto lectureTime) {
+        this.minute = lectureTime.getMinute();
+        this.second = lectureTime.getSecond();
+
+        return this;
+    }
 }

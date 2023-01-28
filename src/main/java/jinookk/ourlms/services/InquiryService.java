@@ -11,6 +11,7 @@ import jinookk.ourlms.exceptions.InquiryNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Inquiry;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
@@ -26,7 +27,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -44,9 +44,11 @@ public class InquiryService {
         this.lectureRepository = lectureRepository;
     }
 
-    public InquiryDto create(InquiryRequestDto inquiryRequestDto, AccountId accountId) {
-        Account account = accountRepository.findById(accountId.value())
-                .orElseThrow(() -> new AccountNotFound(accountId));
+    public InquiryDto create(InquiryRequestDto inquiryRequestDto, Name userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        AccountId accountId = new AccountId(account.id());
 
         Inquiry inquiry = Inquiry.of(inquiryRequestDto, accountId, account.name());
 
@@ -56,7 +58,9 @@ public class InquiryService {
     }
 
     public InquiriesDto list(LectureId lectureId, Long lectureTime, String content) {
-        List<Inquiry> inquiries = inquiryRepository.findAllByLectureId(lectureId);
+        List<Inquiry> inquiries = inquiryRepository.findAllByLectureId(lectureId).stream()
+                .filter(inquiry -> !inquiry.status().value().equals("deleted"))
+                .toList();
 
         if (lectureTime != null && content == null) {
             inquiries = inquiryRepository.findAllByLectureTime_MinuteAndLectureId(lectureTime, lectureId);
@@ -77,6 +81,39 @@ public class InquiryService {
         return new InquiriesDto(inquiries.stream()
                 .map(Inquiry::toInquiryDto)
                 .toList());
+    }
+
+    public InquiriesDto list(Name userName, InquiryFilterDto inquiryFilterDto) {
+        if (userName == null) {
+            return new InquiriesDto(inquiryRepository.findAll().stream()
+                    .filter(inquiry -> !inquiry.status().value().equals("deleted"))
+                    .map(Inquiry::toInquiryDto).toList());
+        }
+
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        AccountId accountId = new AccountId(account.id());
+
+        List<Course> courses = courses(accountId, new CourseId(inquiryFilterDto.getCourseId()));
+
+        List<Inquiry> inquiries = inquiries(courses);
+
+        List<Inquiry> filtered = filtered(inquiries, inquiryFilterDto);
+
+        List<InquiryDto> inquiryDtos = getInquiryDtos(filtered);
+
+        return new InquiriesDto(inquiryDtos);
+    }
+
+    public InquiriesDto listByCourseId(CourseId courseId) {
+        List<Inquiry> inquiries = inquiryRepository.findAllByCourseId(courseId).stream()
+                .filter(inquiry -> !inquiry.status().value().equals("deleted"))
+                .toList();
+
+        List<InquiryDto> inquiryDtos = inquiries.stream().map(Inquiry::toInquiryDto).toList();
+
+        return new InquiriesDto(inquiryDtos);
     }
 
     public InquiryDto detail(InquiryId inquiryId) {
@@ -102,26 +139,6 @@ public class InquiryService {
         inquiry.update(inquiryUpdateDto);
 
         return inquiry.toInquiryDto();
-    }
-
-    public InquiriesDto list(AccountId accountId, InquiryFilterDto inquiryFilterDto) {
-        List<Course> courses = courses(accountId, new CourseId(inquiryFilterDto.getCourseId()));
-
-        List<Inquiry> inquiries = inquiries(courses);
-
-        List<Inquiry> filtered = filtered(inquiries, inquiryFilterDto);
-
-        List<InquiryDto> inquiryDtos = getInquiryDtos(filtered);
-
-        return new InquiriesDto(inquiryDtos);
-    }
-
-    public InquiriesDto listByCourseId(CourseId courseId) {
-        List<Inquiry> inquiries = inquiryRepository.findAllByCourseId(courseId);
-
-        List<InquiryDto> inquiryDtos = inquiries.stream().map(Inquiry::toInquiryDto).toList();
-
-        return new InquiriesDto(inquiryDtos);
     }
 
     private List<Course> courses(AccountId accountId, CourseId courseId) {
@@ -177,7 +194,12 @@ public class InquiryService {
                 .toList();
     }
 
-    public InquiriesDto myInquiries(AccountId accountId) {
+    public InquiriesDto myInquiries(Name userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
+        AccountId accountId = new AccountId(account.id());
+
         List<Inquiry> inquiries = inquiryRepository.findAllByAccountId(accountId);
 
         List<InquiryDto> inquiryDtos = inquiries.stream()

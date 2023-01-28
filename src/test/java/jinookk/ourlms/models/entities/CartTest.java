@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CartTest {
     @Test
     void update() {
-        Cart cart = new Cart(1L, new AccountId(1L), List.of(new CourseId(1L)));
+        Cart cart = new Cart(new AccountId(1L));
 
         Cart updated = cart.addItem(2L);
 
@@ -20,7 +20,7 @@ class CartTest {
 
     @Test
     void updateWithDuplicatedId() {
-        Cart cart = new Cart(1L, new AccountId(1L), List.of(new CourseId(1L)));
+        Cart cart = new Cart(new AccountId(1L));
 
         Cart updated = cart.addItem(1L);
 
@@ -29,7 +29,7 @@ class CartTest {
 
     @Test
     void updateWithNullValue() {
-        Cart cart = new Cart(1L, new AccountId(1L), List.of(new CourseId(1L)));
+        Cart cart = new Cart(new AccountId(1L));
 
         Cart updated = cart.addItem(null);
 
@@ -38,7 +38,7 @@ class CartTest {
 
     @Test
     void removeItems() {
-        Cart cart = new Cart(1L, new AccountId(1L), List.of(new CourseId(1L), new CourseId(2L), new CourseId(3L)));
+        Cart cart = new Cart(new AccountId(1L));
 
         Cart removed = cart.removeItems(List.of(new CourseId(3L)));
 
@@ -47,7 +47,7 @@ class CartTest {
 
     @Test
     void removeItemsWithNull() {
-        Cart cart = new Cart(1L, new AccountId(1L), List.of(new CourseId(1L), new CourseId(2L), new CourseId(3L)));
+        Cart cart = new Cart(new AccountId(1L));
 
         Cart removed = cart.removeItems(null);
 
@@ -56,7 +56,7 @@ class CartTest {
 
     @Test
     void removeItemWithValidValue() {
-        Cart cart = new Cart(1L, new AccountId(1L), List.of(new CourseId(1L), new CourseId(2L), new CourseId(3L)));
+        Cart cart = new Cart(new AccountId(1L));
 
         Cart removed = cart.removeItem(new CourseId(1L));
 
@@ -65,7 +65,7 @@ class CartTest {
 
     @Test
     void removeItemWithNull() {
-        Cart cart = new Cart(1L, new AccountId(1L), List.of(new CourseId(1L), new CourseId(2L), new CourseId(3L)));
+        Cart cart = new Cart(new AccountId(1L));
 
         Cart removed = cart.removeItem(null);
 

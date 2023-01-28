@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,14 +33,16 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(Long id, AccountId accountId, List<CourseId> itemIds) {
-        this.id = id;
+    public Cart(AccountId accountId) {
         this.accountId = accountId;
-        this.itemIds = new HashSet<>(itemIds);
     }
 
-    public static Cart fake(List<CourseId> itemIds) {
-        return new Cart(1L, new AccountId(1L), new ArrayList<>(itemIds));
+    public static Cart fake(AccountId accountId) {
+        return new Cart(accountId);
+    }
+
+    public static Cart of(AccountId accountId) {
+        return new Cart(accountId);
     }
 
     public CartDto toDto() {

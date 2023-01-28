@@ -1,17 +1,20 @@
 package jinookk.ourlms.services;
 
 import jinookk.ourlms.dtos.CoursesDto;
-import jinookk.ourlms.dtos.MyCoursesDto;
+import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.status.Status;
+import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,15 +25,20 @@ class MyCourseServiceTest {
     MyCourseService myCourseService;
     CourseRepository courseRepository;
     PaymentRepository paymentRepository;
+    AccountRepository accountRepository;
 
     @BeforeEach
     void setup() {
+        accountRepository = mock(AccountRepository.class);
         paymentRepository = mock(PaymentRepository.class);
         courseRepository = mock(CourseRepository.class);
-        myCourseService = new MyCourseService(courseRepository, paymentRepository);
+        myCourseService = new MyCourseService(courseRepository, paymentRepository, accountRepository);
 
         Payment payment = Payment.fake(35_000);
         given(paymentRepository.findAllByAccountId(any())).willReturn(List.of(payment));
+
+        Account account = Account.fake("account");
+        given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 
     @Test
@@ -40,7 +48,7 @@ class MyCourseServiceTest {
         given(courseRepository.findAllById(any()))
                 .willReturn(List.of(course));
 
-        CoursesDto list = myCourseService.myCourses(new AccountId(1L));
+        CoursesDto list = myCourseService.myCourses(new Name("userName"));
 
         assertThat(list.getCourses()).hasSize(1);
     }
@@ -52,7 +60,7 @@ class MyCourseServiceTest {
         given(courseRepository.findAllByAccountId(new AccountId(1L)))
                 .willReturn(List.of(course));
 
-        CoursesDto uploadedList = myCourseService.uploadedList(new AccountId(1L), Status.PROCESSING);
+        CoursesDto uploadedList = myCourseService.uploadedList(new Name("name"), Status.PROCESSING);
 
         assertThat(uploadedList.getCourses()).hasSize(1);
     }

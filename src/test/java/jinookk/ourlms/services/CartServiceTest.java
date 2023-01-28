@@ -2,9 +2,12 @@ package jinookk.ourlms.services;
 
 import jinookk.ourlms.dtos.CartDto;
 import jinookk.ourlms.dtos.CartRequestDto;
+import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Cart;
+import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
+import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CartRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,26 +16,38 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 class CartServiceTest {
     CartService cartService;
     CartRepository cartRepository;
+    AccountRepository accountRepository;
 
     @BeforeEach
     void setup() {
+        accountRepository = mock(AccountRepository.class);
         cartRepository = mock(CartRepository.class);
-        cartService = new CartService(cartRepository);
+        cartService = new CartService(cartRepository, accountRepository);
 
-        Cart cart = Cart.fake(List.of(new CourseId(1L), new CourseId(2L)));
+        List<CourseId> courseIds = List.of(new CourseId(1L), new CourseId(2L));
+
+        Cart cart = Cart.fake(new AccountId(1L));
+
+        for (CourseId courseId : courseIds) {
+            cart = cart.addItem(courseId.value());
+        }
 
         given(cartRepository.findByAccountId(new AccountId(1L))).willReturn(Optional.of(cart));
+
+        Account account = Account.fake("account");
+        given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 
     @Test
     void detail() {
-        CartDto cartDto = cartService.detail(new AccountId(1L));
+        CartDto cartDto = cartService.detail(new Name("name"));
 
         assertThat(cartDto.getItemIds()).hasSize(2);
     }
@@ -40,7 +55,7 @@ class CartServiceTest {
     @Test
     void addItem() {
         CartDto cartDto = cartService.addItem(
-                new AccountId(1L), new CourseId(3L));
+                new Name("name"), new CourseId(3L));
 
         assertThat(cartDto.getItemIds()).hasSize(3);
     }
@@ -48,7 +63,7 @@ class CartServiceTest {
     @Test
     void removeItem() {
         CartDto cartDto = cartService.removeItem(
-                new AccountId(1L), new CartRequestDto(List.of(1L)));
+                new Name("name"), new CartRequestDto(List.of(1L)));
 
         assertThat(cartDto.getItemIds()).hasSize(1);
     }
