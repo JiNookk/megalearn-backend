@@ -39,9 +39,9 @@ public class AccountController {
     private LoginResultDto kaKaoLogin(
             @RequestParam String code
     ) {
-        String accessToken = kakaoService.getAccessToken(code);
+        String kakaoToken = kakaoService.getAccessToken(code);
 
-        Map<String, Object> userInfo = kakaoService.getUser(accessToken);
+        Map<String, Object> userInfo = kakaoService.getUser(kakaoToken);
 
         return loginService.kakaoLogin(userInfo);
     }

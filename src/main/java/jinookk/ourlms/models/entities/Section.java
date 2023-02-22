@@ -38,17 +38,17 @@ public class Section {
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "goal"))
-    private Content content;
+    private Content goal;
 
     public Section() {
     }
 
-    public Section(Long id, CourseId courseId, Status status, Title title, Content content) {
+    public Section(Long id, CourseId courseId, Status status, Title title, Content goal) {
         this.id = id;
         this.courseId = courseId;
         this.status = status;
         this.title = title;
-        this.content = content;
+        this.goal = goal;
     }
 
     public static Section of(SectionRequestDto sectionRequestDto) {
@@ -73,6 +73,10 @@ public class Section {
         return title;
     }
 
+    public Content goal() {
+        return goal;
+    }
+
     public static Section fake(String title) {
         return fake(new Title(title));
     }
@@ -94,17 +98,17 @@ public class Section {
     }
 
     public SectionDto toSectionDto() {
-        return new SectionDto(id, courseId, title, content);
+        return new SectionDto(id, courseId, title, goal);
     }
 
     public void update(SectionUpdateRequestDto sectionUpdateRequestDto) {
         title.update(sectionUpdateRequestDto.getTitle());
-        content.update(sectionUpdateRequestDto.getGoal());
+        goal.update(sectionUpdateRequestDto.getGoal());
     }
 
     public void delete() {
         title.delete();
-        content.delete();
+        goal.delete();
         status.delete();
         courseId.delete();
     }

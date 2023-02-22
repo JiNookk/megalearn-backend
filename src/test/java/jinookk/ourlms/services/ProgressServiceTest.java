@@ -3,6 +3,7 @@ package jinookk.ourlms.services;
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
+import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Name;
@@ -53,6 +54,9 @@ class ProgressServiceTest {
 
         given(progressRepository.findAll((Specification<Progress>) any(), (Sort) any()))
                 .willReturn(List.of(progress));
+
+        Account account = Account.fake("userName");
+        given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 
     @Test

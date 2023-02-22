@@ -153,7 +153,7 @@ class CourseServiceTest {
         Course course = Course.fake("updated");
 
         CourseUpdateRequestDto courseUpdateRequestDto = new CourseUpdateRequestDto(
-                "updated", "category", "description", "thumbnailPath", "", "초급", List.of(), 0);
+                "updated", "category", "description", "thumbnailPath", "", "초급", List.of("스킬"), 0);
 
         course.update(courseUpdateRequestDto);
 

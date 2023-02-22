@@ -42,14 +42,21 @@ public class Account {
         this.phoneNumber = phoneNumber;
     }
 
+    public Account(Long id, Name name, Name userName) {
+        this.id = id;
+        this.name = name;
+        this.userName = userName;
+    }
+
     public static Account fake(String name) {
         return fake(new Name(name));
     }
 
     private static Account fake(Name name) {
         Name userName = new Name("ojw0828@naver.com");
+        Long id = 1L;
 
-        return new Account(name, userName);
+        return new Account(id, name, userName);
     }
 
     public static Account of(RegisterRequestDto registerRequestDto) {

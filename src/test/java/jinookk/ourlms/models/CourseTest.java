@@ -9,6 +9,7 @@ import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.entities.Rating;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.Content;
+import jinookk.ourlms.models.vos.ImagePath;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Price;
 import jinookk.ourlms.models.vos.Title;
@@ -186,6 +187,7 @@ class CourseTest {
         Course course = Course.fake("fake");
 
         assertThat(course.level()).isEqualTo(Level.TOBEDETERMINED);
+        assertThat(course.imagePath()).isEqualTo(new ImagePath("imagePath"));
     }
 
     @Test
