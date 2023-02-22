@@ -141,7 +141,7 @@ class CourseControllerTest {
                                 "\"price\":10000," +
                                 "\"title\":\"updated\"," +
                                 "\"level\":\"초급\"," +
-                                "\"skill\":\"JS\"," +
+                                "\"skills\":[\"JS\"]," +
                                 "\"category\":\"category\"" +
                                 "}"))
                 .andExpect(status().isOk())

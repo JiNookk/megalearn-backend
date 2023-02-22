@@ -30,6 +30,8 @@ class PaymentTest {
         Payment payment = Payment.of(account, course);
 
         assertThat(payment.purchaser()).isEqualTo(new Name("tester"));
+        assertThat(payment.id()).isEqualTo(null);
+        assertThat(payment.accountId()).isEqualTo(new AccountId(1L));
     }
 
     @Test

@@ -64,18 +64,24 @@ public class Comment {
         this.publishTime = publishTime;
     }
 
+    // 댓글 생성
     public static Comment of(Inquiry inquiry, List<Comment> comments, CommentRequestDto commentRequestDto,
                              Account account, Course course) {
+        // 새로 만들어진 댓글이 강사의 것인지  여부 확인 -> 맞으면 답변?
         if (course.isInstructor(new AccountId(account.id()))) {
             inquiry.reply();
         }
 
+        //  작성자의 아이디인지 확인 -> 맞다면 comment를 Inquiry의 이름을 이용해서 댓글을 생성한다.
+//      ? 필요한지 잘 모르겠네 -> 글 작성자가 익명인지 확인해야함. 근데 이건 너무 주먹 구구식인것 같다.
         if (inquiry.isPublisherId(new AccountId(account.id()))) {
             return Comment.of(commentRequestDto, inquiry.publisher(), inquiry.accountId());
         }
 
         Optional<Comment> previousComment = inquiry.previousComment(comments, new AccountId(account.id()));
 
+        // 이전 댓글이 존재하면 이전 댓글을 읽어서 이름을 가져온다.
+        // 왜 이렇게 복잡해졌을까? -> 책임이 제대로 나뉘어 있지 않아서 그런 것 같다.
         if (previousComment.isPresent()) {
             Name author = previousComment.get().author();
             return Comment.of(commentRequestDto, author, new AccountId(account.id()));

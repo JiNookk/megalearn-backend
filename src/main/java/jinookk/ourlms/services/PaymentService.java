@@ -62,6 +62,8 @@ public class PaymentService {
                 .toList());
     }
 
+    //
+
     public PaymentsDto list(Name userName, CourseId courseId) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));

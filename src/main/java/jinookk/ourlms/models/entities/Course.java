@@ -210,7 +210,7 @@ public class Course {
         price.update(courseUpdateRequestDto.getPrice());
         level = Level.of(courseUpdateRequestDto.getLevel(), level);
 
-        if (skills.size() > 1) {
+        if (skills.size() >= 1) {
             skillSets = skills.stream()
                     .map(HashTag::new)
                     .collect(Collectors.toList());

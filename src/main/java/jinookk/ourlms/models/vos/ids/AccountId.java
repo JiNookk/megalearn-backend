@@ -29,6 +29,7 @@ public class AccountId {
     public boolean equals(Object other) {
         return other != null &&
                 other.getClass().equals(AccountId.class) &&
+                ((AccountId) other).value != null &&
                 ((AccountId) other).value.equals(this.value);
     }
 

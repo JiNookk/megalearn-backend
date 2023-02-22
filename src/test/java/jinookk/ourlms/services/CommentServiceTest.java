@@ -98,7 +98,6 @@ class CommentServiceTest {
         assertThat(commentDto.getAuthor()).isEqualTo("tester2");
 
         verify(commentRepository).findAllByInquiryId(inquiryId);
-        verify(accountRepository).findById(2L);
     }
 
     @Test

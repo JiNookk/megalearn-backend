@@ -1,5 +1,6 @@
 package jinookk.ourlms.models.entities;
 
+import jinookk.ourlms.dtos.InquiryRequestDto;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
@@ -35,11 +36,24 @@ class InquiryTest {
     }
 
     @Test
+    void createdFromDto() {
+        InquiryRequestDto inquiryRequestDto = new InquiryRequestDto(
+                new LectureId(1L), List.of(), "title", "content", false, 1, 31, 1L);
+
+        Inquiry created = Inquiry.of(inquiryRequestDto, new AccountId(1L), new Name("name"));
+
+        assertThat(created.id()).isEqualTo(null);
+        assertThat(created.lectureId()).isEqualTo(new LectureId(1L));
+        assertThat(created.hashTags()).isEqualTo(List.of());
+        assertThat(created.content()).isEqualTo(new Content("content"));
+        assertThat(created.lectureTime()).isEqualTo(new LectureTime(1, 31));
+    }
+
+    @Test
     void isPublisher() {
         assertThat(inquiry.isPublisherId(new AccountId(3L))).isTrue();
         assertThat(inquiry.isPublisherId(new AccountId(2L))).isFalse();
     }
-
 
     @Test
     void validatePreviousCommentWithSameAccountId() {

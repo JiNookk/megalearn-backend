@@ -219,23 +219,6 @@ public class Inquiry {
                 .toList();
     }
 
-    public Comment createComment(List<Comment> comments, CommentRequestDto commentRequestDto, Account account) {
-        if (isPublisherId(new AccountId(account.id()))) {
-            return Comment.of(commentRequestDto, publisher, accountId);
-        }
-
-        Optional<Comment> previousComment = previousComment(comments, new AccountId(account.id()));
-
-        if (previousComment.isPresent()) {
-            Name author = previousComment.get().author();
-            return Comment.of(commentRequestDto, author, new AccountId(account.id()));
-        }
-
-        Name author = new Name(account.name().value(), anonymous);
-
-        return Comment.of(commentRequestDto, author, new AccountId(account.id()));
-    }
-
     public boolean isPublisherId(AccountId accountId) {
         return Objects.equals(this.accountId, accountId);
     }

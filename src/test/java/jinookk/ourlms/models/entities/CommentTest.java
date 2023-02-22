@@ -31,6 +31,19 @@ class CommentTest {
     }
 
     @Test
+    void createdFromDto() {
+        CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "content");
+        Name publisher = new Name("name");
+        AccountId accountId = new AccountId(1L);
+
+        Comment comment = Comment.of(commentRequestDto, publisher, accountId);
+
+        assertThat(comment.id()).isEqualTo(null);
+        assertThat(comment.content()).isEqualTo(new Content("content"));
+        assertThat(comment.status()).isEqualTo(new Status(Status.CREATED));
+    }
+
+    @Test
     void removeAllProperties() {
         Comment comment = Comment.fake("hi");
 

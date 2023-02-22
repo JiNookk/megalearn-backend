@@ -15,7 +15,7 @@ class CartTest {
 
         Cart updated = cart.addItem(2L);
 
-        assertThat(updated.itemIds()).hasSize(2);
+        assertThat(updated.itemIds()).hasSize(1);
     }
 
     @Test
@@ -33,12 +33,16 @@ class CartTest {
 
         Cart updated = cart.addItem(null);
 
-        assertThat(updated.itemIds()).hasSize(1);
+        assertThat(updated.itemIds()).hasSize(0);
     }
 
     @Test
     void removeItems() {
         Cart cart = new Cart(new AccountId(1L));
+
+        cart.addItem(1L);
+        cart.addItem(2L);
+        cart.addItem(3L);
 
         Cart removed = cart.removeItems(List.of(new CourseId(3L)));
 
@@ -49,6 +53,10 @@ class CartTest {
     void removeItemsWithNull() {
         Cart cart = new Cart(new AccountId(1L));
 
+        cart.addItem(1L);
+        cart.addItem(2L);
+        cart.addItem(3L);
+
         Cart removed = cart.removeItems(null);
 
         assertThat(removed.itemIds()).isEqualTo(List.of(new CourseId(1L), new CourseId(2L), new CourseId(3L)));
@@ -58,6 +66,10 @@ class CartTest {
     void removeItemWithValidValue() {
         Cart cart = new Cart(new AccountId(1L));
 
+        cart.addItem(1L);
+        cart.addItem(2L);
+        cart.addItem(3L);
+
         Cart removed = cart.removeItem(new CourseId(1L));
 
         assertThat(removed.itemIds()).isEqualTo(List.of( new CourseId(2L), new CourseId(3L)));
@@ -66,6 +78,10 @@ class CartTest {
     @Test
     void removeItemWithNull() {
         Cart cart = new Cart(new AccountId(1L));
+
+        cart.addItem(1L);
+        cart.addItem(2L);
+        cart.addItem(3L);
 
         Cart removed = cart.removeItem(null);
 

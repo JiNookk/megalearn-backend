@@ -49,7 +49,7 @@ public class Like {
                 .toList();
     }
 
-    private static Like of(AccountId accountId, CourseId courseId) {
+    public static Like of(AccountId accountId, CourseId courseId) {
         return new Like(accountId, courseId, false);
     }
 

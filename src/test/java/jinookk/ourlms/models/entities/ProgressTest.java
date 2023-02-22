@@ -3,6 +3,7 @@ package jinookk.ourlms.models.entities;
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.models.exceptions.InvalidArgument;
 import jinookk.ourlms.models.vos.LectureTime;
+import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,8 @@ class ProgressTest {
         progress.complete();
 
         assertThat(progress.status().value()).isEqualTo("completed");
+        assertThat(progress.id()).isEqualTo(31L);
+        assertThat(progress.title()).isEqualTo(new Title("test"));
     }
 
     @Test

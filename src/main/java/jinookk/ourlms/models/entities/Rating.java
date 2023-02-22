@@ -95,9 +95,4 @@ public class Rating {
     public RatingDto toDto() {
         return new RatingDto(point, courseId, author, content, createdAt);
     }
-
-    @Override
-    public String toString() {
-        return "id:" + id;
-    }
 }

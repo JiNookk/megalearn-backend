@@ -13,6 +13,9 @@ public class Price {
     }
 
     public Price(int value) {
+        if (isValidPrice(value)) {
+            throw new InvalidPrice(value);
+        }
         this.value = value;
     }
 
@@ -21,11 +24,15 @@ public class Price {
     }
 
     public void update(Integer value) {
-        if (value < 10000 && value != 0) {
+        if (isValidPrice(value)) {
             throw new InvalidPrice(value);
         }
 
         this.value = value;
+    }
+
+    private boolean isValidPrice(Integer value) {
+        return value < 10000 && value != 0;
     }
 
     public void delete() {

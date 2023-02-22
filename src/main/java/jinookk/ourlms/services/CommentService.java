@@ -63,6 +63,8 @@ public class CommentService {
     public CommentDto create(CommentRequestDto commentRequestDto, Name userName) {
         InquiryId inquiryId = commentRequestDto.getInquiryId();
 
+        // 질문에 댓글달기 -> 프론트엔드에서 질문아이디, 댓글내용 전달
+
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
