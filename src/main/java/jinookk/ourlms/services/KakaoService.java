@@ -52,6 +52,15 @@ public class KakaoService {
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
 
+    @Value("${kakao.approval.url}")
+    private String approvalUrl;
+
+    @Value("${kakao.fail.url}")
+    private String failUrl;
+
+    @Value("${kakao.cancel.url}")
+    private String cancelUrl;
+
     private KakaoPayReadyVO kakaoPayReadyVO;
     private KakaoPayApprovalVO kakaoPayApprovalVO;
     private KakaoPayItemVO kakaoPayItemVO;
@@ -149,7 +158,7 @@ public class KakaoService {
 
     public KakaoReadyDto paymentUrl(Name userName, List<Long> courseIds) {
         Account account = accountRepository.findByUserName(userName)
-                .orElseThrow(()-> new AccountNotFound(userName));
+                .orElseThrow(() -> new AccountNotFound(userName));
 
         AccountId accountId = new AccountId(account.id());
 
@@ -188,9 +197,9 @@ public class KakaoService {
         params.add("total_amount", totalPrice);
         params.add("vat_amount", "0");
         params.add("tax_free_amount", "0");
-        params.add("approval_url", "http://localhost:8080/purchaseSuccess");
-        params.add("fail_url", "http://localhost:8080/purchaseFail");
-        params.add("cancel_url", "http://localhost:8080/purchaseCancel");
+        params.add("approval_url", approvalUrl);
+        params.add("fail_url", failUrl);
+        params.add("cancel_url", cancelUrl);
 
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 
