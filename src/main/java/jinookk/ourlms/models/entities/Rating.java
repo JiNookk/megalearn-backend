@@ -2,6 +2,7 @@ package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.RatingDto;
 import jinookk.ourlms.dtos.RatingRequestDto;
+import jinookk.ourlms.exceptions.RatingNotExisting;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -15,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Rating {
@@ -46,8 +48,7 @@ public class Rating {
     public Rating() {
     }
 
-    public Rating(Long id, AccountId accountId, CourseId courseId, Name author, Content content,
-                  Double point) {
+    public Rating(Long id, AccountId accountId, CourseId courseId, Name author, Content content, Double point) {
         this.id = id;
         this.accountId = accountId;
         this.courseId = courseId;
@@ -62,6 +63,28 @@ public class Rating {
         Integer rating = ratingRequestDto.getRating();
         return new Rating(null, new AccountId(account.id()), new CourseId(courseId), account.name(),
                 new Content(content), (double) rating);
+    }
+
+    public static Double averageOf(List<CourseId> courseIds, List<Rating> ratings) {
+        if (ratings == null || ratings.size() == 0) {
+            throw new RatingNotExisting();
+        }
+
+        double average = 0;
+
+        List<Rating> filtered = ratings.stream()
+                .filter(rating -> courseIds.contains(rating.courseId()))
+                .toList();
+
+        for (Rating rating : filtered) {
+            average += rating.point;
+        }
+
+        return average / filtered.size();
+    }
+
+    public static Rating fake(Double point) {
+        return new Rating(1L, new AccountId(1L), new CourseId(1L), new Name("author"), new Content("content"), point);
     }
 
     public Long id() {

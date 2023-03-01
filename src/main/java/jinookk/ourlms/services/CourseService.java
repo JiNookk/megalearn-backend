@@ -23,6 +23,7 @@ import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.LikeRepository;
 import jinookk.ourlms.repositories.PaymentRepository;
 import jinookk.ourlms.specifications.CourseSpecification;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -63,7 +64,7 @@ public class CourseService {
 
     public CourseDto detail(Name userName, CourseId courseId) {
         Course course = courseRepository.findById(courseId.value())
-                .orElseThrow(()-> new CourseNotFound(courseId.value()));
+                .orElseThrow(() -> new CourseNotFound(courseId.value()));
 
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
@@ -73,8 +74,9 @@ public class CourseService {
         return course.toCourseDto(payment, new AccountId(account.id()));
     }
 
+    @Cacheable(value = "redisCache", key = "#courses")
     public CoursesDto list(Integer page, CourseFilterDto courseFilterDto) {
-        Pageable pageable = PageRequest.of(page -1, 24);
+        Pageable pageable = PageRequest.of(page - 1, 24);
 
         Specification<Course> spec = Specification.where(CourseSpecification.notEqualDeleted());
 
@@ -86,18 +88,18 @@ public class CourseService {
             spec = spec.and(CourseSpecification.equalCost(courseFilterDto.getCost()));
         }
 
-        if (courseFilterDto.getSkill()!= null) {
+        if (courseFilterDto.getSkill() != null) {
             spec = spec.and(CourseSpecification.equalSkills(courseFilterDto.getSkill()));
         }
 
-        if (courseFilterDto.getContent()!= null) {
+        if (courseFilterDto.getContent() != null) {
             // join시 일치하는 모든 칼럼을 가져온다.
             // elementCollection의 값 하나당 하나의 칼럼을 가져옴
             // 어떻게 막을 수 있을까?
 
             spec = spec.and(
-            CourseSpecification.likeTitle(courseFilterDto.getContent())
-                    .or(CourseSpecification.likeContent(courseFilterDto.getContent()))
+                    CourseSpecification.likeTitle(courseFilterDto.getContent())
+                            .or(CourseSpecification.likeContent(courseFilterDto.getContent()))
 //                    .or(CourseSpecification.likeGoals(courseFilterDto.getContent()))
             );
         }

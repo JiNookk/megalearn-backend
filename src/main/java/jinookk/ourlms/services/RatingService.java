@@ -40,13 +40,23 @@ public class RatingService {
 
         AccountId accountId = new AccountId(account.id());
 
-        List<Course> courses = courseRepository.findAllByAccountId(accountId);
+        List<CourseId> courseIds = courseRepository.findAllByAccountId(accountId).stream()
+                .map(course -> new CourseId(course.id()))
+                .toList();
 
-        Double totalRating = courses.stream()
-                .map(course -> course.averageRating(
-                            ratingRepository.findAllByCourseId(new CourseId(course.id()))))
-                .reduce(Double::sum)
-                .orElseThrow(() -> new RatingNotExisting(accountId));
+        List<Rating> ratings = ratingRepository.findAll();
+
+        // rating을 평균내는 메서드는 어디서 만드는게 좋을까? -> rating
+        Double totalRating = Rating.averageOf(courseIds, ratings);
+
+//        Double totalRating = courses.stream()
+//                .map(course -> course.averageRating(
+//                        ratingRepository.findAllByCourseId(new CourseId(course.id()))))
+//                .reduce(Double::sum)
+//                .get();
+//                .orElseThrow(() -> new RatingNotExisting(accountId));
+
+        System.out.println(totalRating);
 
         return new RatingDto(totalRating);
     }
