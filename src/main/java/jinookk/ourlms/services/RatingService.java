@@ -46,7 +46,7 @@ public class RatingService {
 
         List<Rating> ratings = ratingRepository.findAll();
 
-        // rating을 평균내는 메서드는 어디서 만드는게 좋을까? -> rating
+//      rating을 평균내는 메서드는 어디서 만드는게 좋을까? -> rating
         Double totalRating = Rating.averageOf(courseIds, ratings);
 
 //        Double totalRating = courses.stream()

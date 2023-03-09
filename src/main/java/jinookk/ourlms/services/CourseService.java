@@ -74,7 +74,8 @@ public class CourseService {
         return course.toCourseDto(payment, new AccountId(account.id()));
     }
 
-    @Cacheable(value = "redisCache", key = "#courses")
+//    @Cacheable(value = "redisCache", key = "#courses")
+    @Cacheable("courses")
     public CoursesDto list(Integer page, CourseFilterDto courseFilterDto) {
         Pageable pageable = PageRequest.of(page - 1, 24);
 

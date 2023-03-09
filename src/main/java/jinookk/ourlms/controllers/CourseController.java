@@ -65,6 +65,7 @@ public class CourseController {
             @RequestParam(required = false) String skill
     ) {
         CourseFilterDto courseFilterDto = new CourseFilterDto(level, cost, skill, content);
+
         return courseService.list(page, courseFilterDto);
     }
 

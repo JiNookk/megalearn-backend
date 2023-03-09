@@ -30,3 +30,6 @@ build/
 
 # .gradle/
 .gradle/
+
+application-API-KEY.properties
+application.properties
