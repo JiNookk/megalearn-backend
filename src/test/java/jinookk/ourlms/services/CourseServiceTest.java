@@ -49,7 +49,7 @@ class CourseServiceTest {
         paymentRepository = mock(PaymentRepository.class);
         accountRepository = mock(AccountRepository.class);
         courseRepository = mock(CourseRepository.class);
-        courseService = new CourseService(courseRepository, accountRepository, paymentRepository, likeRepository);
+        courseService = new CourseService(courseRepository, accountRepository, likeRepository);
 
         Course course = Course.fake("내 강의");
         Account account = Account.fake("account");

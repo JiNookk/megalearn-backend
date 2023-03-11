@@ -11,7 +11,6 @@ import jinookk.ourlms.exceptions.CourseNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Like;
-import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.Name;
@@ -40,14 +39,12 @@ import java.util.Optional;
 public class CourseService {
     private final CourseRepository courseRepository;
     private final AccountRepository accountRepository;
-    private final PaymentRepository paymentRepository;
     private final LikeRepository likeRepository;
 
     public CourseService(CourseRepository courseRepository, AccountRepository accountRepository,
-                         PaymentRepository paymentRepository, LikeRepository likeRepository) {
+                         LikeRepository likeRepository) {
         this.courseRepository = courseRepository;
         this.accountRepository = accountRepository;
-        this.paymentRepository = paymentRepository;
         this.likeRepository = likeRepository;
     }
 
@@ -62,16 +59,14 @@ public class CourseService {
         return saved.toCourseDto();
     }
 
+    // TODO : 강의에서 account여부와 payment여부를 분리해야한다.
     public CourseDto detail(Name userName, CourseId courseId) {
         Course course = courseRepository.findById(courseId.value())
                 .orElseThrow(() -> new CourseNotFound(courseId.value()));
 
-        Account account = accountRepository.findByUserName(userName)
-                .orElseThrow(() -> new AccountNotFound(userName));
+        Optional<Account> account = accountRepository.findByUserName(userName);
 
-        Optional<Payment> payment = paymentRepository.findByAccountIdAndCourseId(new AccountId(account.id()), courseId);
-
-        return course.toCourseDto(payment, new AccountId(account.id()));
+        return course.toCourseDto(account);
     }
 
 //    @Cacheable(value = "redisCache", key = "#courses")

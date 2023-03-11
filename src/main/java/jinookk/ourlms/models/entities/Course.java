@@ -262,14 +262,15 @@ public class Course {
         return accountId.equals(this.accountId);
     }
 
-    public CourseDto toCourseDto(Optional<Payment> payment, AccountId accountId) {
-        boolean isPurchased = validatePayment(payment);
-        boolean isInstructor = isInstructor(accountId);
+    public CourseDto toCourseDto(Optional<Account> account) {
+        if (!account.isPresent()) {
+            return toCourseDto();
+        }
 
-        return accountId == null
-                ? toCourseDto()
-                : new CourseDto(id, category, title, price, description, status, instructor, this.accountId,
-                imagePath, news, hashTags, skillSets, isPurchased, isInstructor, level, goals, createdAt);
+        boolean isInstructor = isInstructor(new AccountId(account.get().id()));
+
+        return new CourseDto(id, category, title, price, description, status, instructor, this.accountId,
+                imagePath, news, hashTags, skillSets, isInstructor, level, goals, createdAt);
     }
 
     public CourseDto toCourseDto() {

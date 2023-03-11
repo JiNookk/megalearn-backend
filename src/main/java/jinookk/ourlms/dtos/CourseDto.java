@@ -59,7 +59,7 @@ public class CourseDto {
 
     public CourseDto(Long id, Category category, Title title, Price price, Content description, Status status,
                      Name instructor, AccountId instructorId, ImagePath coverImage, List<Post> news, List<HashTag> hashTags,
-                     List<HashTag> skillSets, Boolean isPurchased, Boolean isInstructor, Level level, List<Content> goals,
+                     List<HashTag> skillSets, Boolean isPurchased, Level level, List<Content> goals,
                      LocalDateTime createdAt) {
         this.id = id;
         this.category = category.value();
