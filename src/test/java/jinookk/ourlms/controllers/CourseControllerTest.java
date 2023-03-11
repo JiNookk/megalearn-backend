@@ -2,12 +2,8 @@ package jinookk.ourlms.controllers;
 
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CoursesDto;
-import jinookk.ourlms.dtos.MyCourseDto;
-import jinookk.ourlms.dtos.MyCoursesDto;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
-import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CourseService;
 import jinookk.ourlms.services.MyCourseService;
 import jinookk.ourlms.utils.JwtUtil;

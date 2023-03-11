@@ -21,7 +21,7 @@ import java.util.List;
 public class MyCourseService {
     private final CourseRepository courseRepository;
     private final PaymentRepository paymentRepository;
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     public MyCourseService(CourseRepository courseRepository, PaymentRepository paymentRepository, AccountRepository accountRepository) {
         this.courseRepository = courseRepository;

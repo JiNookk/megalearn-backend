@@ -4,6 +4,7 @@ import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MyCourseDto;
 import jinookk.ourlms.dtos.StatusUpdateDto;
+import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.entities.Rating;
@@ -166,9 +167,9 @@ class CourseTest {
     void convertToDtoWithPayment() {
         Course course = Course.fake("course");
 
-        Payment payment = Payment.fake(35000);
+        Account account = Account.fake("account");
 
-        CourseDto courseDto = course.toCourseDto(Optional.of(payment), new AccountId(1L));
+        CourseDto courseDto = course.toCourseDto(Optional.of(account));
 
         assertThat(courseDto.getIsPurchased()).isEqualTo(true);
     }
@@ -177,7 +178,7 @@ class CourseTest {
     void convertToDtoWithPaymentNull() {
         Course course = Course.fake("course");
 
-        CourseDto courseDto = course.toCourseDto(Optional.empty(), new AccountId(1L));
+        CourseDto courseDto = course.toCourseDto(Optional.empty());
 
         assertThat(courseDto.getIsPurchased()).isEqualTo(false);
     }

@@ -48,7 +48,7 @@ public class PaymentController {
     }
 
     @GetMapping("/payments")
-    public PaymentsDto list() {
+    public PaymentsDto detail() {
         return paymentService.list();
     }
 
