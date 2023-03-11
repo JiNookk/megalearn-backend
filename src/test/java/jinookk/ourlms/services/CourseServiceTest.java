@@ -161,7 +161,7 @@ class CourseServiceTest {
 
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 
-        CourseDto courseDto = courseService.deleteSkill(new CourseId(1L), new HashTag("skill"));
+        CourseDto courseDto = courseService.deleteSkill(new CourseId(1L), new HashTag("스킬"));
 
         assertThat(courseDto.getSkillSets()).hasSize(0);
     }
