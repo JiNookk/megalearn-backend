@@ -66,21 +66,5 @@ public class OurlmsApplication {
 	public PasswordEncoder passwordEncoder() {
 		return new Argon2PasswordEncoder();
 	}
-
-	@Bean
-	public CacheManager cacheManager() {
-		return new ConcurrentMapCacheManager("courses");
-	}
-
-//	@Bean
-//	public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-//		RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-//				.entryTtl(Duration.ofSeconds(60));
-//		return RedisCacheManager.builder(connectionFactory)
-//				.cacheDefaults(cacheConfiguration)
-//				.withCacheConfiguration("redisCache", cacheConfiguration)
-//				.transactionAware()
-//				.build();
-//	}
 }
 
