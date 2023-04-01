@@ -33,6 +33,7 @@ public class CartService {
 
         AccountId accountId = new AccountId(account.id());
 
+
         Cart cart = cartRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new CartNotFound(accountId));
 
