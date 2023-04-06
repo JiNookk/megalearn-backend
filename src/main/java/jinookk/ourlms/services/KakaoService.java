@@ -49,6 +49,9 @@ public class KakaoService {
     @Value("${kakao.api-key}")
     private String apiKey;
 
+    @Value("${kakao.admin-key}")
+    private String adminKey;
+
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
 
@@ -183,7 +186,7 @@ public class KakaoService {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "KakaoAK 9d07c1bc33de94c771fa9acdf1d56676");
+        headers.add("Authorization", "KakaoAK " + adminKey);
         headers.add("Accept", MediaType.APPLICATION_JSON_UTF8_VALUE);
         headers.add("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8");
 
@@ -219,7 +222,8 @@ public class KakaoService {
 
         // 서버로 요청할 Header
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "KakaoAK 9d07c1bc33de94c771fa9acdf1d56676");
+
+        headers.add("Authorization", "KakaoAK " + adminKey);
         headers.add("Accept", MediaType.APPLICATION_JSON_UTF8_VALUE);
         headers.add("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8");
 
