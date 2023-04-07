@@ -1,6 +1,7 @@
 package jinookk.ourlms.services;
 
 import jinookk.ourlms.dtos.LoginResultDto;
+import jinookk.ourlms.dtos.RegisterRequestDto;
 import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.InvalidPassword;
 import jinookk.ourlms.exceptions.LoginFailed;
@@ -13,16 +14,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @Transactional
 public class LoginService {
     private final AccountRepository accountRepository;
+    private final RegisterService registerService;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
-    public LoginService(AccountRepository accountRepository, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
+    public LoginService(AccountRepository accountRepository,
+                        RegisterService registerService,
+                        JwtUtil jwtUtil,
+                        PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
+        this.registerService = registerService;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
     }
@@ -33,9 +40,11 @@ public class LoginService {
 
         // 회원 없을 경우 -> 회원가입
         if (!accountRepository.existsByUserName(userName)) {
-            Account account = new Account(name, userName);
+            String password = UUID.randomUUID().toString();
+            RegisterRequestDto registerRequestDto = new RegisterRequestDto(
+                    userName.value(), password, name.value(), "010-0000-0000");
 
-            accountRepository.save(account);
+            Account account = registerService.register(registerRequestDto);
 
             String accessToken = jwtUtil.encode(userName);
 
