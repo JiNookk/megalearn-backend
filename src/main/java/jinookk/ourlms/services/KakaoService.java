@@ -111,8 +111,6 @@ public class KakaoService {
 
             accessToken = element.getAsJsonObject().get("access_token").getAsString();
 
-            System.out.println("accessToken: " + accessToken);
-
             br.close();
             bw.close();
         } catch (IOException e) {
@@ -153,9 +151,6 @@ public class KakaoService {
 
             String nickname = properties.getAsJsonObject().get("nickname").getAsString();
             String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
-
-            System.out.println("nickname: " + nickname);
-            System.out.println("email: " + email);
 
             user.put("nickname", nickname);
             user.put("email", email);

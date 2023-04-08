@@ -1,10 +1,9 @@
 package jinookk.ourlms.services;
 
+import jinookk.ourlms.dtos.LoginRequestDto;
 import jinookk.ourlms.dtos.LoginResultDto;
 import jinookk.ourlms.dtos.RegisterRequestDto;
 import jinookk.ourlms.exceptions.AccountNotFound;
-import jinookk.ourlms.exceptions.InvalidPassword;
-import jinookk.ourlms.exceptions.LoginFailed;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -22,16 +21,16 @@ public class LoginService {
     private final AccountRepository accountRepository;
     private final RegisterService registerService;
     private final JwtUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationService authenticationService;
 
     public LoginService(AccountRepository accountRepository,
                         RegisterService registerService,
                         JwtUtil jwtUtil,
-                        PasswordEncoder passwordEncoder) {
+                        AuthenticationService authenticationService) {
         this.accountRepository = accountRepository;
         this.registerService = registerService;
         this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
+        this.authenticationService = authenticationService;
     }
 
     public LoginResultDto kakaoLogin(Map<String, Object> userInfo) {
@@ -60,14 +59,22 @@ public class LoginService {
         return new LoginResultDto(accessToken, account.name(), userName, account.phoneNumber());
     }
 
-    public Account login(Name userName, String password) {
-        Account account = accountRepository.findByUserName(userName)
-                .orElseThrow(LoginFailed::new);
+    public LoginResultDto login(LoginRequestDto loginRequestDto) {
+        Name userName = new Name(loginRequestDto.getEmail());
 
-        if (!account.authenticate(password, passwordEncoder)) {
-            throw new InvalidPassword();
-        }
+        String password = loginRequestDto.getPassword();
 
-        return account;
+        Account account = authenticationService.authenticate(
+                userName,
+                password
+        );
+
+        String accessToken = jwtUtil.encode(userName);
+
+        return new LoginResultDto(
+                accessToken,
+                account.name(),
+                account.userName(),
+                account.phoneNumber());
     }
 }

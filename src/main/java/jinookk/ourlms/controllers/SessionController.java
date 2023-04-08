@@ -4,11 +4,12 @@ import jinookk.ourlms.dtos.LoginRequestDto;
 import jinookk.ourlms.dtos.LoginResultDto;
 import jinookk.ourlms.exceptions.InvalidPassword;
 import jinookk.ourlms.exceptions.LoginFailed;
-import jinookk.ourlms.models.entities.Account;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.services.LoginService;
+import jinookk.ourlms.services.TokenService;
+import jinookk.ourlms.utils.HttpUtil;
 import jinookk.ourlms.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,39 +17,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("session")
 public class SessionController {
     private final LoginService loginService;
-    private final JwtUtil jwtUtil;
+    private final HttpUtil httpUtil;
+    private final TokenService tokenService;
 
-    public SessionController(LoginService loginService, JwtUtil jwtUtil) {
+    public SessionController(LoginService loginService,
+                             HttpUtil httpUtil,
+                             TokenService tokenService) {
         this.loginService = loginService;
-        this.jwtUtil = jwtUtil;
+        this.httpUtil = httpUtil;
+        this.tokenService = tokenService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LoginResultDto login(
-            @RequestBody LoginRequestDto loginRequestDto
+            @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response
     ) {
-        Name userName = new Name(loginRequestDto.getEmail());
+        String refreshToken = tokenService.issueRefreshToken(loginRequestDto);
 
-        String password = loginRequestDto.getPassword();
+        ResponseCookie cookie = httpUtil.generateHttpOnlyCookie("refreshToken", refreshToken);
 
-        Account account = loginService.login(
-                userName,
-                password
-        );
+        httpUtil.addCookie(cookie, response);
 
-        String accessToken = jwtUtil.encode(userName);
-
-        return new LoginResultDto(
-                accessToken,
-                account.name(),
-                account.userName(),
-                account.phoneNumber()
-        );
+        return loginService.login(loginRequestDto);
     }
 
     @ExceptionHandler(LoginFailed.class)

@@ -1,7 +1,7 @@
 package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.PaymentDto;
-import jinookk.ourlms.models.exceptions.InvalidPaymentInformation;
+import jinookk.ourlms.exceptions.InvalidPaymentInformation;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Price;
 import jinookk.ourlms.models.vos.Title;

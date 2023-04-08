@@ -42,8 +42,6 @@ public class AccountController {
     ) {
         String kakaoToken = kakaoService.getAccessToken(code);
 
-        System.out.println("kakaoToken: " + kakaoToken);
-
         Map<String, Object> userInfo = kakaoService.getUser(kakaoToken);
 
         return loginService.kakaoLogin(userInfo);

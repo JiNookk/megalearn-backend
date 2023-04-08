@@ -1,9 +1,8 @@
 package jinookk.ourlms.models.entities;
 
-import jinookk.ourlms.models.exceptions.InvalidPaymentInformation;
+import jinookk.ourlms.exceptions.InvalidPaymentInformation;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
-import jinookk.ourlms.models.vos.ids.CourseId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
