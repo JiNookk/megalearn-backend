@@ -31,7 +31,8 @@ public class AccountController {
     private String register(
             @RequestBody RegisterRequestDto registerRequestDto
     ) {
-        return registerService.register(registerRequestDto);
+        registerService.register(registerRequestDto);
+        return "OK";
     }
 
     @PostMapping("/auth/token")

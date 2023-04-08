@@ -123,6 +123,7 @@ public class KakaoService {
         Map<String, Object> user = new HashMap<>();
 
         String reqURL = "https://kapi.kakao.com/v2/user/me";
+
         try {
             URL url = new URL(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

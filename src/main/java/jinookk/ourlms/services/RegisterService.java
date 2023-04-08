@@ -37,7 +37,7 @@ public class RegisterService {
         this.likeRepository = likeRepository;
     }
 
-    public String register(RegisterRequestDto registerRequestDto) {
+    public Account register(RegisterRequestDto registerRequestDto) {
         if (accountRepository.existsByUserName(new Name(registerRequestDto.getUserName()))) {
             throw new RegisterFailed(registerRequestDto.getUserName());
         }
@@ -52,7 +52,7 @@ public class RegisterService {
 
         account.changePassword(registerRequestDto.getPassword(), passwordEncoder);
 
-        accountRepository.save(account);
+        Account saved = accountRepository.save(account);
 
         AccountId accountId = new AccountId(account.id());
 
@@ -64,6 +64,6 @@ public class RegisterService {
 
         likeRepository.saveAll(likes);
 
-        return "OK";
+        return saved;
     }
 }
