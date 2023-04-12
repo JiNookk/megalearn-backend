@@ -94,6 +94,7 @@ public class KakaoService {
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=" + apiKey);
             sb.append("&redirect_uri=" + redirectUri);
+            System.out.println(redirectUri);
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -109,6 +110,8 @@ public class KakaoService {
             JsonElement element = JsonParser.parseString(result);
 
             accessToken = element.getAsJsonObject().get("access_token").getAsString();
+
+            System.out.println("accessToken: " + accessToken);
 
             br.close();
             bw.close();
@@ -150,6 +153,9 @@ public class KakaoService {
 
             String nickname = properties.getAsJsonObject().get("nickname").getAsString();
             String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
+
+            System.out.println("nickname: " + nickname);
+            System.out.println("email: " + email);
 
             user.put("nickname", nickname);
             user.put("email", email);
