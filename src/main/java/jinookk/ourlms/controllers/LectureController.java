@@ -1,5 +1,8 @@
 package jinookk.ourlms.controllers;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LectureRequestDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
@@ -53,6 +56,10 @@ public class LectureController {
     }
 
     @GetMapping("/lectures/instructor")
+    @ApiOperation(value = "Fetches Uploaded Lectures", notes = "fetches uploaded lectures by instructor")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public LecturesDto listByInstructorId(
             @RequestAttribute Name userName
     ) {

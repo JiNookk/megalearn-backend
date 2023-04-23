@@ -1,5 +1,8 @@
 package jinookk.ourlms.controllers;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
@@ -12,6 +15,7 @@ import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CourseService;
 import jinookk.ourlms.services.MyCourseService;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,6 +39,11 @@ public class CourseController {
     }
 
     @PostMapping("/courses")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Create Course", notes = "create Course")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public CourseDto create(
             @Validated @RequestBody CourseRequestDto courseRequestDto,
             @RequestAttribute Name userName
@@ -50,6 +60,10 @@ public class CourseController {
     }
 
     @GetMapping("/courses/wishes")
+    @ApiOperation(value = "WishList", notes = "fetches my course wish list")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public CoursesDto wishList(
             @RequestAttribute Name userName
     ) {
@@ -77,6 +91,10 @@ public class CourseController {
     }
 
     @GetMapping("/account/my-courses")
+    @ApiOperation(value = "My Courses", notes = "fetches purchased courses")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public CoursesDto myCourses(
             @RequestAttribute Name userName
     ) {
@@ -84,6 +102,10 @@ public class CourseController {
     }
 
     @GetMapping("/instructor/my-courses")
+    @ApiOperation(value = "Uploaded Courses", notes = "fetches uploaded courses for instructor")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public CoursesDto uploadedCourses(
             @RequestAttribute Name userName,
             @RequestParam(required = false, defaultValue = "all") String type

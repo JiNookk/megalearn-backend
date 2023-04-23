@@ -1,5 +1,8 @@
 package jinookk.ourlms.controllers;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.RatingDto;
 import jinookk.ourlms.dtos.RatingRequestDto;
 import jinookk.ourlms.dtos.RatingsDto;
@@ -28,6 +31,10 @@ public class RatingController {
 
     @PostMapping("/ratings")
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "create Rating", notes = "create new Rating Entity")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public RatingDto rate(
             @Validated @RequestBody RatingRequestDto ratingRequestDto,
             @RequestAttribute Name userName
@@ -36,6 +43,10 @@ public class RatingController {
     }
 
     @GetMapping("/instructor/my-rating")
+    @ApiOperation(value = "My Total Rating", notes = "fetches instructor's total rating about courses")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public RatingDto totalRating(
             @RequestAttribute Name userName
     ) {
@@ -48,6 +59,10 @@ public class RatingController {
     }
 
     @GetMapping("/ratings/me")
+    @ApiOperation(value = "My Reviews", notes = "fetches Rating written by me")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public RatingsDto myReviews(
             @RequestAttribute Name userName
     ) {
@@ -55,6 +70,10 @@ public class RatingController {
     }
 
     @GetMapping("/instructor/ratings")
+    @ApiOperation(value = "Rating List", notes = "fetches Ratings with Instructor")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public RatingsDto listByInstructorId(
             @RequestAttribute Name userName,
             @RequestParam(required = false) Long courseId

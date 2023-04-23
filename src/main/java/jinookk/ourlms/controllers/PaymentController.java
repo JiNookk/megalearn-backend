@@ -1,5 +1,8 @@
 package jinookk.ourlms.controllers;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.KakaoReadyDto;
 import jinookk.ourlms.dtos.KakaoRequestDto;
 import jinookk.ourlms.dtos.MonthlyPaymentsDto;
@@ -29,8 +32,12 @@ public class PaymentController {
         this.kakaoService = kakaoService;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/payments/kakao-ready")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Payment Ready", notes = "request ready phase to Kakao Server")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public KakaoReadyDto paymentReady(
             @RequestAttribute Name userName,
             @RequestBody KakaoRequestDto kakaoRequestDto
@@ -40,6 +47,10 @@ public class PaymentController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/payments")
+    @ApiOperation(value = "Purchase", notes = "create Payment Entity")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public PaymentsDto purchase(
             @RequestAttribute Name userName,
             @RequestBody PaymentRequestDto paymentRequestDto
@@ -53,6 +64,10 @@ public class PaymentController {
     }
 
     @GetMapping("/instructor/payments")
+//    @ApiOperation(value = "Payment List", notes = "fetches payments with instructor ")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+//    })
     public PaymentsDto list(
             @RequestAttribute Name userName,
             @RequestParam(required = false) Long courseId
@@ -61,6 +76,10 @@ public class PaymentController {
     }
 
     @GetMapping("/payments/me")
+    @ApiOperation(value = "My Payment List", notes = "fetches my payments list")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public PaymentsDto list(
             @RequestAttribute Name userName
     ) {
@@ -68,6 +87,10 @@ public class PaymentController {
     }
 
     @GetMapping("/instructor/monthly-total-payments")
+    @ApiOperation(value = "Monthly payments", notes = "fetches instructor's monthly earned")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public MonthlyPaymentsDto monthlyList(
             @RequestAttribute Name userName
     ) {

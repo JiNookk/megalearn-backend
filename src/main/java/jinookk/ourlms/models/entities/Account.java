@@ -2,6 +2,7 @@ package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.RegisterRequestDto;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.PhoneNumber;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.AttributeOverride;
@@ -26,7 +27,10 @@ public class Account {
     private Name userName;
 
     private String password;
-    private String phoneNumber = "010-0000-0000";
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "phone_number"))
+    private PhoneNumber phoneNumber;
 
     public Account() {
     }
@@ -39,7 +43,7 @@ public class Account {
     public Account(Name name, Name userName, String phoneNumber) {
         this.name = name;
         this.userName = userName;
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = new PhoneNumber(phoneNumber);
     }
 
     public Account(Long id, Name name, Name userName) {
@@ -76,7 +80,7 @@ public class Account {
     }
 
     public String phoneNumber() {
-        return phoneNumber;
+        return phoneNumber.value();
     }
 
     public Name userName() {

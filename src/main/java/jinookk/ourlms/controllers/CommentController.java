@@ -1,5 +1,8 @@
 package jinookk.ourlms.controllers;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.CommentDeleteDto;
 import jinookk.ourlms.dtos.CommentDto;
 import jinookk.ourlms.dtos.CommentRequestDto;
@@ -31,6 +34,10 @@ public class CommentController {
     }
 
     @GetMapping("inquiries/{inquiryId}/comments")
+    @ApiOperation(value = "Fetch Comment Lists", notes = "fetches comments in inquiry")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public CommentsDto list(
             @PathVariable Long inquiryId,
             @RequestAttribute Name userName
@@ -40,7 +47,10 @@ public class CommentController {
 
     @PostMapping("comments")
     @ResponseStatus(HttpStatus.CREATED)
-    @Transactional
+    @ApiOperation(value = "Post Comment", notes = "post comment")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public CommentDto post(
             @Validated @RequestBody CommentRequestDto commentRequestDto,
             @RequestAttribute Name userName

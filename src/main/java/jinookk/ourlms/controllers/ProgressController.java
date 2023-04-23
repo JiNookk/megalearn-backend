@@ -1,5 +1,8 @@
 package jinookk.ourlms.controllers;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
@@ -27,6 +30,10 @@ public class ProgressController {
     }
 
     @GetMapping("/lectures/{lectureId}/progress")
+    @ApiOperation(value = "Progress", notes = "fetches my progress with given lecture")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public ProgressDto progress(
             @PathVariable Long lectureId,
             @RequestAttribute Name userName
@@ -35,6 +42,10 @@ public class ProgressController {
     }
 
     @GetMapping("/progresses")
+    @ApiOperation(value = "Progresses", notes = "fetches my progresses")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public ProgressesDto list(
             @RequestAttribute Name userName,
             @RequestParam(required = false) String date
