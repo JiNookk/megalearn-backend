@@ -2,7 +2,7 @@ package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.ProgressDto;
-import jinookk.ourlms.models.exceptions.InvalidArgument;
+import jinookk.ourlms.exceptions.InvalidArgument;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.status.ProgressStatus;
 import jinookk.ourlms.models.vos.Title;

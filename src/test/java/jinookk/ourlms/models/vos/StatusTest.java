@@ -1,6 +1,6 @@
 package jinookk.ourlms.models.vos;
 
-import jinookk.ourlms.models.exceptions.InvalidStatus;
+import jinookk.ourlms.exceptions.InvalidStatus;
 import jinookk.ourlms.models.vos.status.Status;
 import org.junit.jupiter.api.Test;
 

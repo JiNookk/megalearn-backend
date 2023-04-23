@@ -1,4 +1,4 @@
-package jinookk.ourlms.models.exceptions;
+package jinookk.ourlms.exceptions;
 
 public class InvalidArgument extends RuntimeException{
 

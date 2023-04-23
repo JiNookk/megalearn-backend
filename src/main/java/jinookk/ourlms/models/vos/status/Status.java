@@ -1,6 +1,7 @@
 package jinookk.ourlms.models.vos.status;
 
-import jinookk.ourlms.models.exceptions.InvalidStatus;
+
+import jinookk.ourlms.exceptions.InvalidStatus;
 
 import java.util.Objects;
 

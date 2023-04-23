@@ -1,7 +1,7 @@
 package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.LectureTimeDto;
-import jinookk.ourlms.models.exceptions.InvalidArgument;
+import jinookk.ourlms.exceptions.InvalidArgument;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
