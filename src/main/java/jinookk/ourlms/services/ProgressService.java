@@ -7,7 +7,7 @@ import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.ProgressNotfound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Progress;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
@@ -33,7 +33,7 @@ public class ProgressService {
         this.accountRepository = accountRepository;
     }
 
-    public ProgressDto detail(LectureId lectureId, Name userName) {
+    public ProgressDto detail(LectureId lectureId, UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -62,7 +62,7 @@ public class ProgressService {
         return new ProgressesDto(progressDtos);
     }
 
-    public ProgressesDto list(Name userName, String date) {
+    public ProgressesDto list(UserName userName, String date) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 

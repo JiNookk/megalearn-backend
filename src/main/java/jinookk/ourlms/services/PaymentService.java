@@ -13,7 +13,7 @@ import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.entities.Progress;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.kakao.KakaoPayItemVO;
@@ -62,7 +62,7 @@ public class PaymentService {
                 .toList());
     }
 
-    public PaymentsDto list(Name userName, CourseId courseId) {
+    public PaymentsDto list(UserName userName, CourseId courseId) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -79,7 +79,7 @@ public class PaymentService {
         return new PaymentsDto(paymentDtos);
     }
 
-    public MonthlyPaymentsDto monthlyList(Name userName) {
+    public MonthlyPaymentsDto monthlyList(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -95,7 +95,7 @@ public class PaymentService {
         return new MonthlyPaymentsDto(monthlyPaymentDtos);
     }
 
-    public PaymentsDto purchase(PaymentRequestDto paymentRequestDto, Name userName) {
+    public PaymentsDto purchase(PaymentRequestDto paymentRequestDto, UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -126,7 +126,7 @@ public class PaymentService {
         return new PaymentsDto(paymentDtos);
     }
 
-    public PaymentsDto list(Name userName) {
+    public PaymentsDto list(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 

@@ -9,12 +9,13 @@ import jinookk.ourlms.dtos.CartDto;
 import jinookk.ourlms.dtos.CartRequestDto;
 import jinookk.ourlms.dtos.SectionDto;
 import jinookk.ourlms.exceptions.AccountNotFound;
+import jinookk.ourlms.exceptions.CartItemNotFound;
 import jinookk.ourlms.exceptions.CartNotFound;
-import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CartService;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -42,7 +43,7 @@ public class CartController {
             @ApiResponse(code = 404, message = "Not found", response = SectionDto.class),
     })
     public CartDto myCart(
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return cartService.detail(userName);
     }
@@ -53,7 +54,7 @@ public class CartController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public CartDto addItem(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @PathVariable Long itemId
     ) {
         return cartService.addItem(userName, new CourseId(itemId));
@@ -65,7 +66,7 @@ public class CartController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public CartDto removeItem(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @RequestBody CartRequestDto cartRequestDto
     ) {
         return cartService.removeItem(userName, cartRequestDto);
@@ -73,13 +74,25 @@ public class CartController {
 
     @ExceptionHandler(CartNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String cartNotFound(CartNotFound error) {
-        return error.getMessage();
+    public String cartNotFound(CartNotFound exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(CartItemNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String cartItemNotFound(CartItemNotFound exception) {
+        return exception.getMessage();
     }
 
     @ExceptionHandler(AccountNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String accountNotFound(AccountNotFound error) {
-        return error.getMessage();
+    public String accountNotFound(AccountNotFound exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
     }
 }

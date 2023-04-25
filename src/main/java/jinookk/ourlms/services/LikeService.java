@@ -7,6 +7,7 @@ import jinookk.ourlms.exceptions.LikeNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LikeId;
@@ -38,7 +39,7 @@ public class LikeService {
         return new LikesDto(likeDtos);
     }
 
-    public LikeDto detail(Name userName, CourseId courseId) {
+    public LikeDto detail(UserName userName, CourseId courseId) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 

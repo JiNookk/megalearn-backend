@@ -4,7 +4,7 @@ import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -48,7 +48,7 @@ class MyCourseServiceTest {
         given(courseRepository.findAllById(any()))
                 .willReturn(List.of(course));
 
-        CoursesDto list = myCourseService.myCourses(new Name("userName"));
+        CoursesDto list = myCourseService.myCourses(new UserName("userName@email.com"));
 
         assertThat(list.getCourses()).hasSize(1);
     }
@@ -60,7 +60,7 @@ class MyCourseServiceTest {
         given(courseRepository.findAllByAccountId(new AccountId(1L)))
                 .willReturn(List.of(course));
 
-        CoursesDto uploadedList = myCourseService.uploadedList(new Name("name"), Status.PROCESSING);
+        CoursesDto uploadedList = myCourseService.uploadedList(new UserName("userName@email.com"), Status.PROCESSING);
 
         assertThat(uploadedList.getCourses()).hasSize(1);
     }

@@ -1,6 +1,7 @@
 package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.CartDto;
+import jinookk.ourlms.exceptions.CartItemNotFound;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 
@@ -76,7 +77,9 @@ public class Cart {
     }
 
     private void removeId(CourseId courseId) {
-        this.itemIds.remove(courseId);
+        if (!this.itemIds.remove(courseId)) {
+            throw new CartItemNotFound(courseId == null ? "Null" : courseId.value().toString());
+        }
     }
 
     public Cart removeItem(CourseId itemId) {

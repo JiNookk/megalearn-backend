@@ -9,20 +9,21 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import jinookk.ourlms.exceptions.RefreshTokenExpired;
 import jinookk.ourlms.exceptions.RefreshTokenInvalid;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 
 import java.util.Calendar;
 import java.util.Date;
 
 public class JwtUtil {
     private final Algorithm algorithm;
-    private static final int ACCESSTOKEN_EXPIRATION_TIME_MINUTES = 15;
+    private static final int ACCESSTOKEN_EXPIRATION_TIME_MINUTES = 1500;
     private static final int REFRESHTOKEN_EXPIRATION_TIME_DATES = 14;
 
     public JwtUtil(String secret) {
         this.algorithm = Algorithm.HMAC256(secret);
     }
 
-    public String encode(Name userName) {
+    public String encode(UserName userName) {
         Date expirationDate = getExpirationDate(ACCESSTOKEN_EXPIRATION_TIME_MINUTES);
         return JWT.create()
                 .withExpiresAt(expirationDate)
@@ -30,11 +31,11 @@ public class JwtUtil {
                 .sign(algorithm);
     }
 
-    public Name decode(String token) {
+    public UserName decode(String token) {
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT verify = verifier.verify(token);
         String value = verify.getClaim("userName").asString();
-        return new Name(value);
+        return new UserName(value);
     }
 
     private Date getExpirationDate(int time) {
@@ -56,7 +57,7 @@ public class JwtUtil {
 
     public String regenerateJWT(String refreshToken) {
         try {
-            Name userName = decode(refreshToken);
+            UserName userName = decode(refreshToken);
 
             return encode(userName);
         } catch (JWTDecodeException e) {

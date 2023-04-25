@@ -4,8 +4,7 @@ import jinookk.ourlms.dtos.InquiriesDto;
 import jinookk.ourlms.dtos.InquiryDeleteDto;
 import jinookk.ourlms.dtos.InquiryDto;
 import jinookk.ourlms.models.entities.Inquiry;
-import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.ids.LectureId;
@@ -44,7 +43,7 @@ class InquiryControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
     }
 
     @Test
@@ -80,7 +79,7 @@ class InquiryControllerTest {
 
         InquiriesDto inquiriesDto = new InquiriesDto(List.of(inquiryDto));
 
-        given(inquiryService.myInquiries(new Name("userName"))).willReturn(inquiriesDto);
+        given(inquiryService.myInquiries(new UserName("userName@email.com"))).willReturn(inquiriesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/inquiries/me")
                         .header("Authorization", "Bearer " + accessToken))

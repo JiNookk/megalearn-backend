@@ -3,18 +3,16 @@ package jinookk.ourlms.controllers;
 import jinookk.ourlms.dtos.LikeDto;
 import jinookk.ourlms.dtos.LikesDto;
 import jinookk.ourlms.models.entities.Like;
-import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.LikeId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.services.LikeService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
@@ -40,7 +38,7 @@ class LikeControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
     }
 
     @Test

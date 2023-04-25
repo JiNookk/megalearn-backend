@@ -13,6 +13,7 @@ import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.ImagePath;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Price;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.kakao.KakaoPayItemVO;
 import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.models.vos.Title;
@@ -131,7 +132,7 @@ class PaymentServiceTest {
 
         given(cartRepository.findByAccountId(new AccountId(1L))).willReturn(Optional.of(cart));
 
-        PaymentsDto paymentsDto = paymentService.purchase(paymentRequestDto, new Name("userName"));
+        PaymentsDto paymentsDto = paymentService.purchase(paymentRequestDto, new UserName("userName@email.com"));
 
         assertThat(paymentsDto.getPayments()).hasSize(1);
         assertThat(cart.itemIds()).hasSize(0);
@@ -139,21 +140,21 @@ class PaymentServiceTest {
 
     @Test
     void list() {
-        PaymentsDto paymentsDto = paymentService.list(new Name("userName"), new CourseId(1L));
+        PaymentsDto paymentsDto = paymentService.list(new UserName("userName@email.com"), new CourseId(1L));
 
         assertThat(paymentsDto.getPayments()).hasSize(3);
     }
 
     @Test
     void myPayments() {
-        PaymentsDto paymentsDto = paymentService.list(new Name("userName"));
+        PaymentsDto paymentsDto = paymentService.list(new UserName("userName@email.com"));
 
         assertThat(paymentsDto.getPayments()).hasSize(3);
     }
 
     @Test
     void monthlyList() {
-        MonthlyPaymentsDto monthlyPaymentsDto = paymentService.monthlyList(new Name("userName"));
+        MonthlyPaymentsDto monthlyPaymentsDto = paymentService.monthlyList(new UserName("userName@email.com"));
 
         assertThat(monthlyPaymentsDto.getMonthlyPayments()).hasSize(3);
     }

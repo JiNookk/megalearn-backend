@@ -9,13 +9,14 @@ import jinookk.ourlms.dtos.NoteRequestDto;
 import jinookk.ourlms.dtos.NoteUpdateDto;
 import jinookk.ourlms.dtos.NotesDto;
 import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.NoteId;
 import jinookk.ourlms.services.NoteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
 
 @RestController
 public class NoteController {
@@ -44,7 +43,7 @@ public class NoteController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public NotesDto list(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @PathVariable Long lectureId
     ) {
         return noteService.list(new LectureId(lectureId), userName);
@@ -56,7 +55,7 @@ public class NoteController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public NotesDto myNotes(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @RequestParam(required = false) String date
     ) {
         return noteService.myNotes(userName, date);
@@ -69,7 +68,7 @@ public class NoteController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public NoteDto post(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @Validated @RequestBody NoteRequestDto noteRequestDto
     ) {
         return noteService.create(noteRequestDto, userName);
@@ -96,5 +95,11 @@ public class NoteController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String missingProperties() {
         return "Property is Missing";
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
     }
 }

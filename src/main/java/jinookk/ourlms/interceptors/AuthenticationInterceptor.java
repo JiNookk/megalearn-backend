@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import jinookk.ourlms.exceptions.AccessTokenExpired;
 import jinookk.ourlms.exceptions.AuthenticationError;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.utils.HttpUtil;
 import jinookk.ourlms.utils.JwtUtil;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -45,7 +46,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
     }
 
     private void setUsernameAttribute(HttpServletRequest request, String token) {
-        Name userName = jwtUtil.decode(token);
+        UserName userName = jwtUtil.decode(token);
         request.setAttribute("userName", userName);
     }
 }

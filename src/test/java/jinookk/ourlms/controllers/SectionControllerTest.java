@@ -1,12 +1,9 @@
 package jinookk.ourlms.controllers;
 
 import jinookk.ourlms.dtos.SectionDto;
-import jinookk.ourlms.dtos.SectionWithProgressDto;
 import jinookk.ourlms.dtos.SectionsDto;
-import jinookk.ourlms.dtos.SectionsWithProgressDto;
-import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.entities.Section;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.services.SectionService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +39,7 @@ class SectionControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
     }
 
     @Test

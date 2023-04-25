@@ -9,7 +9,7 @@ import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.KakaoApprovalFail;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.kakao.KakaoPayApprovalVO;
 import jinookk.ourlms.models.vos.kakao.KakaoPayItemVO;
@@ -77,7 +77,7 @@ public class KakaoService {
         this.accountRepository = accountRepository;
     }
 
-    public String getAccessToken(String code) {
+    public String getAccessToken(String code) throws IOException {
         String accessToken = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
 
@@ -115,6 +115,8 @@ public class KakaoService {
             bw.close();
         } catch (IOException e) {
             e.printStackTrace();
+
+            throw e;
         }
 
         return accessToken;
@@ -161,7 +163,7 @@ public class KakaoService {
         return user;
     }
 
-    public KakaoReadyDto paymentUrl(Name userName, List<Long> courseIds) {
+    public KakaoReadyDto paymentUrl(UserName userName, List<Long> courseIds) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 

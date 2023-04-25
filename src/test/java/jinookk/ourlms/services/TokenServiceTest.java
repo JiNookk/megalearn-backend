@@ -2,10 +2,10 @@ package jinookk.ourlms.services;
 
 import jinookk.ourlms.models.entities.RefreshToken;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.repositories.RefreshTokenRepository;
 import jinookk.ourlms.utils.HttpUtil;
 import jinookk.ourlms.utils.JwtUtil;
-import org.apache.catalina.connector.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +33,7 @@ class TokenServiceTest {
 
     @Test
     void reissueAccessToken() {
-        Name userName = new Name("ojw0828");
+        UserName userName = new UserName("userName@email.com");
 
         String refreshToken = jwtUtil.encode(userName);
 
@@ -47,7 +47,7 @@ class TokenServiceTest {
         given(refreshTokenRepository.findByTokenValue(any()))
                 .willReturn(Optional.of(RefreshToken.fake("expired")));
 
-        String userName = "tester";
+        String userName = "tester@email.com";
 
         String expiredToken = jwtUtil.generateRefreshToken(userName);
 
@@ -55,6 +55,6 @@ class TokenServiceTest {
 
         String reIssuedToken = tokenService.reissueRefreshToken(expiredToken, response);
 
-        assertThat(jwtUtil.decode(reIssuedToken)).isEqualTo(new Name(userName));
+        assertThat(jwtUtil.decode(reIssuedToken)).isEqualTo(new UserName(userName));
     }
 }

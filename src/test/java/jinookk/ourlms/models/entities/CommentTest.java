@@ -6,6 +6,7 @@ import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Title;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
@@ -47,7 +48,7 @@ class CommentTest {
     void removeAllProperties() {
         Comment comment = Comment.fake("hi");
 
-        comment.removeAllProperties();
+        comment.removeAllProperties(new AccountId(1L));
 
         assertThat(comment.content()).isNull();
         assertThat(comment.inquiryId()).isNull();
@@ -66,7 +67,7 @@ class CommentTest {
 
     @Test
     void createCommentWithSameAccountIdWithInquiry() {
-        Account account = new Account(new Name("tester"), new Name("userName"));
+        Account account = new Account(new Name("tester"), new UserName("userName@email.com"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
         List<Comment> comments = List.of(Comment.fake("hi"));
         Course course = Course.fake("course");
@@ -79,7 +80,7 @@ class CommentTest {
 
     @Test
     void createCommentWithPreviousCommentAndNotPublisher() {
-        Account account = new Account(new Name("tester"), new Name("userName"));
+        Account account = new Account(new Name("tester"), new UserName("userName@email.com"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
 
         Comment commentWithFirstAccountId = Comment.fake("hi");
@@ -94,7 +95,7 @@ class CommentTest {
 
     @Test
     void createCommentWithoutPreviousCommentAndNotPublisher() {
-        Account account = new Account(new Name("2nd Tester"), new Name("userName"));
+        Account account = new Account(new Name("2nd Tester"), new UserName("userName@email.com"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
 
         Comment commentWithThirdAccountId = new Comment(1L, new InquiryId(2L), new AccountId(3L), new Status(Status.CREATED),

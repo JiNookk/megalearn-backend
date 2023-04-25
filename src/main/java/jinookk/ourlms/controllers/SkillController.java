@@ -1,8 +1,8 @@
 package jinookk.ourlms.controllers;
 
-import jinookk.ourlms.dtos.SkillsDto;
 import jinookk.ourlms.dtos.SkillDto;
 import jinookk.ourlms.dtos.SkillRequestDto;
+import jinookk.ourlms.dtos.SkillsDto;
 import jinookk.ourlms.services.SkillService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;

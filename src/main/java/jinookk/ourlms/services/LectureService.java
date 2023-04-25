@@ -11,6 +11,7 @@ import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -68,7 +69,7 @@ public class LectureService {
         return new LecturesDto(lectureDtos);
     }
 
-    public LecturesDto myLectures(Name userName) {
+    public LecturesDto myLectures(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -84,7 +85,7 @@ public class LectureService {
         return new LecturesDto(lectures);
     }
 
-    public LecturesDto listByInstructorId(Name userName) {
+    public LecturesDto listByInstructorId(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 

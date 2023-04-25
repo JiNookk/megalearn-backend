@@ -6,9 +6,8 @@ import jinookk.ourlms.dtos.MonthlyPaymentsDto;
 import jinookk.ourlms.dtos.PaymentDto;
 import jinookk.ourlms.dtos.PaymentsDto;
 import jinookk.ourlms.models.entities.Payment;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Title;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.KakaoService;
 import jinookk.ourlms.services.PaymentService;
@@ -28,7 +27,6 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,7 +48,7 @@ class PaymentControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
     }
 
     @Test
@@ -93,7 +91,7 @@ class PaymentControllerTest {
     void list() throws Exception {
         PaymentDto paymentDto = Payment.fake(35_000).toDto();
 
-        given(paymentService.list(new Name("userName"), new CourseId(1L)))
+        given(paymentService.list(new UserName("userName@email.com"), new CourseId(1L)))
                 .willReturn(new PaymentsDto(List.of(paymentDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/instructor/payments?courseId=1")
@@ -108,7 +106,7 @@ class PaymentControllerTest {
     void myPayments() throws Exception {
         PaymentDto paymentDto = Payment.fake(35_000).toDto();
 
-        given(paymentService.list(new Name("userName")))
+        given(paymentService.list(new UserName("userName@email.com")))
                 .willReturn(new PaymentsDto(List.of(paymentDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/payments/me")
@@ -123,7 +121,7 @@ class PaymentControllerTest {
     void monthlyList() throws Exception {
         MonthlyPaymentDto paymentDto = new MonthlyPaymentDto(new CourseId(1L), new Title("test"), 35_000);
 
-        given(paymentService.monthlyList(new Name("userName")))
+        given(paymentService.monthlyList(new UserName("userName@email.com")))
                 .willReturn(new MonthlyPaymentsDto(List.of(paymentDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/instructor/monthly-total-payments")

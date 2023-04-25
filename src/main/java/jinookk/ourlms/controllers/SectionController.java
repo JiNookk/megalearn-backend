@@ -12,6 +12,7 @@ import jinookk.ourlms.services.SectionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,5 +79,11 @@ public class SectionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String missingProperties() {
         return "Property is Missing";
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
     }
 }

@@ -1,12 +1,12 @@
 package jinookk.ourlms.services;
 
+import exceptions.UserNameAlreadyExist;
 import jinookk.ourlms.dtos.RegisterRequestDto;
-import jinookk.ourlms.exceptions.RegisterFailed;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Cart;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Like;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -38,8 +38,8 @@ public class RegisterService {
     }
 
     public Account register(RegisterRequestDto registerRequestDto) {
-        if (accountRepository.existsByUserName(new Name(registerRequestDto.getUserName()))) {
-            throw new RegisterFailed(registerRequestDto.getUserName());
+        if (accountRepository.existsByUserName(new UserName(registerRequestDto.getUserName()))) {
+            throw new UserNameAlreadyExist(registerRequestDto.getUserName());
         }
 
         List<Course> courses = courseRepository.findAll();

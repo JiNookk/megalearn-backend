@@ -3,9 +3,7 @@ package jinookk.ourlms.controllers;
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LecturesDto;
 import jinookk.ourlms.models.entities.Lecture;
-import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.Title;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.LectureService;
 import jinookk.ourlms.utils.JwtUtil;
@@ -42,7 +40,7 @@ class LectureControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
     }
 
     @Test
@@ -117,7 +115,7 @@ class LectureControllerTest {
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
-        given(lectureService.listByInstructorId(new Name("userName")))
+        given(lectureService.listByInstructorId(new UserName("userName@email.com")))
                 .willReturn(lecturesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/instructor")
@@ -134,7 +132,7 @@ class LectureControllerTest {
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
-        given(lectureService.myLectures(new Name("userName")))
+        given(lectureService.myLectures(new UserName("userName@email.com")))
                 .willReturn(lecturesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/me")

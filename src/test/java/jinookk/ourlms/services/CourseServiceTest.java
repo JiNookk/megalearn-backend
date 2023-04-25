@@ -12,7 +12,7 @@ import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.HashTag;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -23,7 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -77,7 +76,7 @@ class CourseServiceTest {
 
     @Test
     void detail() {
-        CourseDto courseDto = courseService.detail(new Name("name"), new CourseId(1L));
+        CourseDto courseDto = courseService.detail(new UserName("userName@email.com"), new CourseId(1L));
 
         assertThat(courseDto).isNotNull();
         assertThat(courseDto.getIsPurchased()).isTrue();
@@ -101,14 +100,14 @@ class CourseServiceTest {
 
     @Test
     void wishList() {
-        CoursesDto coursesDto = courseService.wishList(new Name("name"));
+        CoursesDto coursesDto = courseService.wishList(new UserName("userName@email.com"));
 
         assertThat(coursesDto.getCourses()).hasSize(1);
     }
 
     @Test
     void create() {
-        courseService.create(new CourseRequestDto("title", Level.BEGINNER.getName()), new Name("name"));
+        courseService.create(new CourseRequestDto("title", Level.BEGINNER.getName()), new UserName("userName@email.com"));
 
         verify(courseRepository).save(any());
     }

@@ -6,12 +6,14 @@ import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.LikeDto;
 import jinookk.ourlms.dtos.LikesDto;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LikeId;
 import jinookk.ourlms.services.LikeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,7 +41,7 @@ public class LikeController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public LikeDto like(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @PathVariable Long courseId
     ) {
         return likeService.detail(userName, new CourseId(courseId));
@@ -56,5 +58,11 @@ public class LikeController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String missingProperties() {
         return "Property is Missing";
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
     }
 }

@@ -4,6 +4,7 @@ import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.services.ProgressService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +41,7 @@ class ProgressControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
     }
 
     @Test

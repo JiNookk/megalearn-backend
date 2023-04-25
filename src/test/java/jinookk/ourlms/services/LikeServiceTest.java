@@ -4,8 +4,7 @@ import jinookk.ourlms.dtos.LikeDto;
 import jinookk.ourlms.dtos.LikesDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Like;
-import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LikeId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -50,7 +49,7 @@ class LikeServiceTest {
 
     @Test
     void detail() {
-        LikeDto likeDto = likeService.detail(new Name("userName"), new CourseId(1L));
+        LikeDto likeDto = likeService.detail(new UserName("userName@email.com"), new CourseId(1L));
 
         assertThat(likeDto.getClicked()).isFalse();
     }

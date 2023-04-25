@@ -10,6 +10,7 @@ import jinookk.ourlms.dtos.InquiryFilterDto;
 import jinookk.ourlms.dtos.InquiryRequestDto;
 import jinookk.ourlms.dtos.InquiryUpdateDto;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
@@ -18,6 +19,7 @@ import jinookk.ourlms.services.InquiryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,7 +47,7 @@ public class InquiryController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public InquiryDto post(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @Validated @RequestBody InquiryRequestDto inquiryRequestDto
     ) {
         return inquiryService.create(inquiryRequestDto, userName);
@@ -64,7 +66,7 @@ public class InquiryController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = false, dataType = "string", paramType = "header")
     })
     public InquiriesDto listWithInstructorId(
-            @RequestAttribute(required = false) Name userName,
+            @RequestAttribute(required = false) UserName userName,
             @RequestParam(required = false) Long courseId,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String order
@@ -75,7 +77,7 @@ public class InquiryController {
 
     @GetMapping("/inquiries/me")
     public InquiriesDto myInquiries(
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return inquiryService.myInquiries(userName);
     }
@@ -129,5 +131,11 @@ public class InquiryController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String missingProperties() {
         return "Property is Missing";
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
     }
 }

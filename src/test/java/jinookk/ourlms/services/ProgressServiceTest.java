@@ -6,7 +6,7 @@ import jinookk.ourlms.dtos.ProgressesDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.vos.LectureTime;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
@@ -55,20 +55,20 @@ class ProgressServiceTest {
         given(progressRepository.findAll((Specification<Progress>) any(), (Sort) any()))
                 .willReturn(List.of(progress));
 
-        Account account = Account.fake("userName");
+        Account account = Account.fake("userName@email.com");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 
     @Test
     void detail() {
-        ProgressDto progressDto = progressService.detail(new LectureId(1L), new Name("userName"));
+        ProgressDto progressDto = progressService.detail(new LectureId(1L), new UserName("userName@email.com"));
 
         assertThat(progressDto).isNotNull();
     }
 
     @Test
     void list() {
-        ProgressesDto progressesDto = progressService.list(new Name("userName"), LocalDateTime.now().toString());
+        ProgressesDto progressesDto = progressService.list(new UserName("userName@email.com"), LocalDateTime.now().toString());
 
         assertThat(progressesDto.getProgresses()).hasSize(1);
     }

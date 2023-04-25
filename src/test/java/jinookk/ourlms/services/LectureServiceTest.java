@@ -10,7 +10,7 @@ import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.vos.LectureTime;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -107,14 +107,14 @@ class LectureServiceTest {
 
     @Test
     void listByInstructorId() {
-        LecturesDto lecturesDto = lectureService.listByInstructorId(new Name("userName"));
+        LecturesDto lecturesDto = lectureService.listByInstructorId(new UserName("userName@email.com"));
 
         assertThat(lecturesDto.getLectures()).hasSize(1);
     }
 
     @Test
     void myLectures() {
-        LecturesDto lecturesDto = lectureService.myLectures(new Name("userName"));
+        LecturesDto lecturesDto = lectureService.myLectures(new UserName("userName@email.com"));
 
         assertThat(lecturesDto.getLectures()).hasSize(1);
     }

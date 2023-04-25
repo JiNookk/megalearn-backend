@@ -12,6 +12,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Inquiry;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
@@ -44,7 +45,7 @@ public class InquiryService {
         this.lectureRepository = lectureRepository;
     }
 
-    public InquiryDto create(InquiryRequestDto inquiryRequestDto, Name userName) {
+    public InquiryDto create(InquiryRequestDto inquiryRequestDto, UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -83,7 +84,7 @@ public class InquiryService {
                 .toList());
     }
 
-    public InquiriesDto list(Name userName, InquiryFilterDto inquiryFilterDto) {
+    public InquiriesDto list(UserName userName, InquiryFilterDto inquiryFilterDto) {
         if (userName == null) {
             return new InquiriesDto(inquiryRepository.findAll().stream()
                     .filter(inquiry -> !inquiry.status().value().equals("deleted"))
@@ -194,7 +195,7 @@ public class InquiryService {
                 .toList();
     }
 
-    public InquiriesDto myInquiries(Name userName) {
+    public InquiriesDto myInquiries(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 

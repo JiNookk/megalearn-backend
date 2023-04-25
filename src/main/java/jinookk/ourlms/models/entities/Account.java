@@ -3,6 +3,7 @@ package jinookk.ourlms.models.entities;
 import jinookk.ourlms.dtos.RegisterRequestDto;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.PhoneNumber;
+import jinookk.ourlms.models.vos.UserName;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.AttributeOverride;
@@ -24,7 +25,7 @@ public class Account {
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "user_name"))
-    private Name userName;
+    private UserName userName;
 
     private String password;
 
@@ -35,18 +36,18 @@ public class Account {
     public Account() {
     }
 
-    public Account(Name name, Name userName) {
+    public Account(Name name, UserName userName) {
         this.name = name;
         this.userName = userName;
     }
 
-    public Account(Name name, Name userName, String phoneNumber) {
+    public Account(Name name, UserName userName, String phoneNumber) {
         this.name = name;
         this.userName = userName;
         this.phoneNumber = new PhoneNumber(phoneNumber);
     }
 
-    public Account(Long id, Name name, Name userName) {
+    public Account(Long id, Name name, UserName userName) {
         this.id = id;
         this.name = name;
         this.userName = userName;
@@ -57,7 +58,7 @@ public class Account {
     }
 
     private static Account fake(Name name) {
-        Name userName = new Name("ojw0828@naver.com");
+        UserName userName = new UserName("ojw0828@naver.com");
         Long id = 1L;
 
         return new Account(id, name, userName);
@@ -65,7 +66,8 @@ public class Account {
 
     public static Account of(RegisterRequestDto registerRequestDto) {
         Name name = new Name(registerRequestDto.getName());
-        Name userName = new Name(registerRequestDto.getUserName());
+        UserName userName = new UserName(registerRequestDto.getUserName());
+        userName.isValidFormat();
         String phoneNumber = registerRequestDto.getPhoneNumber();
 
         return new Account(name, userName, phoneNumber);
@@ -83,7 +85,7 @@ public class Account {
         return phoneNumber.value();
     }
 
-    public Name userName() {
+    public UserName userName() {
         return userName;
     }
 
