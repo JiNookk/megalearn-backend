@@ -7,7 +7,6 @@ import jinookk.ourlms.exceptions.LoginFailed;
 import jinookk.ourlms.services.LoginService;
 import jinookk.ourlms.services.TokenService;
 import jinookk.ourlms.utils.HttpUtil;
-import jinookk.ourlms.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.ExceptionHandler;

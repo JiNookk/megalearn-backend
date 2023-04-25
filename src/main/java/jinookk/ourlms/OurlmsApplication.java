@@ -72,4 +72,3 @@ public class OurlmsApplication {
         return new Argon2PasswordEncoder();
     }
 }
-

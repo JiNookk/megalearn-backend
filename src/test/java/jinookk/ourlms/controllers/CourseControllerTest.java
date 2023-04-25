@@ -57,7 +57,7 @@ class CourseControllerTest {
                         .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\":\"courseTitle\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().string(
                         containsString("\"title\":\"courseTitle\"")
                 ));

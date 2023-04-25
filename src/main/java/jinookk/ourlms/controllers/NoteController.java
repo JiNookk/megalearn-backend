@@ -1,5 +1,8 @@
 package jinookk.ourlms.controllers;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.NoteDeleteDto;
 import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NoteRequestDto;
@@ -12,7 +15,9 @@ import jinookk.ourlms.models.vos.ids.NoteId;
 import jinookk.ourlms.services.NoteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +39,10 @@ public class NoteController {
     }
 
     @GetMapping("/lectures/{lectureId}/notes")
+    @ApiOperation(value = "Fetches My Notes", notes = "fetches my notes with given lecture")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public NotesDto list(
             @RequestAttribute Name userName,
             @PathVariable Long lectureId
@@ -42,6 +51,10 @@ public class NoteController {
     }
 
     @GetMapping("/notes/me")
+    @ApiOperation(value = "Fetches My Notes", notes = "fetches my entire notes")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public NotesDto myNotes(
             @RequestAttribute Name userName,
             @RequestParam(required = false) String date
@@ -51,6 +64,10 @@ public class NoteController {
 
     @PostMapping("/notes")
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Creates Notes", notes = "creates a note")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public NoteDto post(
             @RequestAttribute Name userName,
             @Validated @RequestBody NoteRequestDto noteRequestDto
@@ -75,9 +92,9 @@ public class NoteController {
     }
 
 
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public String missingProperties() {
-//        return "Property is Missing";
-//    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String missingProperties() {
+        return "Property is Missing";
+    }
 }

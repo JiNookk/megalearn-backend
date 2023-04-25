@@ -62,8 +62,6 @@ public class PaymentService {
                 .toList());
     }
 
-    //
-
     public PaymentsDto list(Name userName, CourseId courseId) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
@@ -95,16 +93,6 @@ public class PaymentService {
                 .toList();
 
         return new MonthlyPaymentsDto(monthlyPaymentDtos);
-    }
-
-    private List<Course> getCourses(AccountId accountId, CourseId courseId) {
-        if (courseId.value() == null || courseId.value() < 1) {
-            return courseRepository.findAllByAccountId(accountId);
-        }
-
-        return courseRepository.findAllByAccountId(accountId).stream()
-                .filter(course -> course.filterId(courseId))
-                .toList();
     }
 
     public PaymentsDto purchase(PaymentRequestDto paymentRequestDto, Name userName) {
@@ -151,5 +139,15 @@ public class PaymentService {
                 .toList();
 
         return new PaymentsDto(paymentDtos);
+    }
+
+    private List<Course> getCourses(AccountId accountId, CourseId courseId) {
+        if (courseId.value() == null || courseId.value() < 1) {
+            return courseRepository.findAllByAccountId(accountId);
+        }
+
+        return courseRepository.findAllByAccountId(accountId).stream()
+                .filter(course -> course.filterId(courseId))
+                .toList();
     }
 }

@@ -1,7 +1,6 @@
 package jinookk.ourlms.controllers;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import jinookk.ourlms.exceptions.LoginFailed;
 import jinookk.ourlms.exceptions.RefreshTokenExpired;
 import jinookk.ourlms.services.TokenService;
@@ -30,7 +29,6 @@ public class TokenController {
     public String reissueAccessToken(HttpServletRequest request) {
         String refreshToken = httpUtil.getCookieValue(request, "refreshToken");
 
-        System.out.println(refreshToken);
         return tokenService.reissueAccessToken(refreshToken);
     }
 

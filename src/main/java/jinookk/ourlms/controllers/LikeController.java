@@ -1,5 +1,8 @@
 package jinookk.ourlms.controllers;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.LikeDto;
 import jinookk.ourlms.dtos.LikesDto;
 import jinookk.ourlms.models.vos.Name;
@@ -31,6 +34,10 @@ public class LikeController {
     }
 
     @GetMapping("/courses/{courseId}/likes/me")
+    @ApiOperation(value = "Fetches like", notes = "fetches my like about given course")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public LikeDto like(
             @RequestAttribute Name userName,
             @PathVariable Long courseId

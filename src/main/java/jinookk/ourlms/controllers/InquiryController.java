@@ -1,5 +1,8 @@
 package jinookk.ourlms.controllers;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.InquiriesDto;
 import jinookk.ourlms.dtos.InquiryDeleteDto;
 import jinookk.ourlms.dtos.InquiryDto;
@@ -37,6 +40,10 @@ public class InquiryController {
 
     @PostMapping("/inquiries")
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Create Inquiry", notes = "create inquiry")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public InquiryDto post(
             @RequestAttribute Name userName,
             @Validated @RequestBody InquiryRequestDto inquiryRequestDto
@@ -52,6 +59,10 @@ public class InquiryController {
     }
 
     @GetMapping("/inquiries")
+    @ApiOperation(value = "Create Inquiry", notes = "create inquiry")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = false, dataType = "string", paramType = "header")
+    })
     public InquiriesDto listWithInstructorId(
             @RequestAttribute(required = false) Name userName,
             @RequestParam(required = false) Long courseId,

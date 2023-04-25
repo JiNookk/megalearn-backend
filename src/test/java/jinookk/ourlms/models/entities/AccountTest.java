@@ -16,7 +16,7 @@ class AccountTest {
     @BeforeEach
     void setup() {
         registerRequestDto =
-                new RegisterRequestDto("UserName", "password", "name", "010-8556-8965");
+                new RegisterRequestDto("UserName", "password", "name", "01085568965");
 
         passwordEncoder = new Argon2PasswordEncoder();
     }
