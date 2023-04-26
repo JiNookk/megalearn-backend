@@ -1,6 +1,7 @@
 package jinookk.ourlms.dtos;
 
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 
 public class LoginResultDto {
     private final String accessToken;
@@ -8,7 +9,7 @@ public class LoginResultDto {
     private final String userName;
     private final String phoneNumber;
 
-    public LoginResultDto(String accessToken, Name name, Name userName, String phoneNumber) {
+    public LoginResultDto(String accessToken, Name name, UserName userName, String phoneNumber) {
         this.accessToken = accessToken;
         this.name = name.value();
         this.userName = userName.value();

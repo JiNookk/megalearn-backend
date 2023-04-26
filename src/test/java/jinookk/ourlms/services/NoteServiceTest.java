@@ -8,10 +8,11 @@ import jinookk.ourlms.dtos.NoteUpdateDto;
 import jinookk.ourlms.dtos.NotesDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Note;
+import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.LectureId;
-import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.ids.NoteId;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.NoteRepository;
@@ -55,7 +56,7 @@ class NoteServiceTest {
         long lectureId = 1L;
         LectureTimeDto lectureTimeDto = new LectureTimeDto(new LectureTime(1, 24));
         NoteRequestDto noteRequestDto = new NoteRequestDto(content, lectureId, lectureTimeDto);
-        Name userName = new Name("userName");
+        UserName userName = new UserName("userName@email.com");
 
         NoteDto noteDto = noteService.create(noteRequestDto, userName);
 
@@ -65,7 +66,7 @@ class NoteServiceTest {
 
     @Test
     void list() {
-        NotesDto notesDto = noteService.list(new LectureId(1L), new Name("userName"));
+        NotesDto notesDto = noteService.list(new LectureId(1L), new UserName("userName@email.com"));
 
         assertThat(notesDto.getNotes()).hasSize(1);
     }

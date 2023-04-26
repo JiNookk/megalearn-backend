@@ -11,13 +11,16 @@ import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.dtos.StatusUpdateDto;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CourseService;
 import jinookk.ourlms.services.MyCourseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,14 +49,14 @@ public class CourseController {
     })
     public CourseDto create(
             @Validated @RequestBody CourseRequestDto courseRequestDto,
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return courseService.create(courseRequestDto, userName);
     }
 
     @GetMapping("/courses/{courseId}")
     public CourseDto course(
-            @RequestAttribute(required = false) Name userName,
+            @RequestAttribute(required = false) UserName userName,
             @PathVariable Long courseId
     ) {
         return courseService.detail(userName, new CourseId(courseId));
@@ -65,7 +68,7 @@ public class CourseController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public CoursesDto wishList(
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return courseService.wishList(userName);
     }
@@ -96,7 +99,7 @@ public class CourseController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public CoursesDto myCourses(
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return myCourseService.myCourses(userName);
     }
@@ -107,7 +110,7 @@ public class CourseController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public CoursesDto uploadedCourses(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @RequestParam(required = false, defaultValue = "all") String type
     ) {
         return myCourseService.uploadedList(userName, type);
@@ -142,5 +145,11 @@ public class CourseController {
             @PathVariable String skill
     ) {
         return courseService.deleteSkill(new CourseId(courseId), new HashTag(skill));
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
     }
 }

@@ -14,6 +14,7 @@ import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.status.Status;
@@ -48,7 +49,7 @@ public class CourseService {
         this.likeRepository = likeRepository;
     }
 
-    public CourseDto create(CourseRequestDto courseRequestDto, Name userName) {
+    public CourseDto create(CourseRequestDto courseRequestDto, UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -60,7 +61,7 @@ public class CourseService {
     }
 
     // TODO : 강의에서 account여부와 payment여부를 분리해야한다.
-    public CourseDto detail(Name userName, CourseId courseId) {
+    public CourseDto detail(UserName userName, CourseId courseId) {
         Course course = courseRepository.findById(courseId.value())
                 .orElseThrow(() -> new CourseNotFound(courseId.value()));
 
@@ -109,7 +110,7 @@ public class CourseService {
         return new CoursesDto(courseDtos, courses.getTotalPages());
     }
 
-    public CoursesDto wishList(Name userName) {
+    public CoursesDto wishList(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 

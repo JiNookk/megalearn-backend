@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.CartRequestDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Cart;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -47,7 +48,7 @@ class CartServiceTest {
 
     @Test
     void detail() {
-        CartDto cartDto = cartService.detail(new Name("name"));
+        CartDto cartDto = cartService.detail(new UserName("userName@email.com"));
 
         assertThat(cartDto.getItemIds()).hasSize(2);
     }
@@ -55,7 +56,7 @@ class CartServiceTest {
     @Test
     void addItem() {
         CartDto cartDto = cartService.addItem(
-                new Name("name"), new CourseId(3L));
+                new UserName("userName@email.com"), new CourseId(3L));
 
         assertThat(cartDto.getItemIds()).hasSize(3);
     }
@@ -63,7 +64,7 @@ class CartServiceTest {
     @Test
     void removeItem() {
         CartDto cartDto = cartService.removeItem(
-                new Name("name"), new CartRequestDto(List.of(1L)));
+                new UserName("userName@email.com"), new CartRequestDto(List.of(1L)));
 
         assertThat(cartDto.getItemIds()).hasSize(1);
     }

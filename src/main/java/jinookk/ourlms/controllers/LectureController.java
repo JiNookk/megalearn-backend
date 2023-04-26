@@ -7,17 +7,20 @@ import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LectureRequestDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.dtos.LecturesDto;
-import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.LectureService;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -61,14 +64,14 @@ public class LectureController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public LecturesDto listByInstructorId(
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return lectureService.listByInstructorId(userName);
     }
 
     @GetMapping("/lectures/me")
     public LecturesDto myLectures(
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return lectureService.myLectures(userName);
     }
@@ -86,5 +89,11 @@ public class LectureController {
             @PathVariable Long lectureId
     ) {
         return lectureService.delete(lectureId);
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
     }
 }

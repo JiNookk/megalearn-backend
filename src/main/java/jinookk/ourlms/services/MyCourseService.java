@@ -6,7 +6,7 @@ import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
@@ -29,7 +29,7 @@ public class MyCourseService {
         this.accountRepository = accountRepository;
     }
 
-    public CoursesDto myCourses(Name userName) {
+    public CoursesDto myCourses(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -48,7 +48,7 @@ public class MyCourseService {
         return new CoursesDto(courseDtos);
     }
 
-    public CoursesDto uploadedList(Name userName, String type) {
+    public CoursesDto uploadedList(UserName userName, String type) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 

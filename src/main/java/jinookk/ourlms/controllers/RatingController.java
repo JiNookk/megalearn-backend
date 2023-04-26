@@ -6,13 +6,13 @@ import io.swagger.annotations.ApiOperation;
 import jinookk.ourlms.dtos.RatingDto;
 import jinookk.ourlms.dtos.RatingRequestDto;
 import jinookk.ourlms.dtos.RatingsDto;
-import jinookk.ourlms.models.entities.Rating;
-import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.RatingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -37,7 +37,7 @@ public class RatingController {
     })
     public RatingDto rate(
             @Validated @RequestBody RatingRequestDto ratingRequestDto,
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return ratingService.rate(userName, ratingRequestDto);
     }
@@ -48,7 +48,7 @@ public class RatingController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public RatingDto totalRating(
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return ratingService.totalRating(userName);
     }
@@ -64,7 +64,7 @@ public class RatingController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public RatingsDto myReviews(
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return ratingService.myReviews(userName);
     }
@@ -75,9 +75,15 @@ public class RatingController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public RatingsDto listByInstructorId(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @RequestParam(required = false) Long courseId
     ) {
         return ratingService.listWithAccountId(new CourseId(courseId), userName);
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
     }
 }

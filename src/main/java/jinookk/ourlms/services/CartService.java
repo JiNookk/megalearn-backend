@@ -6,7 +6,7 @@ import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.CartNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Cart;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -27,7 +27,7 @@ public class CartService {
         this.accountRepository = accountRepository;
     }
 
-    public CartDto detail(Name userName) {
+    public CartDto detail(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -40,7 +40,7 @@ public class CartService {
         return cart.toDto();
     }
 
-    public CartDto addItem(Name userName, CourseId itemId) {
+    public CartDto addItem(UserName userName, CourseId itemId) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -54,7 +54,7 @@ public class CartService {
         return cart.toDto();
     }
 
-    public CartDto removeItem(Name userName, CartRequestDto cartRequestDto) {
+    public CartDto removeItem(UserName userName, CartRequestDto cartRequestDto) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -63,7 +63,9 @@ public class CartService {
         Cart cart = cartRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new CartNotFound(accountId));
 
-        List<CourseId> courseIds = cartRequestDto.getItemIds().stream().map(CourseId::new).toList();
+        List<CourseId> courseIds = cartRequestDto.getItemIds().stream()
+                .map(CourseId::new)
+                .toList();
 
         cart.removeItems(courseIds);
 

@@ -12,7 +12,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Comment;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Inquiry;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -40,7 +40,7 @@ public class CommentService {
         this.courseRepository = courseRepository;
     }
 
-    public CommentsDto list(InquiryId inquiryId, Name userName) {
+    public CommentsDto list(InquiryId inquiryId, UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -55,15 +55,8 @@ public class CommentService {
         return new CommentsDto(commentDtos);
     }
 
-    // TODO : 댓글을 POST하는 메서드 -> 익명 댓글 기능 -> 이전에 달았던 댓글이 있으면 작성자명 그대로 가져오기
-    // TODO : 댓글을 만드는 역할 -> 질문이 가장 적합하다!
-    // TODO : 테스트 필요 -> 도메인 모델에서 비즈니스 로직테스트 하고 나머지 부분 테스트하기
-    // TODO : 지금 가지고 있는 객체들 사이에서 어떤게 가장 적합할지 고민해보기
-    // TODO : 행동을 정하고 적합한 객체를 양쪽에 배치하자.
-    public CommentDto create(CommentRequestDto commentRequestDto, Name userName) {
+    public CommentDto create(CommentRequestDto commentRequestDto, UserName userName) {
         InquiryId inquiryId = commentRequestDto.getInquiryId();
-
-        // 질문에 댓글달기 -> 프론트엔드에서 질문아이디, 댓글내용 전달
 
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
@@ -83,20 +76,26 @@ public class CommentService {
         return saved.toCommentDto(new AccountId(account.id()));
     }
 
-    public CommentDeleteDto delete(Long commentId) {
+    public CommentDeleteDto delete(Long commentId, UserName userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFound(commentId));
 
-        comment.removeAllProperties();
+        comment.removeAllProperties(new AccountId(account.id()));
 
         return comment.toCommentDeleteDto();
     }
 
-    public CommentDto update(Long commentId, String content) {
+    public CommentDto update(Long commentId, String content, UserName userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFound(commentId));
 
-        comment.updateContent(content);
+        comment.updateContent(content, new AccountId(account.id()));
 
         return comment.toCommentDto();
     }

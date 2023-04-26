@@ -7,7 +7,6 @@ import io.swagger.annotations.ExampleProperty;
 import jinookk.ourlms.dtos.LoginResultDto;
 import jinookk.ourlms.dtos.RegisterRequestDto;
 import jinookk.ourlms.exceptions.RegisterFailed;
-import jinookk.ourlms.models.exceptions.InvalidPhoneNumberLength;
 import jinookk.ourlms.services.KakaoService;
 import jinookk.ourlms.services.LoginService;
 import jinookk.ourlms.services.RegisterService;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -51,7 +51,7 @@ public class AccountController {
     @ResponseStatus(HttpStatus.CREATED)
     private LoginResultDto kaKaoLogin(
             @RequestParam String code
-    ) {
+    ) throws IOException {
         String kakaoToken = kakaoService.getAccessToken(code);
 
         Map<String, Object> userInfo = kakaoService.getUser(kakaoToken);
@@ -65,9 +65,15 @@ public class AccountController {
         return exception.getMessage();
     }
 
-    @ExceptionHandler(InvalidPhoneNumberLength.class)
+//    @ExceptionHandler(InvalidPhoneNumberLength.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public String invalidPhoneNumberLength(InvalidPhoneNumberLength exception){
+//        return exception.getMessage();
+//    }
+
+    @ExceptionHandler(IOException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String invalidPhoneNumberLength(InvalidPhoneNumberLength exception){
+    public String kakaoReadyFailed(IOException exception) {
         return exception.getMessage();
     }
 }

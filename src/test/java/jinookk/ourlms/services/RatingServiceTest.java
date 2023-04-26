@@ -8,6 +8,7 @@ import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Rating;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -16,7 +17,6 @@ import jinookk.ourlms.repositories.RatingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,14 +66,14 @@ class RatingServiceTest {
 
     @Test
     void rate() {
-        RatingDto ratingDto = ratingService.rate(new Name("userName"), new RatingRequestDto(1L, 4, "하이입니다"));
+        RatingDto ratingDto = ratingService.rate(new UserName("userName@email.com"), new RatingRequestDto(1L, 4, "하이입니다"));
 
         assertThat(ratingDto.getRating()).isEqualTo(4.0);
     }
 
     @Test
     void totalRating() {
-        RatingDto ratingDto = ratingService.totalRating(new Name("userName"));
+        RatingDto ratingDto = ratingService.totalRating(new UserName("userName@email.com"));
 
         assertThat(ratingDto.getRating()).isEqualTo(4.0);
     }
@@ -87,14 +87,14 @@ class RatingServiceTest {
 
     @Test
     void myReviews() {
-        RatingsDto ratingsDto = ratingService.myReviews(new Name("userName"));
+        RatingsDto ratingsDto = ratingService.myReviews(new UserName("userName@email.com"));
 
         assertThat(ratingsDto.getRatings()).hasSize(3);
     }
 
     @Test
     void listWithAccountId() {
-        RatingsDto ratingsDto = ratingService.listWithAccountId(new CourseId(1L), new Name("userName"));
+        RatingsDto ratingsDto = ratingService.listWithAccountId(new CourseId(1L), new UserName("userName@email.com"));
 
         assertThat(ratingsDto.getRatings()).hasSize(3);
     }

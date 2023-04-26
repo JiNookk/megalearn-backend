@@ -4,7 +4,7 @@ import jinookk.ourlms.dtos.RatingDto;
 import jinookk.ourlms.dtos.RatingsDto;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.RatingService;
 import jinookk.ourlms.utils.JwtUtil;
@@ -42,7 +42,7 @@ class RatingControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
     }
 
     @Test
@@ -70,7 +70,7 @@ class RatingControllerTest {
     void myRating() throws Exception {
         RatingDto ratingDto = new RatingDto(4.5);
 
-        given(ratingService.totalRating(new Name("userName")))
+        given(ratingService.totalRating(new UserName("userName@email.com")))
                 .willReturn(ratingDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/instructor/my-rating")
@@ -85,7 +85,7 @@ class RatingControllerTest {
     void myReviews() throws Exception {
         RatingDto ratingDto = new RatingDto(4.5);
 
-        given(ratingService.myReviews(new Name("userName")))
+        given(ratingService.myReviews(new UserName("userName@email.com")))
                 .willReturn(new RatingsDto(List.of(ratingDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/ratings/me")

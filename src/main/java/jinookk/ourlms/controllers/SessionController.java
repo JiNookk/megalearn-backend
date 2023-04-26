@@ -9,6 +9,7 @@ import jinookk.ourlms.services.TokenService;
 import jinookk.ourlms.utils.HttpUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,5 +58,11 @@ public class SessionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String invalidPassword() {
         return "Invalid Password";
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
     }
 }

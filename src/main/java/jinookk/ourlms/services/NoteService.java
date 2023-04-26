@@ -10,6 +10,7 @@ import jinookk.ourlms.exceptions.NoteNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Note;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.NoteId;
@@ -34,7 +35,7 @@ public class NoteService {
     }
 
     // TODO : 사용자가 만드는 역할을 하기에 적합할 것 같다.
-    public NoteDto create(NoteRequestDto noteRequestDto, Name userName) {
+    public NoteDto create(NoteRequestDto noteRequestDto, UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -47,7 +48,7 @@ public class NoteService {
         return saved.toNoteDto();
     }
 
-    public NotesDto list(LectureId lectureId, Name userName) {
+    public NotesDto list(LectureId lectureId, UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -62,7 +63,7 @@ public class NoteService {
         return new NotesDto(noteDtos);
     }
 
-    public NotesDto myNotes(Name userName, String date) {
+    public NotesDto myNotes(UserName userName, String date) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 

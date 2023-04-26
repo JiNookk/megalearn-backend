@@ -9,6 +9,7 @@ import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.status.Status;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -148,7 +149,11 @@ public class Comment {
         return new CommentDto(id, author, content, publishTime, isMyComment);
     }
 
-    public void removeAllProperties() {
+    public void removeAllProperties(AccountId accountId) {
+        if (!isMyComment(accountId)) {
+            throw new AccessDeniedException("accountId: " + accountId + " has no authority for delete comment!");
+        }
+
         inquiryId = null;
         accountId = null;
         status.delete();
@@ -161,7 +166,11 @@ public class Comment {
         return new CommentDeleteDto(id);
     }
 
-    public void updateContent(String value) {
+    public void updateContent(String value, AccountId accountId) {
+        if (!isMyComment(accountId)) {
+            throw new AccessDeniedException("accountId: " + accountId + " has no authority for update comment!");
+        }
+
         this.content.update(value);
     }
 

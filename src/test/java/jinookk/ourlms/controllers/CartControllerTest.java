@@ -2,7 +2,7 @@ package jinookk.ourlms.controllers;
 
 import jinookk.ourlms.dtos.CartDto;
 import jinookk.ourlms.models.entities.Cart;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CartService;
@@ -42,7 +42,7 @@ class CartControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
 
         List<CourseId> courseIds = List.of(new CourseId(1L), new CourseId(2L));
 

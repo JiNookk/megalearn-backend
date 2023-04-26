@@ -10,7 +10,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Inquiry;
 import jinookk.ourlms.models.entities.Lecture;
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
@@ -85,7 +85,7 @@ class InquiryServiceTest {
 
     @Test
     void myInquiries() {
-        InquiriesDto inquiriesDto = inquiryService.myInquiries(new Name("userName"));
+        InquiriesDto inquiriesDto = inquiryService.myInquiries(new UserName("userName@email.com"));
 
         assertThat(inquiriesDto.getInquiries()).hasSize(2);
     }
@@ -102,7 +102,7 @@ class InquiryServiceTest {
         InquiryRequestDto inquiryRequestDto =
                 new InquiryRequestDto(new LectureId(1L), List.of("JPA"), "test", "tester", true, 1, 24, 1L);
 
-        Name userName = new Name("userName");
+        UserName userName = new UserName("userName@email.com");
 
         InquiryDto inquiryDto = inquiryService.create(inquiryRequestDto, userName);
 
@@ -145,7 +145,7 @@ class InquiryServiceTest {
 
     @Test
     void listWithInstructorInquiries() {
-        InquiriesDto inquiriesDto = inquiryService.list(new Name("userName"), new InquiryFilterDto(null, null, null));
+        InquiriesDto inquiriesDto = inquiryService.list(new UserName("userName@email.com"), new InquiryFilterDto(null, null, null));
 
         assertThat(inquiriesDto.getInquiries()).hasSize(4);
     }

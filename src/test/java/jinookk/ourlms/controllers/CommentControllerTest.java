@@ -4,8 +4,7 @@ import jinookk.ourlms.dtos.CommentDeleteDto;
 import jinookk.ourlms.dtos.CommentDto;
 import jinookk.ourlms.dtos.CommentsDto;
 import jinookk.ourlms.models.entities.Comment;
-import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.services.CommentService;
 import jinookk.ourlms.utils.JwtUtil;
@@ -42,7 +41,7 @@ class CommentControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
     }
 
     @Test
@@ -50,11 +49,12 @@ class CommentControllerTest {
         CommentDto commentDto = Comment.fake("hi").toCommentDto();
 
         CommentsDto commentsDto = new CommentsDto(List.of(commentDto));
-        given(commentService.list(new InquiryId(1L), new Name("userName"))).willReturn(commentsDto);
+        given(commentService.list(new InquiryId(1L), new UserName("userName@email.com"))).willReturn(commentsDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/inquiries/1/comments")
                         .header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isOk())
+                .andExpect(status().isOk()
+                )
                 .andExpect(content().string(
                         containsString("\"comments\":[")
                 ));
@@ -72,7 +72,8 @@ class CommentControllerTest {
                         .content("{" +
                                 "\"content\":\"hi\", " +
                                 "\"inquiryId\":1" +
-                                "}"))
+                                "}")
+                )
                 .andExpect(status().isCreated())
                 .andExpect(content().string(
                         containsString("\"content\":\"hi\"")
@@ -83,11 +84,13 @@ class CommentControllerTest {
     void update() throws Exception {
         CommentDto commentDto = Comment.fake("updated").toCommentDto();
 
-        given(commentService.update(any(), any())).willReturn(commentDto);
+        given(commentService.update(any(), any(), any())).willReturn(commentDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/comments/11")
+                        .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("\"content\":\"updated\""))
+                        .content("\"content\":\"updated\"")
+                )
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"content\":\"updated\"")
@@ -97,9 +100,11 @@ class CommentControllerTest {
     @Test
     void delete() throws Exception {
         CommentDeleteDto commentDeleteDto = Comment.fake("hi").toCommentDeleteDto();
-        given(commentService.delete(any())).willReturn(commentDeleteDto);
+        given(commentService.delete(any(), any())).willReturn(commentDeleteDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/comments/11"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/comments/11")
+                        .header("Authorization", "Bearer " + accessToken)
+                )
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"commentId\":11")

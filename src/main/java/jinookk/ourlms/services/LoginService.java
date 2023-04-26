@@ -6,9 +6,9 @@ import jinookk.ourlms.dtos.RegisterRequestDto;
 import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.utils.JwtUtil;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +35,7 @@ public class LoginService {
 
     public LoginResultDto kakaoLogin(Map<String, Object> userInfo) {
         Name name = new Name(String.valueOf(userInfo.get("nickname")));
-        Name userName = new Name(String.valueOf(userInfo.get("email")));
+        UserName userName = new UserName(String.valueOf(userInfo.get("email")));
 
         // 회원 없을 경우 -> 회원가입
         if (!accountRepository.existsByUserName(userName)) {
@@ -60,7 +60,7 @@ public class LoginService {
     }
 
     public LoginResultDto login(LoginRequestDto loginRequestDto) {
-        Name userName = new Name(loginRequestDto.getEmail());
+        UserName userName = new UserName(loginRequestDto.getEmail());
 
         String password = loginRequestDto.getPassword();
 

@@ -9,6 +9,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Rating;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.AccountRepository;
@@ -34,7 +35,7 @@ public class RatingService {
         this.accountRepository = accountRepository;
     }
 
-    public RatingDto totalRating(Name userName) {
+    public RatingDto totalRating(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -46,17 +47,7 @@ public class RatingService {
 
         List<Rating> ratings = ratingRepository.findAll();
 
-//      rating을 평균내는 메서드는 어디서 만드는게 좋을까? -> rating
         Double totalRating = Rating.averageOf(courseIds, ratings);
-
-//        Double totalRating = courses.stream()
-//                .map(course -> course.averageRating(
-//                        ratingRepository.findAllByCourseId(new CourseId(course.id()))))
-//                .reduce(Double::sum)
-//                .get();
-//                .orElseThrow(() -> new RatingNotExisting(accountId));
-
-        System.out.println(totalRating);
 
         return new RatingDto(totalRating);
     }
@@ -71,7 +62,7 @@ public class RatingService {
         return new RatingsDto(ratingDtos);
     }
 
-    public RatingsDto listWithAccountId(CourseId courseId, Name userName) {
+    public RatingsDto listWithAccountId(CourseId courseId, UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -89,7 +80,7 @@ public class RatingService {
         return new RatingsDto(ratingDtos);
     }
 
-    public RatingDto rate(Name userName, RatingRequestDto ratingRequestDto) {
+    public RatingDto rate(UserName userName, RatingRequestDto ratingRequestDto) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -100,7 +91,7 @@ public class RatingService {
         return saved.toDto();
     }
 
-    public RatingsDto myReviews(Name userName) {
+    public RatingsDto myReviews(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 

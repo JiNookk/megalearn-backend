@@ -30,7 +30,7 @@ public class RefreshToken {
     }
 
     public static RefreshToken fake(String expired) {
-        return new RefreshToken("tester", expired);
+        return new RefreshToken("tester@email.com", expired);
     }
 
 

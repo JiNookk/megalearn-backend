@@ -1,6 +1,6 @@
 package jinookk.ourlms.exceptions;
 
-import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 
 public class AccountNotFound extends RuntimeException {
@@ -8,7 +8,7 @@ public class AccountNotFound extends RuntimeException {
         super("Account is not found by id: " + accountId);
     }
 
-    public AccountNotFound(Name userName) {
+    public AccountNotFound(UserName userName) {
         super("Account is not found by userName: " + userName);
     }
 }

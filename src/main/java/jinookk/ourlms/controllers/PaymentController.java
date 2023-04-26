@@ -8,12 +8,13 @@ import jinookk.ourlms.dtos.KakaoRequestDto;
 import jinookk.ourlms.dtos.MonthlyPaymentsDto;
 import jinookk.ourlms.dtos.PaymentRequestDto;
 import jinookk.ourlms.dtos.PaymentsDto;
-import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.KakaoService;
 import jinookk.ourlms.services.PaymentService;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -39,7 +40,7 @@ public class PaymentController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public KakaoReadyDto paymentReady(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @RequestBody KakaoRequestDto kakaoRequestDto
     ) {
         return kakaoService.paymentUrl(userName, kakaoRequestDto.getCourseIds());
@@ -52,7 +53,7 @@ public class PaymentController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public PaymentsDto purchase(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @RequestBody PaymentRequestDto paymentRequestDto
     ) {
         return paymentService.purchase(paymentRequestDto, userName);
@@ -69,7 +70,7 @@ public class PaymentController {
 //            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
 //    })
     public PaymentsDto list(
-            @RequestAttribute Name userName,
+            @RequestAttribute UserName userName,
             @RequestParam(required = false) Long courseId
     ) {
         return paymentService.list(userName, new CourseId(courseId));
@@ -81,7 +82,7 @@ public class PaymentController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public PaymentsDto list(
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return paymentService.list(userName);
     }
@@ -92,8 +93,14 @@ public class PaymentController {
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
     public MonthlyPaymentsDto monthlyList(
-            @RequestAttribute Name userName
+            @RequestAttribute UserName userName
     ) {
         return paymentService.monthlyList(userName);
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
     }
 }

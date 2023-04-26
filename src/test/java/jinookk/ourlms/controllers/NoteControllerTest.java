@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NotesDto;
 import jinookk.ourlms.models.entities.Note;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.NoteId;
 import jinookk.ourlms.services.NoteService;
 import jinookk.ourlms.utils.JwtUtil;
@@ -41,7 +42,7 @@ class NoteControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
     }
 
     @Test

@@ -1,6 +1,6 @@
 package jinookk.ourlms.models.vos;
 
-import jinookk.ourlms.models.exceptions.InvalidPhoneNumberLength;
+import jinookk.ourlms.exceptions.InvalidPhoneNumberLength;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

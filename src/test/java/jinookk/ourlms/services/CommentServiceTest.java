@@ -7,6 +7,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Comment;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Inquiry;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.ids.InquiryId;
@@ -18,7 +19,6 @@ import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.InquiryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -65,7 +65,7 @@ class CommentServiceTest {
 
     @Test
     void list() {
-        CommentsDto commentsDto = commentService.list(new InquiryId(1L), new Name("userName"));
+        CommentsDto commentsDto = commentService.list(new InquiryId(1L), new UserName("userName@email.com"));
 
         assertThat(commentsDto.getComments()).hasSize(3);
     }
@@ -74,7 +74,7 @@ class CommentServiceTest {
     void createWithExistingUserId() {
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "hi");
 
-        CommentDto commentDto = commentService.create(commentRequestDto, new Name("userName"));
+        CommentDto commentDto = commentService.create(commentRequestDto, new UserName("userName@email.com"));
 
         assertThat(commentDto).isNotNull();
 
@@ -90,7 +90,7 @@ class CommentServiceTest {
         given(commentRepository.save(any())).willReturn(comment);
         CommentRequestDto commentRequestDto = new CommentRequestDto(inquiryId, "hi");
 
-        Name userName = new Name("userName");
+        UserName userName = new UserName("userName@email.com");
         CommentDto commentDto = commentService.create(commentRequestDto, userName);
 
         assertThat(commentDto).isNotNull();
@@ -106,11 +106,11 @@ class CommentServiceTest {
 
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 
-        commentService.update(1L, "addItem");
+        commentService.update(1L, "addItem", new UserName("userName"));
 
         verify(commentRepository).findById(1L);
 
-        verify(comment).updateContent("addItem");
+        verify(comment).updateContent("addItem", new AccountId(1L));
     }
 
     @Test
@@ -119,10 +119,10 @@ class CommentServiceTest {
 
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 
-        commentService.delete(1L);
+        commentService.delete(1L, new UserName("userName"));
 
         verify(commentRepository).findById(1L);
 
-        verify(comment).removeAllProperties();
+        verify(comment).removeAllProperties(new AccountId(1L));
     }
 }

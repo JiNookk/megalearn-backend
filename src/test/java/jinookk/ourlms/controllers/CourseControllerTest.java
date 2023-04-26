@@ -4,6 +4,7 @@ import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.vos.Name;
+import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.services.CourseService;
 import jinookk.ourlms.services.MyCourseService;
 import jinookk.ourlms.utils.JwtUtil;
@@ -44,7 +45,7 @@ class CourseControllerTest {
 
     @BeforeEach
     void setup() {
-        accessToken = jwtUtil.encode(new Name("userName"));
+        accessToken = jwtUtil.encode(new UserName("userName@email.com"));
     }
 
     @Test
