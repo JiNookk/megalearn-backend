@@ -13,7 +13,6 @@ import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.HashTag;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -21,7 +20,6 @@ import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.LikeRepository;
-import jinookk.ourlms.repositories.PaymentRepository;
 import jinookk.ourlms.specifications.CourseSpecification;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -145,29 +143,38 @@ public class CourseService {
         return new CoursesDto(courseDtos, courses.getTotalPages());
     }
 
-    public CourseDto update(Long courseId, CourseUpdateRequestDto courseUpdateRequestDto) {
+    public CourseDto update(Long courseId, CourseUpdateRequestDto courseUpdateRequestDto, UserName userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFound(courseId));
 
-        course.update(courseUpdateRequestDto);
+        course.update(courseUpdateRequestDto, new AccountId(account.id()));
 
         return course.toCourseDto();
     }
 
-    public CourseDto delete(Long courseId) {
+    public CourseDto delete(Long courseId, UserName userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFound(courseId));
 
-        course.delete();
+        course.delete(new AccountId(account.id()));
 
         return course.toCourseDto();
     }
 
-    public CourseDto deleteSkill(CourseId courseId, HashTag hashTag) {
+    public CourseDto deleteSkill(CourseId courseId, HashTag hashTag, UserName userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
         Course course = courseRepository.findById(courseId.value())
                 .orElseThrow(() -> new CourseNotFound(courseId.value()));
 
-        course.deleteSkill(hashTag);
+        course.deleteSkill(hashTag, new AccountId(account.id()));
 
         return course.toCourseDto();
     }

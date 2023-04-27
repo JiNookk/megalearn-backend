@@ -3,12 +3,14 @@ package jinookk.ourlms.controllers;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.dtos.StatusUpdateDto;
+import jinookk.ourlms.exceptions.CourseNotFound;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
@@ -17,6 +19,7 @@ import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.services.CourseService;
 import jinookk.ourlms.services.MyCourseService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,6 +58,11 @@ public class CourseController {
     }
 
     @GetMapping("/courses/{courseId}")
+    @ApiOperation(value = "Fetch Course", notes = "fetches course")
+    @ApiResponse(code = 404, message = "course not found")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = false, dataType = "string", paramType = "header")
+    })
     public CourseDto course(
             @RequestAttribute(required = false) UserName userName,
             @PathVariable Long courseId
@@ -117,11 +125,16 @@ public class CourseController {
     }
 
     @PatchMapping("/courses/{courseId}")
+    @ApiOperation(value = "Update Course", notes = "update course with given id")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public CourseDto update(
+            @RequestAttribute UserName userName,
             @PathVariable Long courseId,
             @Validated @RequestBody CourseUpdateRequestDto courseUpdateRequestDto
     ) {
-        return courseService.update(courseId, courseUpdateRequestDto);
+        return courseService.update(courseId, courseUpdateRequestDto, userName);
     }
 
     @PatchMapping("/courses/{courseId}/status")
@@ -133,23 +146,45 @@ public class CourseController {
     }
 
     @DeleteMapping("/courses/{courseId}")
+    @ApiOperation(value = "Delete Courses", notes = "delete course with given id")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public CourseDto delete(
-            @PathVariable Long courseId
+            @PathVariable Long courseId,
+            @RequestAttribute UserName userName
     ) {
-        return courseService.delete(courseId);
+        return courseService.delete(courseId, userName);
     }
 
     @DeleteMapping("/courses/{courseId}/skills/{skill}")
+    @ApiOperation(value = "Delete Courses", notes = "delete course with given id")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
+    })
     public CourseDto deleteSkill(
             @PathVariable Long courseId,
-            @PathVariable String skill
+            @PathVariable String skill,
+            @RequestAttribute UserName userName
     ) {
-        return courseService.deleteSkill(new CourseId(courseId), new HashTag(skill));
+        return courseService.deleteSkill(new CourseId(courseId), new HashTag(skill), userName);
     }
 
     @ExceptionHandler(ServletRequestBindingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String userNameRequired(ServletRequestBindingException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(CourseNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String courseNotFound(CourseNotFound exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String accessDeniedException(AccessDeniedException exception) {
         return exception.getMessage();
     }
 }

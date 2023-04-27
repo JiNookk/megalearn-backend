@@ -1,4 +1,4 @@
-package exceptions;
+package jinookk.ourlms.exceptions;
 
 import jinookk.ourlms.exceptions.RegisterFailed;
 

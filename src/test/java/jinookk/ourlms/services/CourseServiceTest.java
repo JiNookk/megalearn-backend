@@ -120,7 +120,7 @@ class CourseServiceTest {
 
         CourseDto courseDto = courseService.update(
                 1L, new CourseUpdateRequestDto("updated", "category", "description", "thumbnailPath", "status",
-                        "초급", List.of(), 0));
+                        "초급", List.of(), 0), new UserName("tester@email.com"));
 
         assertThat(courseDto.getTitle()).isEqualTo("updated");
     }
@@ -142,7 +142,7 @@ class CourseServiceTest {
 
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 
-        CourseDto courseDto = courseService.delete(1L);
+        CourseDto courseDto = courseService.delete(1L, new UserName("tester@email.com"));
 
         assertThat(courseDto.getTitle()).isEqualTo(null);
     }
@@ -154,13 +154,13 @@ class CourseServiceTest {
         CourseUpdateRequestDto courseUpdateRequestDto = new CourseUpdateRequestDto(
                 "updated", "category", "description", "thumbnailPath", "", "초급", List.of("스킬"), 0);
 
-        course.update(courseUpdateRequestDto);
+        course.update(courseUpdateRequestDto, new AccountId(1L));
 
         assertThat(course.skillSets()).hasSize(1);
 
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 
-        CourseDto courseDto = courseService.deleteSkill(new CourseId(1L), new HashTag("스킬"));
+        CourseDto courseDto = courseService.deleteSkill(new CourseId(1L), new HashTag("스킬"), new UserName("tester@email.com"));
 
         assertThat(courseDto.getSkillSets()).hasSize(0);
     }

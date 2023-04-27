@@ -18,6 +18,7 @@ import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.CourseId;
+import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -193,7 +194,11 @@ public class Course {
         return this;
     }
 
-    public void update(CourseUpdateRequestDto courseUpdateRequestDto) {
+    public void update(CourseUpdateRequestDto courseUpdateRequestDto, AccountId accountId) {
+        if (!isInstructor(accountId)) {
+            throw new AccessDeniedException("only instructor can update course!");
+        }
+
         String status = courseUpdateRequestDto.getStatus();
         List<String> skills = courseUpdateRequestDto.getSkills();
 
@@ -222,8 +227,12 @@ public class Course {
         return "id: " + id;
     }
 
-    public void delete() {
-        accountId.delete();
+    public void delete(AccountId accountId) {
+        if (!isInstructor(accountId)) {
+            throw new AccessDeniedException("only instructor can delete course!");
+        }
+
+        this.accountId.delete();
         title.delete();
         description.delete();
         status.delete();
@@ -286,7 +295,11 @@ public class Course {
         return skillSets;
     }
 
-    public void deleteSkill(HashTag skill) {
+    public void deleteSkill(HashTag skill, AccountId accountId) {
+        if (!isInstructor(accountId)) {
+            throw new AccessDeniedException("only instructor can delete course skill!");
+        }
+
         this.skillSets.remove(skill);
     }
 }
