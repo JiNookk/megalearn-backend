@@ -1,5 +1,9 @@
 package jinookk.ourlms.services;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
@@ -11,9 +15,10 @@ import jinookk.ourlms.exceptions.CourseNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Like;
+import jinookk.ourlms.models.entities.QCourse;
 import jinookk.ourlms.models.enums.Level;
+import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -21,17 +26,14 @@ import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.LikeRepository;
-import jinookk.ourlms.repositories.PaymentRepository;
-import jinookk.ourlms.specifications.CourseSpecification;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +43,9 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final AccountRepository accountRepository;
     private final LikeRepository likeRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public CourseService(CourseRepository courseRepository, AccountRepository accountRepository,
                          LikeRepository likeRepository) {
@@ -70,44 +75,52 @@ public class CourseService {
         return course.toCourseDto(account);
     }
 
-//    @Cacheable(value = "redisCache", key = "#courses")
-    @Cacheable("courses")
     public CoursesDto list(Integer page, CourseFilterDto courseFilterDto) {
-        Pageable pageable = PageRequest.of(page - 1, 24);
-
-        Specification<Course> spec = Specification.where(CourseSpecification.notEqualDeleted());
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+        QCourse course = QCourse.course;
+        BooleanBuilder builder = new BooleanBuilder(course.status.value.ne(Status.DELETED));
 
         if (courseFilterDto.getLevel() != null) {
-            spec = spec.and(CourseSpecification.equalLevel(Level.of(courseFilterDto.getLevel())));
+            builder.or(course.level.eq(Level.of(courseFilterDto.getLevel())));
         }
 
+
         if (courseFilterDto.getCost() != null) {
-            spec = spec.and(CourseSpecification.equalCost(courseFilterDto.getCost()));
+            BooleanExpression costExpression = courseFilterDto.getCost().equals("무료")
+                    ? course.price.value.eq(0)
+                    : course.price.value.gt(0);
+
+            builder.or(costExpression);
         }
 
         if (courseFilterDto.getSkill() != null) {
-            spec = spec.and(CourseSpecification.equalSkills(courseFilterDto.getSkill()));
+            builder.or(course.skillSets.contains(new HashTag(courseFilterDto.getSkill())));
         }
 
         if (courseFilterDto.getContent() != null) {
-            // join시 일치하는 모든 칼럼을 가져온다.
-            // elementCollection의 값 하나당 하나의 칼럼을 가져옴
-            // 어떻게 막을 수 있을까?
-
-            spec = spec.and(
-                    CourseSpecification.likeTitle(courseFilterDto.getContent())
-                            .or(CourseSpecification.likeContent(courseFilterDto.getContent()))
-//                    .or(CourseSpecification.likeGoals(courseFilterDto.getContent()))
-            );
+            builder.and(course.title.value.like("%" + courseFilterDto.getContent() + "%"))
+                    .or(course.description.value.like("%" + courseFilterDto.getContent() + "%"))
+                    .or(course.goals.contains(new Content("%" + courseFilterDto.getContent() + "%")));
         }
 
-        Page<Course> courses = courseRepository.findAll(spec, pageable);
+        JPAQuery<Course> courseQuery = queryFactory.selectFrom(course)
+                .where(builder);
+
+        int pageSize = 24;
+        long totalItems = courseQuery.fetch().size();
+
+        List<Course> courses = courseQuery
+                .offset((long) (page - 1) * pageSize)
+                .limit(pageSize)
+                .fetch();
 
         List<CourseDto> courseDtos = courses.stream()
                 .map(Course::toCourseDto)
                 .toList();
 
-        return new CoursesDto(courseDtos, courses.getTotalPages());
+        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+
+        return new CoursesDto(courseDtos, totalPages);
     }
 
     public CoursesDto wishList(UserName userName) {
@@ -130,44 +143,66 @@ public class CourseService {
     }
 
     public CoursesDto listForAdmin(Integer page) {
-        Sort sort = Sort.by("createdAt").descending();
+        Pageable pageable = PageRequest.of(page - 1, 6);
 
-        Pageable pageable = PageRequest.of(page - 1, 6, sort);
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
-        Specification<Course> spec = Specification.where(CourseSpecification.notEqualDeleted());
+        QCourse course = QCourse.course;
 
-        Page<Course> courses = courseRepository.findAll(spec, pageable);
+        JPAQuery<Course> courseJPAQuery = queryFactory.selectFrom(course)
+                .where(course.status.value.ne(Status.DELETED));
+
+
+        List<Course> courses = courseJPAQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(course.createdAt.desc())
+                .fetch();
+
 
         List<CourseDto> courseDtos = courses.stream()
                 .map(Course::toCourseDto)
                 .toList();
 
-        return new CoursesDto(courseDtos, courses.getTotalPages());
+        int totalItems = courseJPAQuery.fetch().size();
+
+        int totalPages = (int) Math.ceil((double) totalItems / pageable.getPageSize());
+
+        return new CoursesDto(courseDtos, totalPages);
     }
 
-    public CourseDto update(Long courseId, CourseUpdateRequestDto courseUpdateRequestDto) {
+    public CourseDto update(Long courseId, CourseUpdateRequestDto courseUpdateRequestDto, UserName userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFound(courseId));
 
-        course.update(courseUpdateRequestDto);
+        course.update(courseUpdateRequestDto, new AccountId(account.id()));
 
         return course.toCourseDto();
     }
 
-    public CourseDto delete(Long courseId) {
+    public CourseDto delete(Long courseId, UserName userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFound(courseId));
 
-        course.delete();
+        course.delete(new AccountId(account.id()));
 
         return course.toCourseDto();
     }
 
-    public CourseDto deleteSkill(CourseId courseId, HashTag hashTag) {
+    public CourseDto deleteSkill(CourseId courseId, HashTag hashTag, UserName userName) {
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
+
         Course course = courseRepository.findById(courseId.value())
                 .orElseThrow(() -> new CourseNotFound(courseId.value()));
 
-        course.deleteSkill(hashTag);
+        course.deleteSkill(hashTag, new AccountId(account.id()));
 
         return course.toCourseDto();
     }

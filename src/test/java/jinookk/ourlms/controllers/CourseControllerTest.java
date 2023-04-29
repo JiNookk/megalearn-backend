@@ -3,7 +3,6 @@ package jinookk.ourlms.controllers;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.models.entities.Course;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.services.CourseService;
 import jinookk.ourlms.services.MyCourseService;
@@ -126,7 +125,7 @@ class CourseControllerTest {
     void update() throws Exception {
         CourseDto courseDto = Course.fake("updated").toCourseDto();
 
-        given(courseService.update(any(), any())).willReturn(courseDto);
+        given(courseService.update(any(), any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/courses/1")
                         .header("Authorization", "Bearer " + accessToken)
@@ -168,9 +167,11 @@ class CourseControllerTest {
     void delete() throws Exception {
         CourseDto courseDto = Course.fake(null).toCourseDto();
 
-        given(courseService.delete(any())).willReturn(courseDto);
+        given(courseService.delete(any(), any())).willReturn(courseDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1")
+                        .header("Authorization", "Bearer " + accessToken)
+                )
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"title\":null")
@@ -181,9 +182,11 @@ class CourseControllerTest {
     void deleteSkill() throws Exception {
         CourseDto courseDto = Course.fake(null).toCourseDto();
 
-        given(courseService.deleteSkill(any(), any())).willReturn(courseDto);
+        given(courseService.deleteSkill(any(), any(), any())).willReturn(courseDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1/skills/skill"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1/skills/skill")
+                        .header("Authorization", "Bearer " + accessToken)
+                )
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"title\":null")

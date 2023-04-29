@@ -1,6 +1,6 @@
 package jinookk.ourlms.services;
 
-import exceptions.UserNameAlreadyExist;
+import jinookk.ourlms.exceptions.UserNameAlreadyExist;
 import jinookk.ourlms.dtos.RegisterRequestDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Cart;

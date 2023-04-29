@@ -1,9 +1,7 @@
 package jinookk.ourlms.repositories;
 
 import jinookk.ourlms.models.entities.Course;
-import jinookk.ourlms.models.vos.HandOutUrl;
 import jinookk.ourlms.models.vos.ids.AccountId;
-import jinookk.ourlms.specifications.CourseSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
