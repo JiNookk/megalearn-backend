@@ -131,24 +131,21 @@ public class Lecture {
     }
 
     public LectureDto toLectureDto() {
-        return new LectureDto(id, courseId, sectionId, title, videoUrl, lectureTime);
+        return new LectureDto(id, courseId, sectionId, title, videoUrl, lectureTime, status);
     }
 
     public void update(LectureUpdateRequestDto lectureUpdateRequestDto) {
-        this.title.update(lectureUpdateRequestDto.getTitle());
-        this.videoUrl.update(lectureUpdateRequestDto.getVideoUrl());
-        this.lectureNote.update(lectureUpdateRequestDto.getLectureNote());
-        this.handOutUrl.update(lectureUpdateRequestDto.getFilePath());
-        this.lectureTime = lectureTime.update(lectureUpdateRequestDto.getLectureTime());
+        this.title = new Title(lectureUpdateRequestDto.getTitle());
+        this.videoUrl = new VideoUrl(lectureUpdateRequestDto.getVideoUrl());
+        this.lectureNote = new Content(lectureUpdateRequestDto.getLectureNote());
+        this.handOutUrl = new HandOutUrl(lectureUpdateRequestDto.getFilePath());
+        this.lectureTime = new LectureTime(
+                lectureUpdateRequestDto.getLectureTime().getMinute(),
+                lectureUpdateRequestDto.getLectureTime().getSecond()
+        );
     }
 
     public void delete() {
-        this.status.delete();
-        this.courseId.delete();
-        this.sectionId.delete();
-        this.title.delete();
-        this.videoUrl.delete();
-        this.lectureNote.delete();
-        this.handOutUrl.delete();
+        this.status = new Status(Status.DELETED);
     }
 }

@@ -141,7 +141,7 @@ public class Course {
         Long id = 1L;
         ImagePath imagePath = new ImagePath("imagePath");
         Category category = new Category("category");
-        Name instructor = new Name("instructor");
+        Name instructor = new Name("instructor", false);
         AccountId accountId = new AccountId(1L);
         Content description = new Content("description");
         Price price = new Price(10000);
@@ -208,11 +208,11 @@ public class Course {
             return;
         }
 
-        title.update(courseUpdateRequestDto.getTitle());
-        category.update(courseUpdateRequestDto.getCategory());
-        description.update(courseUpdateRequestDto.getDescription());
-        imagePath.update(courseUpdateRequestDto.getImagePath());
-        price.update(courseUpdateRequestDto.getPrice());
+        title = new Title(courseUpdateRequestDto.getTitle());
+        category = new Category(courseUpdateRequestDto.getCategory());
+        description = new Content(courseUpdateRequestDto.getDescription());
+        imagePath = new ImagePath(courseUpdateRequestDto.getImagePath());
+        price = new Price(courseUpdateRequestDto.getPrice());
         level = Level.of(courseUpdateRequestDto.getLevel(), level);
 
         if (skills.size() >= 1) {
@@ -232,15 +232,7 @@ public class Course {
             throw new AccessDeniedException("only instructor can delete course!");
         }
 
-        this.accountId.delete();
-        title.delete();
-        description.delete();
-        status.delete();
-        imagePath.delete();
-        category.delete();
-        instructor.delete();
-        price.delete();
-        hashTags.clear();
+        status = new Status(Status.DELETED);
     }
 
     public boolean filterType(String type) {

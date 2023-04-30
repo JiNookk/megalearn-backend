@@ -2,12 +2,15 @@ package jinookk.ourlms.models.vos;
 
 import jinookk.ourlms.exceptions.InvalidPhoneNumberLength;
 
+import javax.persistence.Embeddable;
 import java.util.List;
 
+@Embeddable
 public class PhoneNumber {
-    private String value;
+    private final String value;
 
-    public PhoneNumber() {
+    protected PhoneNumber() {
+        this.value = null;
     }
 
     public PhoneNumber(String phoneNumber) {

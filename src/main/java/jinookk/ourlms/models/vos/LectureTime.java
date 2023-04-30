@@ -9,12 +9,14 @@ import java.util.Objects;
 @Embeddable
 public class LectureTime {
     @Column(name = "minutes")
-    private Integer minute;
+    private final Integer minute;
 
     @Column(name = "seconds")
-    private Integer second;
+    private final Integer second;
 
-    public LectureTime() {
+    protected LectureTime() {
+        this.minute = null;
+        this.second = null;
     }
 
     public LectureTime(Integer minute, Integer second) {
@@ -28,6 +30,10 @@ public class LectureTime {
 
     public Integer second() {
         return second;
+    }
+
+    public LectureTimeDto toDto() {
+        return new LectureTimeDto(this);
     }
 
     @Override
@@ -48,16 +54,5 @@ public class LectureTime {
     @Override
     public String toString() {
         return "LectureTime minute: " + minute + ", second: " + second;
-    }
-
-    public LectureTimeDto toDto() {
-        return new LectureTimeDto(this);
-    }
-
-    public LectureTime update(LectureTimeDto lectureTime) {
-        this.minute = lectureTime.getMinute();
-        this.second = lectureTime.getSecond();
-
-        return this;
     }
 }

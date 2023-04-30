@@ -98,7 +98,7 @@ class RatingControllerTest {
 
     @Test
     void list() throws Exception {
-        RatingDto ratingDto = new RatingDto(4.5, new CourseId(1L), new Name("author"), new Content("content"),
+        RatingDto ratingDto = new RatingDto(4.5, new CourseId(1L), new Name("author", false), new Content("content"),
                 LocalDateTime.now());
 
         given(ratingService.list())

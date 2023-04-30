@@ -39,9 +39,9 @@ class CourseTest {
         Course course = Course.fake("course");
 
         List<Rating> ratings = List.of(
-                new Rating(1L, new AccountId(1L), new CourseId(1L), new Name("name1"), new Content("content1"), 4.0),
-                new Rating(2L, new AccountId(2L), new CourseId(1L), new Name("name2"), new Content("content2"), 4.3),
-                new Rating(3L, new AccountId(3L), new CourseId(1L), new Name("name3"), new Content("content3"), 3.7)
+                new Rating(1L, new AccountId(1L), new CourseId(1L), new Name("name1", false), new Content("content1"), 4.0),
+                new Rating(2L, new AccountId(2L), new CourseId(1L), new Name("name2", false), new Content("content2"), 4.3),
+                new Rating(3L, new AccountId(3L), new CourseId(1L), new Name("name3", false), new Content("content3"), 3.7)
         );
 
         Double rating = course.averageRating(ratings);
@@ -65,11 +65,11 @@ class CourseTest {
 
         List<Payment> payments = List.of(
                 new Payment(1L, new CourseId(1L), new AccountId(1L), new Price(35_000),
-                        new Title("courseTitle1"), new Name("purchaser"), LocalDateTime.now()),
+                        new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now()),
                 new Payment(2L, new CourseId(1L), new AccountId(2L), new Price(35_000),
-                        new Title("courseTitle1"), new Name("purchaser"), LocalDateTime.now()),
+                        new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now()),
                 new Payment(3L, new CourseId(1L), new AccountId(3L), new Price(35_000),
-                        new Title("courseTitle1"), new Name("purchaser"), LocalDateTime.now())
+                        new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now())
         );
 
         MonthlyPaymentDto monthlyPaymentDto = course.toMonthlyPaymentDto(payments);
@@ -83,9 +83,9 @@ class CourseTest {
 
         List<Payment> payments = List.of(
                 new Payment(4L, new CourseId(1L), new AccountId(3L), new Price(35_000),
-                        new Title("courseTitle1"), new Name("purchaser"), LocalDateTime.of(2020, 1, 1, 1, 1)),
+                        new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.of(2020, 1, 1, 1, 1)),
                 new Payment(5L, new CourseId(1L), new AccountId(3L), new Price(35_000),
-                        new Title("courseTitle1"), new Name("purchaser"), LocalDateTime.of(2020, 1, 1, 1, 1))
+                        new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.of(2020, 1, 1, 1, 1))
         );
 
         MonthlyPaymentDto monthlyPaymentDto = course.toMonthlyPaymentDto(payments);

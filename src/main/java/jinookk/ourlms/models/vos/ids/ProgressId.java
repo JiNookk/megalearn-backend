@@ -3,9 +3,10 @@ package jinookk.ourlms.models.vos.ids;
 import java.util.Objects;
 
 public class ProgressId {
-    private Long value;
+    private final Long value;
 
-    public ProgressId() {
+    protected ProgressId() {
+        this.value = null;
     }
 
     public ProgressId(Long value) {

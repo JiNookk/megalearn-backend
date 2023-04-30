@@ -5,9 +5,10 @@ import java.util.Objects;
 
 @Embeddable
 public class HandOutUrl {
-    private String value;
+    private final String value;
 
-    public HandOutUrl() {
+    protected HandOutUrl() {
+        this.value = null;
     }
 
     public HandOutUrl(String value) {
@@ -16,14 +17,6 @@ public class HandOutUrl {
 
     public String value() {
         return value;
-    }
-
-    public void update(String value) {
-        this.value = value;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override

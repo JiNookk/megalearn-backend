@@ -15,14 +15,4 @@ class LectureTimeTest {
         assertThat(lectureTimeDto.getMinute()).isEqualTo(1);
         assertThat(lectureTimeDto.getSecond()).isEqualTo(24);
     }
-
-    @Test
-    void update() {
-        LectureTime lectureTime = new LectureTime(1, 24);
-
-        LectureTime updated = lectureTime.update(new LectureTime(5, 30).toDto());
-
-        assertThat(updated.minute()).isEqualTo(5);
-        assertThat(updated.second()).isEqualTo(30);
-    }
 }

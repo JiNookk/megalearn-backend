@@ -7,9 +7,10 @@ import java.util.Objects;
 
 @Embeddable
 public class HashTag {
-    private String tagName;
+    private final String tagName;
 
-    public HashTag() {
+    protected HashTag() {
+        tagName = null;
     }
 
     public HashTag(String tagName) {

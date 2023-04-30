@@ -110,7 +110,7 @@ public class Inquiry {
 
     private static Inquiry fake(Content content) {
         return new Inquiry(1L, new CourseId(1L), new LectureId(1L), new AccountId(1L), List.of(), new Title("title"), content,
-                new LectureTime(1, 24), new Name("tester"), false, LocalDateTime.now(), LocalDateTime.now());
+                new LectureTime(1, 24), new Name("tester", false), false, LocalDateTime.now(), LocalDateTime.now());
     }
 
     public static Inquiry fake(Name publisher) {
@@ -212,8 +212,8 @@ public class Inquiry {
     }
 
     public void update(InquiryUpdateDto inquiryUpdateDto) {
-        title.update(inquiryUpdateDto.getTitle());
-        content.update(inquiryUpdateDto.getContent());
+        title = new Title(inquiryUpdateDto.getTitle());
+        content = new Content(inquiryUpdateDto.getContent());
         hashTags = inquiryUpdateDto.getHashTags().stream()
                 .map(HashTag::new)
                 .toList();

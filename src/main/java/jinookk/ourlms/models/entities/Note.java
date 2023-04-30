@@ -105,12 +105,7 @@ public class Note {
     }
 
     public void delete() {
-        this.lectureId = null;
-        this.accountId = null;
         this.status.delete();
-        this.content = null;
-        this.lectureTime = null;
-        this.publishTime = null;
     }
 
     public NoteDeleteDto toNoteDeleteDto() {
@@ -118,6 +113,6 @@ public class Note {
     }
 
     public void update(NoteUpdateDto noteUpdateDto) {
-        this.content.update(noteUpdateDto.getContent());
+        this.content = new Content(noteUpdateDto.getContent());
     }
 }

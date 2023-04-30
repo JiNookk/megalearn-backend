@@ -98,18 +98,15 @@ public class Section {
     }
 
     public SectionDto toSectionDto() {
-        return new SectionDto(id, courseId, title, goal);
+        return new SectionDto(id, courseId, title, goal, status.value());
     }
 
     public void update(SectionUpdateRequestDto sectionUpdateRequestDto) {
-        title.update(sectionUpdateRequestDto.getTitle());
-        goal.update(sectionUpdateRequestDto.getGoal());
+        title = new Title(sectionUpdateRequestDto.getTitle());
+        goal = new Content(sectionUpdateRequestDto.getGoal());
     }
 
     public void delete() {
-        title.delete();
-        goal.delete();
         status.delete();
-        courseId.delete();
     }
 }

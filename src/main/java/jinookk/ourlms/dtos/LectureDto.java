@@ -5,8 +5,10 @@ import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.VideoUrl;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.SectionId;
+import jinookk.ourlms.models.vos.status.Status;
 
 public class LectureDto {
+    private String status;
     private Long id;
     private Long courseId;
     private Long sectionId;
@@ -17,13 +19,15 @@ public class LectureDto {
     public LectureDto() {
     }
 
-    public LectureDto(Long id, CourseId courseId, SectionId sectionId, Title title, VideoUrl videoUrl, LectureTime lectureTime) {
+    public LectureDto(Long id, CourseId courseId, SectionId sectionId, Title title,
+                      VideoUrl videoUrl, LectureTime lectureTime, Status status) {
         this.id = id;
         this.courseId = courseId.value();
         this.sectionId = sectionId.value();
         this.title = title.value();
         this.videoUrl = videoUrl.value();
         this.lectureTime = lectureTime.toDto();
+        this.status = status.value();
     }
 
     public Long getId() {
@@ -48,5 +52,9 @@ public class LectureDto {
 
     public LectureTimeDto getLectureTime() {
         return lectureTime;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

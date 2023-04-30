@@ -3,15 +3,15 @@ package jinookk.ourlms.models.vos;
 import java.util.Objects;
 
 public class CommentId {
-    private Long value;
+    private final Long value;
 
-    public CommentId() {
+    protected CommentId() {
+        this.value = null;
     }
 
     public CommentId(Long value) {
         this.value = value;
     }
-
 
     public Long value() {
         return value;

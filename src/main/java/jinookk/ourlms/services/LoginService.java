@@ -34,7 +34,7 @@ public class LoginService {
     }
 
     public LoginResultDto kakaoLogin(Map<String, Object> userInfo) {
-        Name name = new Name(String.valueOf(userInfo.get("nickname")));
+        Name name = new Name(String.valueOf(userInfo.get("nickname")), false);
         UserName userName = new UserName(String.valueOf(userInfo.get("email")));
 
         // 회원 없을 경우 -> 회원가입

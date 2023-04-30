@@ -5,9 +5,10 @@ import java.util.Objects;
 
 public class Content {
     @Column(length = 1000)
-    private String value;
+    private final String value;
 
-    public Content() {
+    protected Content() {
+        this.value = null;
     }
 
     public Content(String value) {
@@ -16,18 +17,6 @@ public class Content {
 
     public String value() {
         return value;
-    }
-
-    public void update(String value) {
-        if (value.isBlank()) {
-            return;
-        }
-
-        this.value = value;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override

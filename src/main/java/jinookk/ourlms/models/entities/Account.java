@@ -54,7 +54,7 @@ public class Account {
     }
 
     public static Account fake(String name) {
-        return fake(new Name(name));
+        return fake(new Name(name, false));
     }
 
     private static Account fake(Name name) {
@@ -65,7 +65,7 @@ public class Account {
     }
 
     public static Account of(RegisterRequestDto registerRequestDto) {
-        Name name = new Name(registerRequestDto.getName());
+        Name name = new Name(registerRequestDto.getName(), false);
         UserName userName = new UserName(registerRequestDto.getUserName());
         userName.isValidFormat();
         String phoneNumber = registerRequestDto.getPhoneNumber();

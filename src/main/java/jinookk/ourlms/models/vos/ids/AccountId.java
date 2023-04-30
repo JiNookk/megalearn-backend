@@ -3,9 +3,10 @@ package jinookk.ourlms.models.vos.ids;
 import java.util.Objects;
 
 public class AccountId {
-    private Long value;
+    private final Long value;
 
-    public AccountId() {
+    protected AccountId() {
+        this.value = null;
     }
 
     public AccountId(Long value) {
@@ -14,10 +15,6 @@ public class AccountId {
 
     public Long value() {
         return value;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override

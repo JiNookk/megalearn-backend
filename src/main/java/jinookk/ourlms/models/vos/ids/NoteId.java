@@ -3,15 +3,15 @@ package jinookk.ourlms.models.vos.ids;
 import java.util.Objects;
 
 public class NoteId {
-    private Long value;
+    private final Long value;
 
-    public NoteId() {
+    protected NoteId() {
+        this.value = null;
     }
 
     public NoteId(Long value) {
         this.value = value;
     }
-
 
     public Long value() {
         return value;

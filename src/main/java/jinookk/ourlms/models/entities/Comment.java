@@ -133,7 +133,7 @@ public class Comment {
 
     private static Comment fake(Content content) {
         return new Comment(11L, new InquiryId(1L), new AccountId(1L), new Status(Status.CREATED),
-                new Name("1st Tester"), content, LocalDateTime.now());
+                new Name("1st Tester", false), content, LocalDateTime.now());
     }
 
     public static Comment fake(String content) {
@@ -171,7 +171,7 @@ public class Comment {
             throw new AccessDeniedException("accountId: " + accountId + " has no authority for update comment!");
         }
 
-        this.content.update(value);
+        this.content = new Content(value);
     }
 
     public Boolean isMyComment(AccountId accountId) {

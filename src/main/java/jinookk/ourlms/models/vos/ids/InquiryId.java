@@ -3,9 +3,10 @@ package jinookk.ourlms.models.vos.ids;
 import java.util.Objects;
 
 public class InquiryId {
-    private Long value;
+    private final Long value;
 
-    public InquiryId() {
+    protected InquiryId() {
+        this.value = null;
     }
 
     public InquiryId(Long value) {

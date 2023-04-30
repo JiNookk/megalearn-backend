@@ -28,11 +28,11 @@ class InquiryTest {
     void setup() {
         inquiry = new Inquiry(
                 1L, new CourseId(1L), new LectureId(2L), new AccountId(3L), List.of(new HashTag("tag")),
-                 new Title("title"), new Content("content"), new LectureTime(1, 24),
-                new Name("post publisher"), false, LocalDateTime.now(), LocalDateTime.now());
+                new Title("title"), new Content("content"), new LectureTime(1, 24),
+                new Name("post publisher", false), false, LocalDateTime.now(), LocalDateTime.now());
 
         commentWithThirdAccountId = new Comment(1L, new InquiryId(2L), new AccountId(3L), new Status(Status.CREATED),
-                new Name("3rd Author"), new Content("content"), LocalDateTime.now());
+                new Name("3rd Author", false), new Content("content"), LocalDateTime.now());
     }
 
     @Test
@@ -40,7 +40,7 @@ class InquiryTest {
         InquiryRequestDto inquiryRequestDto = new InquiryRequestDto(
                 new LectureId(1L), List.of(), "title", "content", false, 1, 31, 1L);
 
-        Inquiry created = Inquiry.of(inquiryRequestDto, new AccountId(1L), new Name("name"));
+        Inquiry created = Inquiry.of(inquiryRequestDto, new AccountId(1L), new Name("name", false));
 
         assertThat(created.id()).isEqualTo(null);
         assertThat(created.lectureId()).isEqualTo(new LectureId(1L));
