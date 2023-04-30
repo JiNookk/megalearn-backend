@@ -24,7 +24,7 @@ class RatingTest {
         assertThat(rating.content()).isEqualTo(new Content("content"));
         assertThat(rating.accountId().value()).isEqualTo(1L);
         assertThat(rating.courseId()).isEqualTo(new CourseId(1L));
-        assertThat(rating.author()).isEqualTo(new Name("name"));
+        assertThat(rating.author()).isEqualTo(new Name("name", false));
     }
 
     @Test

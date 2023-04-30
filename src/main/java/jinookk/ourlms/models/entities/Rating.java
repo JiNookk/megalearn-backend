@@ -84,7 +84,7 @@ public class Rating {
     }
 
     public static Rating fake(Double point) {
-        return new Rating(1L, new AccountId(1L), new CourseId(1L), new Name("author"), new Content("content"), point);
+        return new Rating(1L, new AccountId(1L), new CourseId(1L), new Name("author", false), new Content("content"), point);
     }
 
     public Long id() {

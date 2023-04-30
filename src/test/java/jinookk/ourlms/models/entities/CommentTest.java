@@ -28,13 +28,13 @@ class CommentTest {
         inquiry = new Inquiry(
                 1L, new CourseId(1L), new LectureId(2L), new AccountId(3L), List.of(new HashTag("tag")),
                 new Title("title"), new Content("content"), new LectureTime(1, 24),
-                new Name("post publisher"), false, LocalDateTime.now(), LocalDateTime.now());
+                new Name("post publisher", false), false, LocalDateTime.now(), LocalDateTime.now());
     }
 
     @Test
     void createdFromDto() {
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "content");
-        Name publisher = new Name("name");
+        Name publisher = new Name("name", false);
         AccountId accountId = new AccountId(1L);
 
         Comment comment = Comment.of(commentRequestDto, publisher, accountId);
@@ -67,7 +67,7 @@ class CommentTest {
 
     @Test
     void createCommentWithSameAccountIdWithInquiry() {
-        Account account = new Account(new Name("tester"), new UserName("userName@email.com"));
+        Account account = new Account(new Name("tester", false), new UserName("userName@email.com"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
         List<Comment> comments = List.of(Comment.fake("hi"));
         Course course = Course.fake("course");
@@ -80,7 +80,7 @@ class CommentTest {
 
     @Test
     void createCommentWithPreviousCommentAndNotPublisher() {
-        Account account = new Account(new Name("tester"), new UserName("userName@email.com"));
+        Account account = new Account(new Name("tester", false), new UserName("userName@email.com"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
 
         Comment commentWithFirstAccountId = Comment.fake("hi");
@@ -95,11 +95,11 @@ class CommentTest {
 
     @Test
     void createCommentWithoutPreviousCommentAndNotPublisher() {
-        Account account = new Account(new Name("2nd Tester"), new UserName("userName@email.com"));
+        Account account = new Account(new Name("2nd Tester", false), new UserName("userName@email.com"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
 
         Comment commentWithThirdAccountId = new Comment(1L, new InquiryId(2L), new AccountId(3L), new Status(Status.CREATED),
-                new Name("3rd Author"), new Content("content"), LocalDateTime.now());
+                new Name("3rd Author", false), new Content("content"), LocalDateTime.now());
 
         List<Comment> comments = List.of(commentWithThirdAccountId);
         Course course = Course.fake("course");
@@ -107,7 +107,7 @@ class CommentTest {
         Comment comment = Comment.of(inquiry, comments, commentRequestDto, account, course);
 
         assertThat(comment).isNotNull();
-        assertThat(comment.author()).isEqualTo(new Name("2nd Tester"));
+        assertThat(comment.author()).isEqualTo(new Name("2nd Tester", false));
     }
 
 }

@@ -1,22 +1,21 @@
 package jinookk.ourlms.models.vos;
 
-// 가져야 하는것 -> 제목, 저자, 작성일자, 내용, 좋아요
-
 import jinookk.ourlms.dtos.NewsDto;
 
 import javax.persistence.Embeddable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Embeddable
 public class Post {
-    private String title;
-    private LocalDateTime createdAt;
-    private String content;
+    private final String title;
+    private final LocalDateTime createdAt;
+    private final String content;
 
-//    좋아요는 어떻게 표시하면 좋을까? -> Post가 엔티티가 되어야 할까? 값객체로는 표시할수가 없나?
-//    private String
-
-    public Post() {
+    protected Post() {
+        this.title = null;
+        this.createdAt = null;
+        this.content = null;
     }
 
     public Post(String title, LocalDateTime createdAt, String content) {
@@ -39,5 +38,26 @@ public class Post {
 
     public NewsDto toDto() {
         return new NewsDto(title, createdAt, content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, createdAt, content);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other != null &&
+                other.getClass().equals(Post.class) &&
+                ((Post) other).title.equals(this.title) &&
+                ((Post) other).createdAt.equals(this.createdAt) &&
+                ((Post) other).content.equals(this.content);
+    }
+
+    @Override
+    public String toString() {
+        return "Post title: " + title +
+                        ", createdAt: " + createdAt +
+                        ", content: " + content;
     }
 }

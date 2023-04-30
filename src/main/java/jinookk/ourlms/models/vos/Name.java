@@ -5,14 +5,10 @@ import java.util.Objects;
 import java.util.Random;
 
 public class Name {
-    // 익명으로 게시한 글을 계속 익명으로 사용하고 싶다. 댓글도 익명으로 사용하고 싶다.
-    private String value;
+    private final String value;
 
-    public Name() {
-    }
-
-    public Name(String value) {
-        this.value = value;
+    protected Name() {
+        this.value = null;
     }
 
     public Name(String value, Boolean anonymous) {
@@ -32,10 +28,6 @@ public class Name {
 
     public String value() {
         return value;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override

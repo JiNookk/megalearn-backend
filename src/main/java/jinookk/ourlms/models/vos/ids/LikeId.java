@@ -3,16 +3,17 @@ package jinookk.ourlms.models.vos.ids;
 import java.util.Objects;
 
 public class LikeId {
-    private Long value;
+    private final Long value;
 
-    public LikeId() {
+    protected LikeId() {
+        this.value = null;
     }
 
     public LikeId(Long value) {
         this.value = value;
     }
 
-    public Long getValue() {
+    public Long value() {
         return value;
     }
 

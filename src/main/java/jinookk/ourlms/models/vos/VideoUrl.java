@@ -5,9 +5,10 @@ import java.util.Objects;
 
 @Embeddable
 public class VideoUrl {
-    private String value;
+    private final String value;
 
-    public VideoUrl() {
+    protected VideoUrl() {
+        this.value = null;
     }
 
     public VideoUrl(String value) {
@@ -16,14 +17,6 @@ public class VideoUrl {
 
     public String value() {
         return value;
-    }
-
-    public void update(String value) {
-        this.value = value;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override

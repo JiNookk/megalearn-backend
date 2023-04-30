@@ -7,15 +7,17 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
-    private Integer value;
+    private final Integer value;
 
-    public Price() {
+    protected Price() {
+        this.value = null;
     }
 
     public Price(int value) {
         if (isValidPrice(value)) {
             throw new InvalidPrice(value);
         }
+
         this.value = value;
     }
 
@@ -23,20 +25,8 @@ public class Price {
         return value;
     }
 
-    public void update(Integer value) {
-        if (isValidPrice(value)) {
-            throw new InvalidPrice(value);
-        }
-
-        this.value = value;
-    }
-
     private boolean isValidPrice(Integer value) {
         return value < 10000 && value != 0;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override

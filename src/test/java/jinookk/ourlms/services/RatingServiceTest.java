@@ -46,11 +46,11 @@ class RatingServiceTest {
                 .willReturn(List.of(course));
 
         Rating rating1 = new Rating(
-                1L, new AccountId(1L), new CourseId(1L), new Name("name1"), new Content("content1"), 4.0);
+                1L, new AccountId(1L), new CourseId(1L), new Name("name1", false), new Content("content1"), 4.0);
         Rating rating2 = new Rating(
-                2L, new AccountId(2L), new CourseId(1L), new Name("name2"), new Content("content2"), 4.3);
+                2L, new AccountId(2L), new CourseId(1L), new Name("name2", false), new Content("content2"), 4.3);
         Rating rating3 = new Rating(
-                3L, new AccountId(3L), new CourseId(1L), new Name("name3"), new Content("content3"), 3.7);
+                3L, new AccountId(3L), new CourseId(1L), new Name("name3", false), new Content("content3"), 3.7);
 
         given(ratingRepository.findAll())
                 .willReturn(List.of(rating1, rating2, rating3));

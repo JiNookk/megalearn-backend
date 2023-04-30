@@ -63,15 +63,15 @@ class PaymentServiceTest {
 
         Course course1 = new Course(1L, new Title("courseTitle1"), new Content("description"),
                 new Status(Status.APPROVED), new ImagePath("imagePath"), new Category("category"),
-                new Name("instructor1"), new AccountId(5L), new Price(35_000));
+                new Name("instructor1", false), new AccountId(5L), new Price(35_000));
 
         Course course2 = new Course(2L, new Title("courseTitle2"), new Content("description"),
                 new Status(Status.APPROVED), new ImagePath("imagePath"), new Category("category"),
-                new Name("instructor2"), new AccountId(5L), new Price(24_000));
+                new Name("instructor2", false), new AccountId(5L), new Price(24_000));
 
         Course course3 = new Course(3L, new Title("courseTitle3"), new Content("description"),
                 new Status(Status.APPROVED), new ImagePath("imagePath"), new Category("category"),
-                new Name("instructor3"), new AccountId(5L), new Price(49_000));
+                new Name("instructor3", false), new AccountId(5L), new Price(49_000));
 
         given(courseRepository.findAllByAccountId(new AccountId(1L)))
                 .willReturn(List.of(course1, course2, course3));
@@ -79,23 +79,23 @@ class PaymentServiceTest {
         given(paymentRepository.findAllByCourseId(new CourseId(1L)))
                 .willReturn(List.of(
                         new Payment(1L, new CourseId(1L), new AccountId(1L), new Price(35_000),
-                                new Title("courseTitle1"), new Name("purchaser"), LocalDateTime.now()),
+                                new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now()),
                         new Payment(2L, new CourseId(1L), new AccountId(2L), new Price(35_000),
-                                new Title("courseTitle1"), new Name("purchaser"), LocalDateTime.now()),
+                                new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now()),
                         new Payment(3L, new CourseId(1L), new AccountId(3L), new Price(35_000),
-                                new Title("courseTitle1"), new Name("purchaser"), LocalDateTime.now())
+                                new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now())
                 ));
 
         given(paymentRepository.findAllByCourseId(new CourseId(2L)))
                 .willReturn(List.of(
                         new Payment(4L, new CourseId(2L), new AccountId(1L), new Price(24_000),
-                                new Title("courseTitle2"), new Name("purchaser"), LocalDateTime.now())
+                                new Title("courseTitle2"), new Name("purchaser", false), LocalDateTime.now())
                 ));
 
         given(paymentRepository.findAllByCourseId(new CourseId(3L)))
                 .willReturn(List.of(
                         new Payment(5L, new CourseId(3L), new AccountId(2L), new Price(49_000),
-                                new Title("courseTitle3"), new Name("purchaser"), LocalDateTime.now())
+                                new Title("courseTitle3"), new Name("purchaser", false), LocalDateTime.now())
                 ));
 
 

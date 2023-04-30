@@ -3,9 +3,10 @@ package jinookk.ourlms.models.vos.ids;
 import java.util.Objects;
 
 public class LectureId {
-    private Long value;
+    private final Long value;
 
-    public LectureId() {
+    protected LectureId() {
+        this.value = null;
     }
 
     public LectureId(Long value) {

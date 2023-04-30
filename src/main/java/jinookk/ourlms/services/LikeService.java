@@ -6,7 +6,6 @@ import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.LikeNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Like;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -52,7 +51,7 @@ public class LikeService {
     }
 
     public LikeDto toggle(LikeId likeId) {
-        Like like = likeRepository.findById(likeId.getValue())
+        Like like = likeRepository.findById(likeId.value())
                 .orElseThrow(() -> new LikeNotFound(likeId));
 
         Like toggled = like.toggle();

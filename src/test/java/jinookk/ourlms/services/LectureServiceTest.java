@@ -13,6 +13,7 @@ import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
+import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.LectureRepository;
@@ -137,6 +138,6 @@ class LectureServiceTest {
 
         LectureDto lectureDto = lectureService.delete(lectureId);
 
-        assertThat(lectureDto.getTitle()).isEqualTo(null);
+        assertThat(lectureDto.getStatus()).isEqualTo(Status.DELETED);
     }
 }

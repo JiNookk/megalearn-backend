@@ -85,7 +85,7 @@ class CommentServiceTest {
     void createWithNonExistingUserId() {
         InquiryId inquiryId = new InquiryId(1L);
         Comment comment = new Comment(1L, new InquiryId(1L), new AccountId(2L), new Status(Status.CREATED),
-                new Name("tester2"), new Content("hi"), LocalDateTime.now());
+                new Name("tester2", false), new Content("hi"), LocalDateTime.now());
 
         given(commentRepository.save(any())).willReturn(comment);
         CommentRequestDto commentRequestDto = new CommentRequestDto(inquiryId, "hi");

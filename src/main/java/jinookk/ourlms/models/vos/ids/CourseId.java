@@ -3,9 +3,10 @@ package jinookk.ourlms.models.vos.ids;
 import java.util.Objects;
 
 public class CourseId {
-    private Long value;
+    private final Long value;
 
-    public CourseId() {
+    protected CourseId() {
+        this.value = null;
     }
 
     public CourseId(Long value) {
@@ -15,10 +16,6 @@ public class CourseId {
 
     public Long value() {
         return value;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override

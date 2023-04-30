@@ -5,9 +5,10 @@ import java.util.Objects;
 
 @Embeddable
 public class Category {
-    private String value;
+    private final String value;
 
-    public Category() {
+    protected Category() {
+        this.value = null;
     }
 
     public Category(String value) {
@@ -16,18 +17,6 @@ public class Category {
 
     public String value() {
         return value;
-    }
-
-    public void update(String value) {
-        if (value.isBlank()) {
-            return;
-        }
-
-        this.value = value;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override

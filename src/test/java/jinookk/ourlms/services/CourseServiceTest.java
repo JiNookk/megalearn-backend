@@ -15,6 +15,7 @@ import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
+import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.LikeRepository;
@@ -150,7 +151,7 @@ class CourseServiceTest {
 
         CourseDto courseDto = courseService.delete(1L, new UserName("tester@email.com"));
 
-        assertThat(courseDto.getTitle()).isEqualTo(null);
+        assertThat(courseDto.getStatus()).isEqualTo(Status.DELETED);
     }
 
     @Test

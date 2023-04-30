@@ -66,7 +66,7 @@ public class Payment {
 
     private static Payment fake(Price price) {
         return new Payment(1L, new CourseId(1L), new AccountId(1L), price, new Title("course title"),
-                new Name("purchaser"), LocalDateTime.now());
+                new Name("purchaser", false), LocalDateTime.now());
     }
 
     public static List<Payment> listOf(List<Course> courses, Account account, Cart cart) {
@@ -96,7 +96,7 @@ public class Payment {
                 new AccountId(account.id()),
                 new Price(course.price().value()),
                 new Title(course.title().value()),
-                new Name(account.name().value()),
+                new Name(account.name().value(), false),
                 LocalDateTime.now()
         );
     }

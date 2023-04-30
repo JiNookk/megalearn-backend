@@ -5,9 +5,10 @@ import java.util.Objects;
 
 @Embeddable
 public class Title {
-    private String value;
+    private final String value;
 
-    public Title() {
+    protected Title() {
+        this.value = null;
     }
 
     public Title(String value) {
@@ -16,18 +17,6 @@ public class Title {
 
     public String value() {
         return value;
-    }
-
-    public void update(String value) {
-        if (value.isBlank() ) {
-            return;
-        }
-
-        this.value = value;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override

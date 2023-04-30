@@ -3,9 +3,10 @@ package jinookk.ourlms.models.vos.ids;
 import java.util.Objects;
 
 public class SectionId {
-    private Long value;
+    private final Long value;
 
-    public SectionId() {
+    protected SectionId() {
+        this.value = null;
     }
 
     public SectionId(Long value) {
@@ -15,10 +16,6 @@ public class SectionId {
 
     public Long value() {
         return value;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override

@@ -7,6 +7,7 @@ import jinookk.ourlms.dtos.SectionsDto;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.models.vos.ids.CourseId;
+import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.ProgressRepository;
 import jinookk.ourlms.repositories.SectionRepository;
@@ -95,6 +96,6 @@ class SectionServiceTest {
 
         SectionDto sectionDto = sectionService.delete(sectionId);
 
-        assertThat(sectionDto.getTitle()).isEqualTo(null);
+        assertThat(sectionDto.getStatus()).isEqualTo(Status.DELETED);
     }
 }

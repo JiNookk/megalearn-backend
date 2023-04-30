@@ -5,9 +5,10 @@ import java.util.Objects;
 
 @Embeddable
 public class ImagePath {
-    private String value;
+    private final String value;
 
-    public ImagePath() {
+    protected ImagePath() {
+        this.value = null;
     }
 
     public ImagePath(String value) {
@@ -16,19 +17,6 @@ public class ImagePath {
 
     public String value() {
         return value;
-    }
-
-    public void update(String value) {
-        System.out.println("path: " + value);
-        if (value.isBlank()) {
-            return;
-        }
-
-        this.value = value;
-    }
-
-    public void delete() {
-        this.value = null;
     }
 
     @Override
