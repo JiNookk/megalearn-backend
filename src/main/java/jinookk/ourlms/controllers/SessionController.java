@@ -4,8 +4,8 @@ import jinookk.ourlms.dtos.LoginRequestDto;
 import jinookk.ourlms.dtos.LoginResultDto;
 import jinookk.ourlms.exceptions.InvalidPassword;
 import jinookk.ourlms.exceptions.LoginFailed;
-import jinookk.ourlms.services.LoginService;
-import jinookk.ourlms.services.TokenService;
+import jinookk.ourlms.applications.auth.LoginService;
+import jinookk.ourlms.applications.token.IssueTokenService;
 import jinookk.ourlms.utils.HttpUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -24,14 +24,14 @@ import javax.servlet.http.HttpServletResponse;
 public class SessionController {
     private final LoginService loginService;
     private final HttpUtil httpUtil;
-    private final TokenService tokenService;
+    private final IssueTokenService issueTokenService;
 
     public SessionController(LoginService loginService,
                              HttpUtil httpUtil,
-                             TokenService tokenService) {
+                             IssueTokenService issueTokenService) {
         this.loginService = loginService;
         this.httpUtil = httpUtil;
-        this.tokenService = tokenService;
+        this.issueTokenService = issueTokenService;
     }
 
     @PostMapping
@@ -39,7 +39,7 @@ public class SessionController {
     public LoginResultDto login(
             @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response
     ) {
-        String refreshToken = tokenService.issueRefreshToken(loginRequestDto);
+        String refreshToken = issueTokenService.issueRefreshToken(loginRequestDto);
 
         ResponseCookie cookie = httpUtil.generateHttpOnlyCookie("refreshToken", refreshToken);
 

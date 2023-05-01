@@ -4,6 +4,10 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
+import jinookk.ourlms.applications.course.CreateCourseService;
+import jinookk.ourlms.applications.course.DeleteCourseService;
+import jinookk.ourlms.applications.course.GetCourseService;
+import jinookk.ourlms.applications.course.UpdateCourseService;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
@@ -12,12 +16,9 @@ import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.dtos.StatusUpdateDto;
 import jinookk.ourlms.exceptions.CourseNotFound;
 import jinookk.ourlms.models.vos.HashTag;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
-import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.services.CourseService;
-import jinookk.ourlms.services.MyCourseService;
+import jinookk.ourlms.applications.course.MyCourseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
@@ -36,11 +37,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CourseController {
-    private final CourseService courseService;
+    private final GetCourseService getCourseService;
+    private final CreateCourseService createCourseService;
+    private final UpdateCourseService updateCourseService;
+    private final DeleteCourseService deleteCourseService;
     private final MyCourseService myCourseService;
 
-    public CourseController(CourseService courseService, MyCourseService myCourseService) {
-        this.courseService = courseService;
+    public CourseController(GetCourseService getCourseService,
+                            CreateCourseService createCourseService,
+                            UpdateCourseService updateCourseService,
+                            DeleteCourseService deleteCourseService,
+                            MyCourseService myCourseService) {
+        this.getCourseService = getCourseService;
+        this.createCourseService = createCourseService;
+        this.updateCourseService = updateCourseService;
+        this.deleteCourseService = deleteCourseService;
         this.myCourseService = myCourseService;
     }
 
@@ -54,7 +65,7 @@ public class CourseController {
             @Validated @RequestBody CourseRequestDto courseRequestDto,
             @RequestAttribute UserName userName
     ) {
-        return courseService.create(courseRequestDto, userName);
+        return createCourseService.create(courseRequestDto, userName);
     }
 
     @GetMapping("/courses/{courseId}")
@@ -67,7 +78,7 @@ public class CourseController {
             @RequestAttribute(required = false) UserName userName,
             @PathVariable Long courseId
     ) {
-        return courseService.detail(userName, new CourseId(courseId));
+        return getCourseService.detail(userName, new CourseId(courseId));
     }
 
     @GetMapping("/courses/wishes")
@@ -78,7 +89,7 @@ public class CourseController {
     public CoursesDto wishList(
             @RequestAttribute UserName userName
     ) {
-        return courseService.wishList(userName);
+        return getCourseService.wishList(userName);
     }
 
     @GetMapping("/courses")
@@ -91,14 +102,14 @@ public class CourseController {
     ) {
         CourseFilterDto courseFilterDto = new CourseFilterDto(level, cost, skill, content);
 
-        return courseService.list(page, courseFilterDto);
+        return getCourseService.list(page, courseFilterDto);
     }
 
     @GetMapping("/admin/courses")
     public CoursesDto listForAdmin(
             @RequestParam(required = false, defaultValue = "1") Integer page
     ) {
-        return courseService.listForAdmin(page);
+        return getCourseService.listForAdmin(page);
     }
 
     @GetMapping("/account/my-courses")
@@ -134,7 +145,7 @@ public class CourseController {
             @PathVariable Long courseId,
             @Validated @RequestBody CourseUpdateRequestDto courseUpdateRequestDto
     ) {
-        return courseService.update(courseId, courseUpdateRequestDto, userName);
+        return updateCourseService.update(courseId, courseUpdateRequestDto, userName);
     }
 
     @PatchMapping("/courses/{courseId}/status")
@@ -142,7 +153,7 @@ public class CourseController {
             @PathVariable Long courseId,
             @Validated @RequestBody StatusUpdateDto statusUpdateDto
     ) {
-        return courseService.updateStatus(courseId, statusUpdateDto);
+        return updateCourseService.updateStatus(courseId, statusUpdateDto);
     }
 
     @DeleteMapping("/courses/{courseId}")
@@ -154,7 +165,7 @@ public class CourseController {
             @PathVariable Long courseId,
             @RequestAttribute UserName userName
     ) {
-        return courseService.delete(courseId, userName);
+        return deleteCourseService.delete(courseId, userName);
     }
 
     @DeleteMapping("/courses/{courseId}/skills/{skill}")
@@ -167,7 +178,7 @@ public class CourseController {
             @PathVariable String skill,
             @RequestAttribute UserName userName
     ) {
-        return courseService.deleteSkill(new CourseId(courseId), new HashTag(skill), userName);
+        return deleteCourseService.deleteSkill(new CourseId(courseId), new HashTag(skill), userName);
     }
 
     @ExceptionHandler(ServletRequestBindingException.class)

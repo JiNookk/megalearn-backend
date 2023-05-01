@@ -1,10 +1,11 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.like.GetLikeService;
 import jinookk.ourlms.dtos.LikeDto;
 import jinookk.ourlms.dtos.LikesDto;
 import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.vos.UserName;
-import jinookk.ourlms.services.LikeService;
+import jinookk.ourlms.applications.like.UpdateLikeService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,10 @@ class LikeControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private LikeService likeService;
+    private GetLikeService getLikeService;
+
+    @MockBean
+    private UpdateLikeService updateLikeService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -45,7 +49,7 @@ class LikeControllerTest {
     void list() throws Exception {
         LikeDto likeDto = Like.fake(true).toDto();
 
-        given(likeService.list()).willReturn(new LikesDto(List.of(likeDto)));
+        given(getLikeService.list()).willReturn(new LikesDto(List.of(likeDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/likes"))
                 .andExpect(status().isOk())
@@ -58,7 +62,7 @@ class LikeControllerTest {
     void like() throws Exception {
         LikeDto likeDto = Like.fake(true).toDto();
 
-        given(likeService.detail(any(), any())).willReturn(likeDto);
+        given(getLikeService.detail(any(), any())).willReturn(likeDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/likes/me")
                         .header("Authorization", "Bearer " + accessToken))
@@ -72,7 +76,7 @@ class LikeControllerTest {
     void toggle() throws Exception {
         LikeDto likeDto = Like.fake(false).toDto();
 
-        given(likeService.toggle(any())).willReturn(likeDto);
+        given(updateLikeService.toggle(any())).willReturn(likeDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/likes/1"))
                 .andExpect(status().isOk())

@@ -1,11 +1,14 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.course.CreateCourseService;
+import jinookk.ourlms.applications.course.DeleteCourseService;
+import jinookk.ourlms.applications.course.GetCourseService;
+import jinookk.ourlms.applications.course.UpdateCourseService;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.vos.UserName;
-import jinookk.ourlms.services.CourseService;
-import jinookk.ourlms.services.MyCourseService;
+import jinookk.ourlms.applications.course.MyCourseService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +35,16 @@ class CourseControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CourseService courseService;
+    private GetCourseService getCourseService;
+
+    @MockBean
+    private CreateCourseService createCourseService;
+
+    @MockBean
+    private UpdateCourseService updateCourseService;
+
+    @MockBean
+    private DeleteCourseService deleteCourseService;
 
     @MockBean
     private MyCourseService myCourseService;
@@ -51,7 +63,7 @@ class CourseControllerTest {
     void create() throws Exception {
         CourseDto courseDto = Course.fake("courseTitle").toCourseDto();
 
-        given(courseService.create(any(), any())).willReturn(courseDto);
+        given(createCourseService.create(any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/courses")
                         .header("Authorization", "Bearer " + accessToken)
@@ -67,7 +79,7 @@ class CourseControllerTest {
     void detail() throws Exception {
         CourseDto courseDto = Course.fake("test").toCourseDto();
 
-        given(courseService.detail(any(), any())).willReturn(courseDto);
+        given(getCourseService.detail(any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1")
                         .header("Authorization", "Bearer " + accessToken)
@@ -82,7 +94,7 @@ class CourseControllerTest {
     void list() throws Exception {
         CourseDto courseDto = Course.fake("test").toCourseDto();
 
-        given(courseService.list(anyInt(), any())).willReturn(new CoursesDto(List.of(courseDto)));
+        given(getCourseService.list(anyInt(), any())).willReturn(new CoursesDto(List.of(courseDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses"))
                 .andExpect(status().isOk())
@@ -95,7 +107,7 @@ class CourseControllerTest {
     void wishList() throws Exception {
         CourseDto courseDto = Course.fake("test").toCourseDto();
 
-        given(courseService.wishList(any())).willReturn(new CoursesDto(List.of(courseDto)));
+        given(getCourseService.wishList(any())).willReturn(new CoursesDto(List.of(courseDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/wishes")
                         .header("Authorization", "Bearer " + accessToken))
@@ -125,7 +137,7 @@ class CourseControllerTest {
     void update() throws Exception {
         CourseDto courseDto = Course.fake("updated").toCourseDto();
 
-        given(courseService.update(any(), any(), any())).willReturn(courseDto);
+        given(updateCourseService.update(any(), any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/courses/1")
                         .header("Authorization", "Bearer " + accessToken)
@@ -150,7 +162,7 @@ class CourseControllerTest {
     void updateStatus() throws Exception {
         CourseDto courseDto = Course.fake("updated").toCourseDto();
 
-        given(courseService.updateStatus(any(), any())).willReturn(courseDto);
+        given(updateCourseService.updateStatus(any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/courses/1/status")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -167,7 +179,7 @@ class CourseControllerTest {
     void delete() throws Exception {
         CourseDto courseDto = Course.fake(null).toCourseDto();
 
-        given(courseService.delete(any(), any())).willReturn(courseDto);
+        given(deleteCourseService.delete(any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1")
                         .header("Authorization", "Bearer " + accessToken)
@@ -182,7 +194,7 @@ class CourseControllerTest {
     void deleteSkill() throws Exception {
         CourseDto courseDto = Course.fake(null).toCourseDto();
 
-        given(courseService.deleteSkill(any(), any(), any())).willReturn(courseDto);
+        given(deleteCourseService.deleteSkill(any(), any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1/skills/skill")
                         .header("Authorization", "Bearer " + accessToken)

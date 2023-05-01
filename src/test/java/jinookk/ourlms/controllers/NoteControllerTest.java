@@ -1,13 +1,15 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.note.CreateNoteService;
+import jinookk.ourlms.applications.note.DeleteNoteService;
+import jinookk.ourlms.applications.note.GetNoteService;
+import jinookk.ourlms.applications.note.UpdateNoteService;
 import jinookk.ourlms.dtos.NoteDeleteDto;
 import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NotesDto;
 import jinookk.ourlms.models.entities.Note;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.NoteId;
-import jinookk.ourlms.services.NoteService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,16 @@ class NoteControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private NoteService noteService;
+    private GetNoteService getNoteService;
+
+    @MockBean
+    private CreateNoteService createNoteService;
+
+    @MockBean
+    private UpdateNoteService updateNoteService;
+
+    @MockBean
+    private DeleteNoteService deleteNoteService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -48,7 +59,7 @@ class NoteControllerTest {
     @Test
     void post() throws Exception {
         NoteDto noteDto = Note.fake("hi").toNoteDto();
-        given(noteService.create(any(), any())).willReturn(noteDto);
+        given(createNoteService.create(any(), any())).willReturn(noteDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/notes")
                         .header("Authorization", "Bearer " + accessToken)
@@ -70,7 +81,7 @@ class NoteControllerTest {
     @Test
     void list() throws Exception {
         NoteDto noteDto = Note.fake("hi").toNoteDto();
-        given(noteService.list(any(), any())).willReturn(new NotesDto(List.of(noteDto)));
+        given(getNoteService.list(any(), any())).willReturn(new NotesDto(List.of(noteDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/notes")
                         .header("Authorization", "Bearer " + accessToken))
@@ -83,7 +94,7 @@ class NoteControllerTest {
     @Test
     void update() throws Exception {
         NoteDto noteDto = Note.fake("updated").toNoteDto();
-        given(noteService.update(any(), any())).willReturn(noteDto);
+        given(updateNoteService.update(any(), any())).willReturn(noteDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/notes/1")
                         .header("Authorization", "Bearer " + accessToken)
@@ -101,7 +112,7 @@ class NoteControllerTest {
     @Test
     void delete() throws Exception {
         NoteDeleteDto noteDeleteDto = new NoteDeleteDto(1L);
-        given(noteService.delete(new NoteId(1L))).willReturn(noteDeleteDto);
+        given(deleteNoteService.delete(new NoteId(1L))).willReturn(noteDeleteDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/notes/1"))
                 .andExpect(status().isOk())

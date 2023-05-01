@@ -3,7 +3,7 @@ package jinookk.ourlms.controllers;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import jinookk.ourlms.exceptions.LoginFailed;
 import jinookk.ourlms.exceptions.RefreshTokenExpired;
-import jinookk.ourlms.services.TokenService;
+import jinookk.ourlms.applications.token.IssueTokenService;
 import jinookk.ourlms.utils.HttpUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class TokenController {
-    private final TokenService tokenService;
+    private final IssueTokenService issueTokenService;
     private final HttpUtil httpUtil;
 
-    public TokenController(TokenService tokenService, HttpUtil httpUtil) {
-        this.tokenService = tokenService;
+    public TokenController(IssueTokenService issueTokenService, HttpUtil httpUtil) {
+        this.issueTokenService = issueTokenService;
         this.httpUtil = httpUtil;
     }
 
@@ -29,7 +29,7 @@ public class TokenController {
     public String reissueAccessToken(HttpServletRequest request) {
         String refreshToken = httpUtil.getCookieValue(request, "refreshToken");
 
-        return tokenService.reissueAccessToken(refreshToken);
+        return issueTokenService.reissueAccessToken(refreshToken);
     }
 
     @PostMapping("refreshToken")
@@ -38,7 +38,7 @@ public class TokenController {
                                       HttpServletResponse response) {
         String refreshToken = httpUtil.getCookieValue(request, "refreshToken");
 
-        tokenService.reissueRefreshToken(refreshToken, response);
+        issueTokenService.reissueRefreshToken(refreshToken, response);
 
         return "refreshToken issued";
     }

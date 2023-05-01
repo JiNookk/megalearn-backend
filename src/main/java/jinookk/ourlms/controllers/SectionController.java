@@ -1,14 +1,14 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.section.CreateSectionService;
+import jinookk.ourlms.applications.section.DeleteSectionService;
+import jinookk.ourlms.applications.section.GetSectionService;
+import jinookk.ourlms.applications.section.UpdateSectionService;
 import jinookk.ourlms.dtos.SectionDto;
 import jinookk.ourlms.dtos.SectionRequestDto;
 import jinookk.ourlms.dtos.SectionUpdateRequestDto;
 import jinookk.ourlms.dtos.SectionsDto;
-import jinookk.ourlms.dtos.SectionsWithProgressDto;
-import jinookk.ourlms.models.vos.Name;
-import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.services.SectionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,37 +19,45 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SectionController {
-    private final SectionService sectionService;
+    private final GetSectionService getSectionService;
+    private final CreateSectionService createSectionService;
+    private final UpdateSectionService updateSectionService;
+    private final DeleteSectionService deleteSectionService;
 
-    public SectionController(SectionService sectionService) {
-        this.sectionService = sectionService;
+    public SectionController(GetSectionService getSectionService,
+                             CreateSectionService createSectionService,
+                             UpdateSectionService updateSectionService,
+                             DeleteSectionService deleteSectionService) {
+        this.getSectionService = getSectionService;
+        this.createSectionService = createSectionService;
+        this.updateSectionService = updateSectionService;
+        this.deleteSectionService = deleteSectionService;
     }
 
     @PostMapping("/sections")
     public SectionDto create(
             @Validated @RequestBody SectionRequestDto sectionRequestDto
     ) {
-        return sectionService.create(sectionRequestDto);
+        return createSectionService.create(sectionRequestDto);
     }
 
     @GetMapping("/sections")
     public SectionsDto list(
     ) {
-        return sectionService.list();
+        return getSectionService.list();
     }
 
     @GetMapping("/courses/{courseId}/sections")
     public SectionsDto listByCourseId(
             @PathVariable Long courseId
     ) {
-        return sectionService.listByCourseId(new CourseId(courseId));
+        return getSectionService.listByCourseId(new CourseId(courseId));
     }
 
 //    @GetMapping("/courses/{courseId}/sections")
@@ -57,7 +65,7 @@ public class SectionController {
 //            @RequestAttribute("accountId") Long accountId,
 //            @PathVariable Long courseId
 //    ) {
-//        return sectionService.listWithProgress(new CourseId(courseId), new AccountId(accountId));
+//        return getSectionService.listWithProgress(new CourseId(courseId), new AccountId(accountId));
 //    }
 
     @PatchMapping("/sections/{sectionId}")
@@ -65,14 +73,14 @@ public class SectionController {
             @Validated @RequestBody SectionUpdateRequestDto sectionUpdateRequestDto,
             @PathVariable Long sectionId
     ) {
-        return sectionService.update(sectionId, sectionUpdateRequestDto);
+        return updateSectionService.update(sectionId, sectionUpdateRequestDto);
     }
 
     @DeleteMapping("/sections/{sectionId}")
     public SectionDto delete(
             @PathVariable Long sectionId
     ) {
-        return sectionService.delete(sectionId);
+        return deleteSectionService.delete(sectionId);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

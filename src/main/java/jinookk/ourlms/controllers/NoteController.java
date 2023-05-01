@@ -3,16 +3,18 @@ package jinookk.ourlms.controllers;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jinookk.ourlms.applications.note.CreateNoteService;
+import jinookk.ourlms.applications.note.DeleteNoteService;
+import jinookk.ourlms.applications.note.GetNoteService;
+import jinookk.ourlms.applications.note.UpdateNoteService;
 import jinookk.ourlms.dtos.NoteDeleteDto;
 import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NoteRequestDto;
 import jinookk.ourlms.dtos.NoteUpdateDto;
 import jinookk.ourlms.dtos.NotesDto;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.NoteId;
-import jinookk.ourlms.services.NoteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,10 +33,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class NoteController {
-    private final NoteService noteService;
+    private final GetNoteService getNoteService;
+    private final CreateNoteService createNoteService;
+    private final UpdateNoteService updateNoteService;
+    private final DeleteNoteService deleteNoteService;
 
-    public NoteController(NoteService noteService) {
-        this.noteService = noteService;
+    public NoteController(GetNoteService getNoteService,
+                          CreateNoteService createNoteService,
+                          UpdateNoteService updateNoteService,
+                          DeleteNoteService deleteNoteService) {
+        this.getNoteService = getNoteService;
+        this.createNoteService = createNoteService;
+        this.updateNoteService = updateNoteService;
+        this.deleteNoteService = deleteNoteService;
     }
 
     @GetMapping("/lectures/{lectureId}/notes")
@@ -46,7 +57,7 @@ public class NoteController {
             @RequestAttribute UserName userName,
             @PathVariable Long lectureId
     ) {
-        return noteService.list(new LectureId(lectureId), userName);
+        return getNoteService.list(new LectureId(lectureId), userName);
     }
 
     @GetMapping("/notes/me")
@@ -58,7 +69,7 @@ public class NoteController {
             @RequestAttribute UserName userName,
             @RequestParam(required = false) String date
     ) {
-        return noteService.myNotes(userName, date);
+        return getNoteService.myNotes(userName, date);
     }
 
     @PostMapping("/notes")
@@ -71,7 +82,7 @@ public class NoteController {
             @RequestAttribute UserName userName,
             @Validated @RequestBody NoteRequestDto noteRequestDto
     ) {
-        return noteService.create(noteRequestDto, userName);
+        return createNoteService.create(noteRequestDto, userName);
     }
 
     @PatchMapping("/notes/{noteId}")
@@ -79,7 +90,7 @@ public class NoteController {
             @PathVariable Long noteId,
             @RequestBody NoteUpdateDto noteUpdateDto
     ) {
-        return noteService.update(new NoteId(noteId), noteUpdateDto);
+        return updateNoteService.update(new NoteId(noteId), noteUpdateDto);
     }
 
 
@@ -87,7 +98,7 @@ public class NoteController {
     public NoteDeleteDto delete(
             @PathVariable Long noteId
     ) {
-        return noteService.delete(new NoteId(noteId));
+        return deleteNoteService.delete(new NoteId(noteId));
     }
 
 

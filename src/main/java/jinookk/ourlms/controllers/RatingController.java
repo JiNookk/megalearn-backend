@@ -3,12 +3,13 @@ package jinookk.ourlms.controllers;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jinookk.ourlms.applications.rating.CreateRatingService;
+import jinookk.ourlms.applications.rating.GetRatingService;
 import jinookk.ourlms.dtos.RatingDto;
 import jinookk.ourlms.dtos.RatingRequestDto;
 import jinookk.ourlms.dtos.RatingsDto;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.services.RatingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -23,10 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class RatingController {
-    private final RatingService ratingService;
+    private final GetRatingService getRatingService;
+    private final CreateRatingService createRatingService;
 
-    public RatingController(RatingService ratingService) {
-        this.ratingService = ratingService;
+    public RatingController(GetRatingService getRatingService,
+                            CreateRatingService createRatingService) {
+        this.getRatingService = getRatingService;
+        this.createRatingService = createRatingService;
     }
 
     @PostMapping("/ratings")
@@ -39,7 +43,7 @@ public class RatingController {
             @Validated @RequestBody RatingRequestDto ratingRequestDto,
             @RequestAttribute UserName userName
     ) {
-        return ratingService.rate(userName, ratingRequestDto);
+        return createRatingService.rate(userName, ratingRequestDto);
     }
 
     @GetMapping("/instructor/my-rating")
@@ -50,12 +54,12 @@ public class RatingController {
     public RatingDto totalRating(
             @RequestAttribute UserName userName
     ) {
-        return ratingService.totalRating(userName);
+        return getRatingService.totalRating(userName);
     }
 
     @GetMapping("/ratings")
     public RatingsDto list() {
-        return ratingService.list();
+        return getRatingService.list();
     }
 
     @GetMapping("/ratings/me")
@@ -66,7 +70,7 @@ public class RatingController {
     public RatingsDto myReviews(
             @RequestAttribute UserName userName
     ) {
-        return ratingService.myReviews(userName);
+        return getRatingService.myReviews(userName);
     }
 
     @GetMapping("/instructor/ratings")
@@ -78,7 +82,7 @@ public class RatingController {
             @RequestAttribute UserName userName,
             @RequestParam(required = false) Long courseId
     ) {
-        return ratingService.listWithAccountId(new CourseId(courseId), userName);
+        return getRatingService.listWithAccountId(new CourseId(courseId), userName);
     }
 
     @ExceptionHandler(ServletRequestBindingException.class)

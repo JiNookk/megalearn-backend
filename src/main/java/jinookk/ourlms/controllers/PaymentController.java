@@ -3,6 +3,8 @@ package jinookk.ourlms.controllers;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jinookk.ourlms.applications.payment.CreatePaymentService;
+import jinookk.ourlms.applications.payment.GetPaymentService;
 import jinookk.ourlms.dtos.KakaoReadyDto;
 import jinookk.ourlms.dtos.KakaoRequestDto;
 import jinookk.ourlms.dtos.MonthlyPaymentsDto;
@@ -10,8 +12,7 @@ import jinookk.ourlms.dtos.PaymentRequestDto;
 import jinookk.ourlms.dtos.PaymentsDto;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.services.KakaoService;
-import jinookk.ourlms.services.PaymentService;
+import jinookk.ourlms.applications.kakao.KakaoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,13 +26,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PaymentController {
-    private final PaymentService paymentService;
+    private final GetPaymentService getPaymentService;
+    private final CreatePaymentService createPaymentService;
     private final KakaoService kakaoService;
 
-    public PaymentController(PaymentService paymentService, KakaoService kakaoService) {
-        this.paymentService = paymentService;
+    public PaymentController(GetPaymentService getPaymentService, CreatePaymentService createPaymentService, KakaoService kakaoService) {
+        this.getPaymentService = getPaymentService;
+        this.createPaymentService = createPaymentService;
         this.kakaoService = kakaoService;
     }
+
 
     @PostMapping("/payments/kakao-ready")
     @ResponseStatus(HttpStatus.CREATED)
@@ -56,12 +60,12 @@ public class PaymentController {
             @RequestAttribute UserName userName,
             @RequestBody PaymentRequestDto paymentRequestDto
     ) {
-        return paymentService.purchase(paymentRequestDto, userName);
+        return createPaymentService.purchase(paymentRequestDto, userName);
     }
 
     @GetMapping("/payments")
     public PaymentsDto detail() {
-        return paymentService.list();
+        return getPaymentService.list();
     }
 
     @GetMapping("/instructor/payments")
@@ -73,7 +77,7 @@ public class PaymentController {
             @RequestAttribute UserName userName,
             @RequestParam(required = false) Long courseId
     ) {
-        return paymentService.list(userName, new CourseId(courseId));
+        return getPaymentService.list(userName, new CourseId(courseId));
     }
 
     @GetMapping("/payments/me")
@@ -84,7 +88,7 @@ public class PaymentController {
     public PaymentsDto list(
             @RequestAttribute UserName userName
     ) {
-        return paymentService.list(userName);
+        return getPaymentService.list(userName);
     }
 
     @GetMapping("/instructor/monthly-total-payments")
@@ -95,7 +99,7 @@ public class PaymentController {
     public MonthlyPaymentsDto monthlyList(
             @RequestAttribute UserName userName
     ) {
-        return paymentService.monthlyList(userName);
+        return getPaymentService.monthlyList(userName);
     }
 
     @ExceptionHandler(ServletRequestBindingException.class)

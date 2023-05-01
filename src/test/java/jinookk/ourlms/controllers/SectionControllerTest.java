@@ -1,10 +1,13 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.section.CreateSectionService;
+import jinookk.ourlms.applications.section.DeleteSectionService;
+import jinookk.ourlms.applications.section.GetSectionService;
+import jinookk.ourlms.applications.section.UpdateSectionService;
 import jinookk.ourlms.dtos.SectionDto;
 import jinookk.ourlms.dtos.SectionsDto;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.models.vos.UserName;
-import jinookk.ourlms.services.SectionService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +33,16 @@ class SectionControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SectionService sectionService;
+    private GetSectionService getSectionService;
+
+    @MockBean
+    private CreateSectionService createSectionService;
+
+    @MockBean
+    private UpdateSectionService updateSectionService;
+
+    @MockBean
+    private DeleteSectionService deleteSectionService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -46,7 +58,7 @@ class SectionControllerTest {
     void create() throws Exception {
         SectionDto sectionDto = Section.fake("hi").toSectionDto();
 
-        given(sectionService.create(any()))
+        given(createSectionService.create(any()))
                 .willReturn(sectionDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/sections")
@@ -66,7 +78,7 @@ class SectionControllerTest {
     void list() throws Exception {
         SectionDto sectionDto = Section.fake("hi").toSectionDto();
 
-        given(sectionService.list())
+        given(getSectionService.list())
                 .willReturn(new SectionsDto(List.of(sectionDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/sections")
@@ -83,7 +95,7 @@ class SectionControllerTest {
 //
 //        SectionWithProgressDto sectionWithProgressDto = Section.fake("hi").toSectionWithProgressDto(progresses);
 //
-//        given(sectionService.listWithProgress(any(), any()))
+//        given(getSectionService.listWithProgress(any(), any()))
 //                .willReturn(new SectionsWithProgressDto(List.of(sectionWithProgressDto)));
 //
 //        mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/sections")
@@ -98,7 +110,7 @@ class SectionControllerTest {
     void update() throws Exception {
         SectionDto sectionDto = Section.fake("updated").toSectionDto();
 
-        given(sectionService.update(any(), any()))
+        given(updateSectionService.update(any(), any()))
                 .willReturn(sectionDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/sections/1")
@@ -117,7 +129,7 @@ class SectionControllerTest {
     void delete() throws Exception {
         SectionDto sectionDto = Section.fake(null).toSectionDto();
 
-        given(sectionService.delete(any()))
+        given(deleteSectionService.delete(any()))
                 .willReturn(sectionDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/sections/1"))

@@ -1,12 +1,15 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.comment.CreateCommentService;
+import jinookk.ourlms.applications.comment.DeleteCommentService;
+import jinookk.ourlms.applications.comment.GetCommentService;
+import jinookk.ourlms.applications.comment.UpdateCommentService;
 import jinookk.ourlms.dtos.CommentDeleteDto;
 import jinookk.ourlms.dtos.CommentDto;
 import jinookk.ourlms.dtos.CommentsDto;
 import jinookk.ourlms.models.entities.Comment;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.InquiryId;
-import jinookk.ourlms.services.CommentService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +35,16 @@ class CommentControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CommentService commentService;
+    private GetCommentService getCommentService;
+
+    @MockBean
+    private CreateCommentService createCommentService;
+
+    @MockBean
+    private UpdateCommentService updateCommentService;
+
+    @MockBean
+    private DeleteCommentService deleteCommentService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -49,7 +61,7 @@ class CommentControllerTest {
         CommentDto commentDto = Comment.fake("hi").toCommentDto();
 
         CommentsDto commentsDto = new CommentsDto(List.of(commentDto));
-        given(commentService.list(new InquiryId(1L), new UserName("userName@email.com"))).willReturn(commentsDto);
+        given(getCommentService.list(new InquiryId(1L), new UserName("userName@email.com"))).willReturn(commentsDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/inquiries/1/comments")
                         .header("Authorization", "Bearer " + accessToken))
@@ -64,7 +76,7 @@ class CommentControllerTest {
     void post() throws Exception {
         CommentDto commentDto = Comment.fake("hi").toCommentDto();
 
-        given(commentService.create(any(), any())).willReturn(commentDto);
+        given(createCommentService.create(any(), any())).willReturn(commentDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/comments")
                         .header("Authorization", "Bearer " + accessToken)
@@ -84,7 +96,7 @@ class CommentControllerTest {
     void update() throws Exception {
         CommentDto commentDto = Comment.fake("updated").toCommentDto();
 
-        given(commentService.update(any(), any(), any())).willReturn(commentDto);
+        given(updateCommentService.update(any(), any(), any())).willReturn(commentDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/comments/11")
                         .header("Authorization", "Bearer " + accessToken)
@@ -100,7 +112,7 @@ class CommentControllerTest {
     @Test
     void delete() throws Exception {
         CommentDeleteDto commentDeleteDto = Comment.fake("hi").toCommentDeleteDto();
-        given(commentService.delete(any(), any())).willReturn(commentDeleteDto);
+        given(deleteCommentService.delete(any(), any())).willReturn(commentDeleteDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/comments/11")
                         .header("Authorization", "Bearer " + accessToken)

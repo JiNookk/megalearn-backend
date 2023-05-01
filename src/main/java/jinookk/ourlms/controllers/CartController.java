@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import jinookk.ourlms.applications.cart.AddCartItemService;
+import jinookk.ourlms.applications.cart.DeleteCartItemService;
+import jinookk.ourlms.applications.cart.GetCartService;
 import jinookk.ourlms.dtos.CartDto;
 import jinookk.ourlms.dtos.CartRequestDto;
 import jinookk.ourlms.dtos.SectionDto;
@@ -13,7 +16,6 @@ import jinookk.ourlms.exceptions.CartItemNotFound;
 import jinookk.ourlms.exceptions.CartNotFound;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.services.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,10 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CartController {
-    private final CartService cartService;
+    private final GetCartService getCartService;
+    private final AddCartItemService addCartItemService;
+    private final DeleteCartItemService deleteCartItemService;
 
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
+    public CartController(GetCartService getCartService, AddCartItemService addCartItemService, DeleteCartItemService deleteCartItemService) {
+        this.getCartService = getCartService;
+        this.addCartItemService = addCartItemService;
+        this.deleteCartItemService = deleteCartItemService;
     }
 
     @GetMapping("/carts/me")
@@ -45,7 +51,7 @@ public class CartController {
     public CartDto myCart(
             @RequestAttribute UserName userName
     ) {
-        return cartService.detail(userName);
+        return getCartService.detail(userName);
     }
 
     @PatchMapping("/carts/me/add-item/{itemId}")
@@ -57,7 +63,7 @@ public class CartController {
             @RequestAttribute UserName userName,
             @PathVariable Long itemId
     ) {
-        return cartService.addItem(userName, new CourseId(itemId));
+        return addCartItemService.addItem(userName, new CourseId(itemId));
     }
 
     @PatchMapping("/carts/me/remove-item")
@@ -69,7 +75,7 @@ public class CartController {
             @RequestAttribute UserName userName,
             @RequestBody CartRequestDto cartRequestDto
     ) {
-        return cartService.removeItem(userName, cartRequestDto);
+        return deleteCartItemService.removeItem(userName, cartRequestDto);
     }
 
     @ExceptionHandler(CartNotFound.class)
