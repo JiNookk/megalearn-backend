@@ -1,15 +1,15 @@
 package jinookk.ourlms.controllers;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import jinookk.ourlms.applications.category.CreateCategoryService;
+import jinookk.ourlms.applications.category.DeleteCategoryService;
+import jinookk.ourlms.applications.category.GetCategoryService;
 import jinookk.ourlms.dtos.CategoriesDto;
 import jinookk.ourlms.dtos.CategoryDto;
 import jinookk.ourlms.dtos.CategoryRequestDto;
 import jinookk.ourlms.exceptions.CategoryNotFound;
-import jinookk.ourlms.services.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,16 +22,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CategoryController {
-    private final CategoryService categoryService;
+    private final GetCategoryService getCategoryService;
+    private final CreateCategoryService createCategoryService;
+    private final DeleteCategoryService deleteCategoryService;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
+    public CategoryController(GetCategoryService getCategoryService, CreateCategoryService createCategoryService, DeleteCategoryService deleteCategoryService) {
+        this.getCategoryService = getCategoryService;
+        this.createCategoryService = createCategoryService;
+        this.deleteCategoryService = deleteCategoryService;
     }
 
     @GetMapping("categories")
     @ApiOperation(value = "Fetch Categories", notes = "fetch entire categories")
     public CategoriesDto list() {
-        return categoryService.list();
+        return getCategoryService.list();
     }
 
     @PostMapping("categories")
@@ -40,7 +44,7 @@ public class CategoryController {
     public CategoryDto category(
             @RequestBody CategoryRequestDto categoryRequestDto
     ) {
-        return categoryService.post(categoryRequestDto);
+        return createCategoryService.post(categoryRequestDto);
     }
 
     @DeleteMapping("categories/{categoryId}")
@@ -51,7 +55,7 @@ public class CategoryController {
     public CategoryDto delete(
             @PathVariable Long categoryId
     ) {
-        return categoryService.delete(categoryId);
+        return deleteCategoryService.delete(categoryId);
     }
 
     @ExceptionHandler(CategoryNotFound.class)

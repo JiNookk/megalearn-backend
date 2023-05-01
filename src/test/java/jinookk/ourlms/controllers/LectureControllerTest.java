@@ -1,11 +1,14 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.lecture.CreateLectureService;
+import jinookk.ourlms.applications.lecture.DeleteLectureService;
+import jinookk.ourlms.applications.lecture.GetLectureService;
+import jinookk.ourlms.applications.lecture.UpdateLectureService;
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LecturesDto;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.services.LectureService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +34,16 @@ class LectureControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private LectureService lectureService;
+    private GetLectureService getLectureService;
+
+    @MockBean
+    private CreateLectureService createLectureService;
+
+    @MockBean
+    private UpdateLectureService updateLectureService;
+
+    @MockBean
+    private DeleteLectureService deleteLectureService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -47,7 +59,7 @@ class LectureControllerTest {
     void create() throws Exception {
         LectureDto lectureDto = Lecture.fake("hi").toLectureDto();
 
-        given(lectureService.create(any()))
+        given(createLectureService.create(any()))
                 .willReturn(lectureDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/lectures")
@@ -67,7 +79,7 @@ class LectureControllerTest {
     void lecture() throws Exception {
         LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
 
-        given(lectureService.detail(1L))
+        given(getLectureService.detail(1L))
                 .willReturn(lectureDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/lectures/1"))
@@ -83,7 +95,7 @@ class LectureControllerTest {
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
-        given(lectureService.listByCourseId(new CourseId(1L)))
+        given(getLectureService.listByCourseId(new CourseId(1L)))
                 .willReturn(lecturesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/lectures"))
@@ -99,7 +111,7 @@ class LectureControllerTest {
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
-        given(lectureService.list())
+        given(getLectureService.list())
                 .willReturn(lecturesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures"))
@@ -115,7 +127,7 @@ class LectureControllerTest {
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
-        given(lectureService.listByInstructorId(new UserName("userName@email.com")))
+        given(getLectureService.listByInstructorId(new UserName("userName@email.com")))
                 .willReturn(lecturesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/instructor")
@@ -132,7 +144,7 @@ class LectureControllerTest {
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
-        given(lectureService.myLectures(new UserName("userName@email.com")))
+        given(getLectureService.myLectures(new UserName("userName@email.com")))
                 .willReturn(lecturesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/me")
@@ -147,7 +159,7 @@ class LectureControllerTest {
     void update() throws Exception {
         LectureDto lectureDto = Lecture.fake("updated").toLectureDto();
 
-        given(lectureService.update(any(), any()))
+        given(updateLectureService.update(any(), any()))
                 .willReturn(lectureDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/lectures/1")
@@ -168,7 +180,7 @@ class LectureControllerTest {
     void delete() throws Exception {
         LectureDto lectureDto = Lecture.fake((String) null).toLectureDto();
 
-        given(lectureService.delete(any()))
+        given(deleteLectureService.delete(any()))
                 .willReturn(lectureDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/lectures/1"))

@@ -1,11 +1,13 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.cart.AddCartItemService;
+import jinookk.ourlms.applications.cart.DeleteCartItemService;
+import jinookk.ourlms.applications.cart.GetCartService;
 import jinookk.ourlms.dtos.CartDto;
 import jinookk.ourlms.models.entities.Cart;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.services.CartService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +33,13 @@ class CartControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CartService cartService;
+    private GetCartService getCartService;
+
+    @MockBean
+    private AddCartItemService addCartItemService;
+
+    @MockBean
+    private DeleteCartItemService deleteCartItemService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -57,7 +65,7 @@ class CartControllerTest {
 
     @Test
     void myCart() throws Exception {
-        given(cartService.detail(any()))
+        given(getCartService.detail(any()))
                 .willReturn(cartDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/carts/me")
@@ -70,7 +78,7 @@ class CartControllerTest {
 
     @Test
     void update() throws Exception {
-        given(cartService.addItem(any(), any()))
+        given(addCartItemService.addItem(any(), any()))
                 .willReturn(cartDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/carts/me/add-item/1")
@@ -83,7 +91,7 @@ class CartControllerTest {
 
     @Test
     void removeItem() throws Exception {
-        given(cartService.removeItem(any(), any()))
+        given(deleteCartItemService.removeItem(any(), any()))
                 .willReturn(cartDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/carts/me/remove-item")

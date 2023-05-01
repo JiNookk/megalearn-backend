@@ -3,19 +3,20 @@ package jinookk.ourlms.controllers;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jinookk.ourlms.applications.inquiry.CreateInquiryService;
+import jinookk.ourlms.applications.inquiry.DeleteInquiryService;
+import jinookk.ourlms.applications.inquiry.GetInquiryService;
+import jinookk.ourlms.applications.inquiry.UpdateInquiryService;
 import jinookk.ourlms.dtos.InquiriesDto;
 import jinookk.ourlms.dtos.InquiryDeleteDto;
 import jinookk.ourlms.dtos.InquiryDto;
 import jinookk.ourlms.dtos.InquiryFilterDto;
 import jinookk.ourlms.dtos.InquiryRequestDto;
 import jinookk.ourlms.dtos.InquiryUpdateDto;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
-import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.ids.LectureId;
-import jinookk.ourlms.services.InquiryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,10 +35,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class InquiryController {
-    private final InquiryService inquiryService;
+    private final GetInquiryService getInquiryService;
+    private final CreateInquiryService createInquiryService;
+    private final UpdateInquiryService updateInquiryService;
+    private final DeleteInquiryService deleteInquiryService;
 
-    public InquiryController(InquiryService inquiryService) {
-        this.inquiryService = inquiryService;
+    public InquiryController(GetInquiryService getInquiryService,
+                             CreateInquiryService createInquiryService,
+                             UpdateInquiryService updateInquiryService,
+                             DeleteInquiryService deleteInquiryService) {
+        this.getInquiryService = getInquiryService;
+        this.createInquiryService = createInquiryService;
+        this.updateInquiryService = updateInquiryService;
+        this.deleteInquiryService = deleteInquiryService;
     }
 
     @PostMapping("/inquiries")
@@ -50,14 +60,14 @@ public class InquiryController {
             @RequestAttribute UserName userName,
             @Validated @RequestBody InquiryRequestDto inquiryRequestDto
     ) {
-        return inquiryService.create(inquiryRequestDto, userName);
+        return createInquiryService.create(inquiryRequestDto, userName);
     }
 
     @GetMapping("/inquiries/{inquiryId}")
     public InquiryDto inquiry(
             @PathVariable Long inquiryId
     ) {
-        return inquiryService.detail(new InquiryId(inquiryId));
+        return getInquiryService.detail(new InquiryId(inquiryId));
     }
 
     @GetMapping("/inquiries")
@@ -71,7 +81,7 @@ public class InquiryController {
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String order
     ) {
-        return inquiryService.list(userName,
+        return getInquiryService.list(userName,
                 new InquiryFilterDto(courseId, type, order));
     }
 
@@ -79,7 +89,7 @@ public class InquiryController {
     public InquiriesDto myInquiries(
             @RequestAttribute UserName userName
     ) {
-        return inquiryService.myInquiries(userName);
+        return getInquiryService.myInquiries(userName);
     }
 
     @GetMapping("/lectures/{lectureId}/inquiries")
@@ -88,14 +98,14 @@ public class InquiryController {
             @RequestParam(required = false) Long lectureTime,
             @RequestParam(required = false) String content
     ) {
-        return inquiryService.list(new LectureId(lectureId), lectureTime, content);
+        return getInquiryService.list(new LectureId(lectureId), lectureTime, content);
     }
 
     @GetMapping("/courses/{courseId}/inquiries")
     public InquiriesDto listByCourseId(
             @PathVariable Long courseId
     ) {
-        return inquiryService.listByCourseId(new CourseId(courseId));
+        return getInquiryService.listByCourseId(new CourseId(courseId));
     }
 
     @PatchMapping("/inquiries/{inquiryId}")
@@ -103,28 +113,28 @@ public class InquiryController {
             @PathVariable Long inquiryId,
             @RequestBody InquiryUpdateDto inquiryUpdateDto
     ) {
-        return inquiryService.update(new InquiryId(inquiryId), inquiryUpdateDto);
+        return updateInquiryService.update(new InquiryId(inquiryId), inquiryUpdateDto);
     }
 
     @PatchMapping("/inquiries/{inquiryId}/solved")
     public InquiryDto toggle(
             @PathVariable Long inquiryId
     ) {
-        return inquiryService.toggleSolved(new InquiryId(inquiryId));
+        return updateInquiryService.toggleSolved(new InquiryId(inquiryId));
     }
 
     @PatchMapping("/inquiries/{inquiryId}/hits")
     public InquiryDto increaseHits(
             @PathVariable Long inquiryId
     ) {
-        return inquiryService.increaseHits(new InquiryId(inquiryId));
+        return updateInquiryService.increaseHits(new InquiryId(inquiryId));
     }
 
     @DeleteMapping("/inquiries/{inquiryId}")
     public InquiryDeleteDto delete(
             @PathVariable Long inquiryId
     ) {
-        return inquiryService.delete(new InquiryId(inquiryId));
+        return deleteInquiryService.delete(new InquiryId(inquiryId));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

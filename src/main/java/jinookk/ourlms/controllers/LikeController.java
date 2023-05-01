@@ -3,14 +3,13 @@ package jinookk.ourlms.controllers;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jinookk.ourlms.applications.like.GetLikeService;
 import jinookk.ourlms.dtos.LikeDto;
 import jinookk.ourlms.dtos.LikesDto;
-import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
-import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LikeId;
-import jinookk.ourlms.services.LikeService;
+import jinookk.ourlms.applications.like.UpdateLikeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -24,15 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LikeController {
-    private final LikeService likeService;
+    private final GetLikeService getLikeService;
+    private final UpdateLikeService updateLikeService;
 
-    public LikeController(LikeService likeService) {
-        this.likeService = likeService;
+    public LikeController(GetLikeService getLikeService, UpdateLikeService updateLikeService) {
+        this.getLikeService = getLikeService;
+        this.updateLikeService = updateLikeService;
     }
 
     @GetMapping("/likes")
     public LikesDto list() {
-        return likeService.list();
+        return getLikeService.list();
     }
 
     @GetMapping("/courses/{courseId}/likes/me")
@@ -44,14 +45,14 @@ public class LikeController {
             @RequestAttribute UserName userName,
             @PathVariable Long courseId
     ) {
-        return likeService.detail(userName, new CourseId(courseId));
+        return getLikeService.detail(userName, new CourseId(courseId));
     }
 
     @PatchMapping("/likes/{likeId}")
     public LikeDto toggle(
             @PathVariable Long likeId
     ) {
-        return likeService.toggle(new LikeId(likeId));
+        return updateLikeService.toggle(new LikeId(likeId));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -4,6 +4,10 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
+import jinookk.ourlms.applications.comment.CreateCommentService;
+import jinookk.ourlms.applications.comment.DeleteCommentService;
+import jinookk.ourlms.applications.comment.GetCommentService;
+import jinookk.ourlms.applications.comment.UpdateCommentService;
 import jinookk.ourlms.dtos.CommentDeleteDto;
 import jinookk.ourlms.dtos.CommentDto;
 import jinookk.ourlms.dtos.CommentRequestDto;
@@ -15,7 +19,6 @@ import jinookk.ourlms.exceptions.CourseNotFound;
 import jinookk.ourlms.exceptions.InquiryNotFound;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.InquiryId;
-import jinookk.ourlms.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
@@ -33,10 +36,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CommentController {
-    private final CommentService commentService;
+    private final GetCommentService getCommentService;
+    private final CreateCommentService createCommentService;
+    private final UpdateCommentService updateCommentService;
+    private final DeleteCommentService deleteCommentService;
 
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
+    public CommentController(GetCommentService getCommentService,
+                             CreateCommentService createCommentService,
+                             UpdateCommentService updateCommentService,
+                             DeleteCommentService deleteCommentService) {
+        this.getCommentService = getCommentService;
+        this.createCommentService = createCommentService;
+        this.updateCommentService = updateCommentService;
+        this.deleteCommentService = deleteCommentService;
     }
 
     @GetMapping("inquiries/{inquiryId}/comments")
@@ -48,7 +60,7 @@ public class CommentController {
             @PathVariable Long inquiryId,
             @RequestAttribute UserName userName
             ) {
-        return commentService.list(new InquiryId(inquiryId), userName);
+        return getCommentService.list(new InquiryId(inquiryId), userName);
     }
 
     @PostMapping("comments")
@@ -61,7 +73,7 @@ public class CommentController {
             @Validated @RequestBody CommentRequestDto commentRequestDto,
             @RequestAttribute UserName userName
             ) {
-        return commentService.create(commentRequestDto, userName);
+        return createCommentService.create(commentRequestDto, userName);
     }
 
     @PatchMapping("comments/{inquiryId}")
@@ -75,7 +87,7 @@ public class CommentController {
             @RequestBody CommentUpdateDto commentUpdateDto,
             @RequestAttribute UserName userName
     ) {
-        return commentService.update(inquiryId, commentUpdateDto.getContent(), userName);
+        return updateCommentService.update(inquiryId, commentUpdateDto.getContent(), userName);
     }
 
     @DeleteMapping("comments/{inquiryId}")
@@ -88,7 +100,7 @@ public class CommentController {
             @PathVariable Long inquiryId,
             @RequestAttribute UserName userName
             ) {
-        return commentService.delete(inquiryId, userName);
+        return deleteCommentService.delete(inquiryId, userName);
     }
 
     @ExceptionHandler(ServletRequestBindingException.class)

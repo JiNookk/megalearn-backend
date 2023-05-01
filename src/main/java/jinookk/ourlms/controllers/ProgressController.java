@@ -3,6 +3,8 @@ package jinookk.ourlms.controllers;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jinookk.ourlms.applications.progress.GetProgressService;
+import jinookk.ourlms.applications.progress.UpdateProgressService;
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
@@ -10,7 +12,6 @@ import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.LectureId;
 import jinookk.ourlms.models.vos.ids.ProgressId;
-import jinookk.ourlms.services.ProgressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,10 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ProgressController {
-    private final ProgressService progressService;
+    private final GetProgressService getProgressService;
+    private final UpdateProgressService updateProgressService;
 
-    public ProgressController(ProgressService progressService) {
-        this.progressService = progressService;
+    public ProgressController(GetProgressService getProgressService,
+                              UpdateProgressService updateProgressService) {
+        this.getProgressService = getProgressService;
+        this.updateProgressService = updateProgressService;
     }
 
     @GetMapping("/lectures/{lectureId}/progress")
@@ -40,7 +44,7 @@ public class ProgressController {
             @PathVariable Long lectureId,
             @RequestAttribute UserName userName
     ) {
-        return progressService.detail(new LectureId(lectureId), userName);
+        return getProgressService.detail(new LectureId(lectureId), userName);
     }
 
     @GetMapping("/progresses")
@@ -52,21 +56,21 @@ public class ProgressController {
             @RequestAttribute UserName userName,
             @RequestParam(required = false) String date
     ) {
-        return progressService.list(userName, date);
+        return getProgressService.list(userName, date);
     }
 
     @GetMapping("/courses/{courseId}/progresses")
     public ProgressesDto listByCourseId(
             @PathVariable Long courseId
     ) {
-        return progressService.listByCourseId(new CourseId(courseId));
+        return getProgressService.listByCourseId(new CourseId(courseId));
     }
 
     @PatchMapping("/progresses/{progressId}")
     public ProgressDto complete(
             @PathVariable Long progressId
     ) {
-        return progressService.complete(new ProgressId(progressId));
+        return updateProgressService.complete(new ProgressId(progressId));
     }
 
     @PatchMapping("/progresses/{progressId}/time")
@@ -74,7 +78,7 @@ public class ProgressController {
             @PathVariable Long progressId,
             @RequestBody LectureTimeDto lectureTimeDto
             ) {
-        return progressService.updateTime(new ProgressId(progressId), lectureTimeDto);
+        return updateProgressService.updateTime(new ProgressId(progressId), lectureTimeDto);
     }
 
     @ExceptionHandler(ServletRequestBindingException.class)

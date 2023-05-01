@@ -1,10 +1,9 @@
 package jinookk.ourlms.controllers;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import jinookk.ourlms.exceptions.LoginFailed;
 import jinookk.ourlms.exceptions.RefreshTokenExpired;
-import jinookk.ourlms.services.TokenService;
+import jinookk.ourlms.applications.token.IssueTokenService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,13 +25,13 @@ class TokenControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private TokenService tokenService;
+    private IssueTokenService issueTokenService;
 
     @Test
     void reissueAccessToken() throws Exception {
         String tokenValue = "header.payload.signature";
 
-        given(tokenService.reissueAccessToken(any()))
+        given(issueTokenService.reissueAccessToken(any()))
                 .willReturn(tokenValue);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/accessToken")
@@ -44,7 +43,7 @@ class TokenControllerTest {
 
     @Test
     void reissueAccessTokenWithInvalidRefreshToken() throws Exception {
-        given(tokenService.reissueAccessToken(any()))
+        given(issueTokenService.reissueAccessToken(any()))
                 .willThrow(JWTDecodeException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/accessToken")
@@ -56,7 +55,7 @@ class TokenControllerTest {
 
     @Test
     void reissueAccessTokenWithExpiredRefreshToken() throws Exception {
-        given(tokenService.reissueAccessToken(any()))
+        given(issueTokenService.reissueAccessToken(any()))
                 .willThrow(RefreshTokenExpired.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/accessToken")
@@ -70,7 +69,7 @@ class TokenControllerTest {
     void reissueRefreshToken() throws Exception {
         String tokenValue = "header.payload.signature";
 
-        given(tokenService.reissueRefreshToken(any(), any()))
+        given(issueTokenService.reissueRefreshToken(any(), any()))
                 .willReturn(tokenValue);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/refreshToken")
@@ -86,7 +85,7 @@ class TokenControllerTest {
 
     @Test
     void reissueRefreshTokenWithInvalidUserInformation() throws Exception {
-        given(tokenService.reissueRefreshToken(any(), any()))
+        given(issueTokenService.reissueRefreshToken(any(), any()))
                 .willThrow(LoginFailed.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/refreshToken")

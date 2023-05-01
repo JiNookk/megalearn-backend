@@ -1,12 +1,13 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.rating.CreateRatingService;
+import jinookk.ourlms.applications.rating.GetRatingService;
 import jinookk.ourlms.dtos.RatingDto;
 import jinookk.ourlms.dtos.RatingsDto;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.services.RatingService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,10 @@ class RatingControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private RatingService ratingService;
+    private GetRatingService getRatingService;
+
+    @MockBean
+    private CreateRatingService createRatingService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -49,7 +53,7 @@ class RatingControllerTest {
     void rate() throws Exception {
         RatingDto ratingDto = new RatingDto(5.0);
 
-        given(ratingService.rate(any(), any()))
+        given(createRatingService.rate(any(), any()))
                 .willReturn(ratingDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/ratings")
@@ -70,7 +74,7 @@ class RatingControllerTest {
     void myRating() throws Exception {
         RatingDto ratingDto = new RatingDto(4.5);
 
-        given(ratingService.totalRating(new UserName("userName@email.com")))
+        given(getRatingService.totalRating(new UserName("userName@email.com")))
                 .willReturn(ratingDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/instructor/my-rating")
@@ -85,7 +89,7 @@ class RatingControllerTest {
     void myReviews() throws Exception {
         RatingDto ratingDto = new RatingDto(4.5);
 
-        given(ratingService.myReviews(new UserName("userName@email.com")))
+        given(getRatingService.myReviews(new UserName("userName@email.com")))
                 .willReturn(new RatingsDto(List.of(ratingDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/ratings/me")
@@ -101,7 +105,7 @@ class RatingControllerTest {
         RatingDto ratingDto = new RatingDto(4.5, new CourseId(1L), new Name("author", false), new Content("content"),
                 LocalDateTime.now());
 
-        given(ratingService.list())
+        given(getRatingService.list())
                 .willReturn(new RatingsDto(List.of(ratingDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/ratings")

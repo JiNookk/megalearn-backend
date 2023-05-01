@@ -1,5 +1,9 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.inquiry.CreateInquiryService;
+import jinookk.ourlms.applications.inquiry.DeleteInquiryService;
+import jinookk.ourlms.applications.inquiry.GetInquiryService;
+import jinookk.ourlms.applications.inquiry.UpdateInquiryService;
 import jinookk.ourlms.dtos.InquiriesDto;
 import jinookk.ourlms.dtos.InquiryDeleteDto;
 import jinookk.ourlms.dtos.InquiryDto;
@@ -8,7 +12,6 @@ import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
 import jinookk.ourlms.models.vos.ids.LectureId;
-import jinookk.ourlms.services.InquiryService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +37,16 @@ class InquiryControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private InquiryService inquiryService;
+    private GetInquiryService getInquiryService;
+
+    @MockBean
+    private CreateInquiryService createInquiryService;
+
+    @MockBean
+    private UpdateInquiryService updateInquiryService;
+
+    @MockBean
+    private DeleteInquiryService deleteInquiryService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -50,7 +62,7 @@ class InquiryControllerTest {
     void inquiry() throws Exception {
         InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
 
-        given(inquiryService.detail(new InquiryId(1L))).willReturn(inquiryDto);
+        given(getInquiryService.detail(new InquiryId(1L))).willReturn(inquiryDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/inquiries/1"))
                 .andExpect(status().isOk())
@@ -64,7 +76,7 @@ class InquiryControllerTest {
         InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
 
         InquiriesDto inquiriesDto = new InquiriesDto(List.of(inquiryDto));
-        given(inquiryService.list(new LectureId(1L), null, null)).willReturn(inquiriesDto);
+        given(getInquiryService.list(new LectureId(1L), null, null)).willReturn(inquiriesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/inquiries"))
                 .andExpect(status().isOk())
@@ -79,7 +91,7 @@ class InquiryControllerTest {
 
         InquiriesDto inquiriesDto = new InquiriesDto(List.of(inquiryDto));
 
-        given(inquiryService.myInquiries(new UserName("userName@email.com"))).willReturn(inquiriesDto);
+        given(getInquiryService.myInquiries(new UserName("userName@email.com"))).willReturn(inquiriesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/inquiries/me")
                         .header("Authorization", "Bearer " + accessToken))
@@ -95,7 +107,7 @@ class InquiryControllerTest {
 
         InquiriesDto inquiriesDto = new InquiriesDto(List.of(inquiryDto));
 
-        given(inquiryService.listByCourseId(new CourseId(1L))).willReturn(inquiriesDto);
+        given(getInquiryService.listByCourseId(new CourseId(1L))).willReturn(inquiriesDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/inquiries"))
                 .andExpect(status().isOk())
@@ -108,7 +120,7 @@ class InquiryControllerTest {
     void post() throws Exception {
         InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
 
-        given(inquiryService.create(any(), any())).willReturn(inquiryDto);
+        given(createInquiryService.create(any(), any())).willReturn(inquiryDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/inquiries")
                         .header("Authorization", "Bearer " + accessToken)
@@ -131,7 +143,7 @@ class InquiryControllerTest {
     void postWithBlankProperties() throws Exception {
         InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
 
-        given(inquiryService.create(any(), any())).willReturn(inquiryDto);
+        given(createInquiryService.create(any(), any())).willReturn(inquiryDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/inquiries")
                         .header("Authorization", "Bearer " + accessToken)
@@ -151,7 +163,7 @@ class InquiryControllerTest {
     void update() throws Exception {
         InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
 
-        given(inquiryService.update(any(), any())).willReturn(inquiryDto);
+        given(updateInquiryService.update(any(), any())).willReturn(inquiryDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/inquiries/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -173,7 +185,7 @@ class InquiryControllerTest {
 
         InquiryDto inquiryDto = increased.toInquiryDto();
 
-        given(inquiryService.increaseHits(any())).willReturn(inquiryDto);
+        given(updateInquiryService.increaseHits(any())).willReturn(inquiryDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/inquiries/1/hits"))
                 .andExpect(status().isOk())
@@ -185,7 +197,7 @@ class InquiryControllerTest {
     void delete() throws Exception {
         InquiryDeleteDto inquiryDto = Inquiry.fake("test").toInquiryDeleteDto();
 
-        given(inquiryService.delete(any())).willReturn(inquiryDto);
+        given(deleteInquiryService.delete(any())).willReturn(inquiryDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/inquiries/1"))
                 .andExpect(status().isOk())

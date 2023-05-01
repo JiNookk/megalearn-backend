@@ -1,9 +1,11 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.skill.CreateSkillService;
+import jinookk.ourlms.applications.skill.DeleteSkillService;
+import jinookk.ourlms.applications.skill.GetSkillService;
 import jinookk.ourlms.dtos.SkillsDto;
 import jinookk.ourlms.dtos.SkillDto;
 import jinookk.ourlms.models.entities.Skill;
-import jinookk.ourlms.services.SkillService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,13 +28,19 @@ class SkillControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SkillService skillService;
+    private GetSkillService getSkillService;
+
+    @MockBean
+    private CreateSkillService createSkillService;
+
+    @MockBean
+    private DeleteSkillService deleteSkillService;
 
     @Test
     void post() throws Exception {
         SkillDto skillDto = Skill.fake("skill").toDto();
 
-        given(skillService.post(any())).willReturn(skillDto);
+        given(createSkillService.post(any())).willReturn(skillDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/skills")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -49,7 +57,7 @@ class SkillControllerTest {
     void list() throws Exception {
         SkillDto skillDto = Skill.fake("skill").toDto();
 
-        given(skillService.list()).willReturn(new SkillsDto(List.of(skillDto)));
+        given(getSkillService.list()).willReturn(new SkillsDto(List.of(skillDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/skills"))
                 .andExpect(status().isOk())
@@ -62,7 +70,7 @@ class SkillControllerTest {
     void delete() throws Exception {
         SkillDto skillDto = Skill.fake("skill").toDto();
 
-        given(skillService.delete(any())).willReturn(skillDto);
+        given(deleteSkillService.delete(any())).willReturn(skillDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/skills/1"))
                 .andExpect(status().isOk())

@@ -1,5 +1,8 @@
 package jinookk.ourlms.controllers;
 
+import jinookk.ourlms.applications.kakao.KakaoService;
+import jinookk.ourlms.applications.payment.CreatePaymentService;
+import jinookk.ourlms.applications.payment.GetPaymentService;
 import jinookk.ourlms.dtos.KakaoReadyDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MonthlyPaymentsDto;
@@ -9,8 +12,6 @@ import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.services.KakaoService;
-import jinookk.ourlms.services.PaymentService;
 import jinookk.ourlms.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,10 @@ class PaymentControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private PaymentService paymentService;
+    private GetPaymentService getPaymentService;
+
+    @MockBean
+    private CreatePaymentService createPaymentService;
 
     @MockBean
     private KakaoService kakaoService;
@@ -72,7 +76,7 @@ class PaymentControllerTest {
     void purchase() throws Exception {
         PaymentDto paymentDto = Payment.fake(35_000).toDto();
 
-        given(paymentService.purchase(any(), any()))
+        given(createPaymentService.purchase(any(), any()))
                 .willReturn(new PaymentsDto(List.of(paymentDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/payments")
@@ -91,7 +95,7 @@ class PaymentControllerTest {
     void list() throws Exception {
         PaymentDto paymentDto = Payment.fake(35_000).toDto();
 
-        given(paymentService.list(new UserName("userName@email.com"), new CourseId(1L)))
+        given(getPaymentService.list(new UserName("userName@email.com"), new CourseId(1L)))
                 .willReturn(new PaymentsDto(List.of(paymentDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/instructor/payments?courseId=1")
@@ -106,7 +110,7 @@ class PaymentControllerTest {
     void myPayments() throws Exception {
         PaymentDto paymentDto = Payment.fake(35_000).toDto();
 
-        given(paymentService.list(new UserName("userName@email.com")))
+        given(getPaymentService.list(new UserName("userName@email.com")))
                 .willReturn(new PaymentsDto(List.of(paymentDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/payments/me")
@@ -121,7 +125,7 @@ class PaymentControllerTest {
     void monthlyList() throws Exception {
         MonthlyPaymentDto paymentDto = new MonthlyPaymentDto(new CourseId(1L), new Title("test"), 35_000);
 
-        given(paymentService.monthlyList(new UserName("userName@email.com")))
+        given(getPaymentService.monthlyList(new UserName("userName@email.com")))
                 .willReturn(new MonthlyPaymentsDto(List.of(paymentDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/instructor/monthly-total-payments")
