@@ -52,7 +52,6 @@ public class LectureController {
 
     @GetMapping("/courses/{courseId}/lectures/{lectureId}")
     public LectureDto lecture(
-            @PathVariable Long courseId,
             @PathVariable Long lectureId
     ) {
         return getLectureService.detail(lectureId);

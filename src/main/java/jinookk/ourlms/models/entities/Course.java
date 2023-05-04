@@ -6,6 +6,7 @@ import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MyCourseDto;
 import jinookk.ourlms.dtos.StatusUpdateDto;
+import jinookk.ourlms.models.dtos.GetCourseDto;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.Category;
 import jinookk.ourlms.models.vos.Content;
@@ -14,10 +15,10 @@ import jinookk.ourlms.models.vos.ImagePath;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Post;
 import jinookk.ourlms.models.vos.Price;
-import jinookk.ourlms.models.vos.status.Status;
-import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Title;
+import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
+import jinookk.ourlms.models.vos.status.Status;
 import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.AttributeOverride;
@@ -27,7 +28,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
@@ -55,13 +55,6 @@ public class Course {
     @AttributeOverride(name = "value", column = @Column(name = "description"))
     private Content description;
 
-    @AttributeOverride(name = "value", column = @Column(name = "goal"))
-    @ElementCollection(fetch = FetchType.LAZY)
-    private List<Content> goals = new ArrayList<>();
-
-    @ElementCollection(fetch = FetchType.LAZY)
-    private List<Post> news = new ArrayList<>();
-
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "status"))
     private Status status;
@@ -85,10 +78,17 @@ public class Course {
     @Enumerated(EnumType.STRING)
     private Level level = Level.TOBEDETERMINED;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @AttributeOverride(name = "value", column = @Column(name = "goal"))
+    @ElementCollection
+    private List<Content> goals = new ArrayList<>();
+
+    @ElementCollection
+    private List<Post> news = new ArrayList<>();
+
+    @ElementCollection
     private List<HashTag> hashTags = new ArrayList<>();
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection
     private List<HashTag> skillSets = new ArrayList<>();
 
     private LocalDateTime createdAt;
@@ -271,12 +271,14 @@ public class Course {
         boolean isInstructor = isInstructor(new AccountId(account.get().id()));
 
         return new CourseDto(id, category, title, price, description, status, instructor, this.accountId,
-                imagePath, news, hashTags, skillSets, isInstructor, level, goals, createdAt);
+                imagePath, news, hashTags, skillSets, isInstructor, true, level, goals, createdAt);
     }
 
     public CourseDto toCourseDto() {
+        boolean isInstructor = false;
+
         return new CourseDto(id, category, title, price, description, status, instructor, accountId,
-                imagePath, news, hashTags, skillSets, level, goals, createdAt);
+                imagePath, news, hashTags, skillSets, isInstructor, false, level, goals, createdAt);
     }
 
     public MyCourseDto toMyCourseDto() {

@@ -5,7 +5,7 @@ import jinookk.ourlms.dtos.LoginResultDto;
 import jinookk.ourlms.exceptions.InvalidPassword;
 import jinookk.ourlms.exceptions.LoginFailed;
 import jinookk.ourlms.applications.auth.LoginService;
-import jinookk.ourlms.applications.token.IssueTokenService;
+import jinookk.ourlms.applications.auth.IssueTokenService;
 import jinookk.ourlms.utils.HttpUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;

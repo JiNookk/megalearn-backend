@@ -7,7 +7,9 @@ import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.SectionId;
 import jinookk.ourlms.models.vos.status.Status;
 
-public class LectureDto {
+import java.io.Serializable;
+
+public class LectureDto implements Serializable {
     private String status;
     private Long id;
     private Long courseId;

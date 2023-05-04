@@ -8,6 +8,7 @@ import jinookk.ourlms.applications.course.CreateCourseService;
 import jinookk.ourlms.applications.course.DeleteCourseService;
 import jinookk.ourlms.applications.course.GetCourseService;
 import jinookk.ourlms.applications.course.UpdateCourseService;
+import jinookk.ourlms.applications.dtos.GetCoursesDto;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;
@@ -86,7 +87,7 @@ public class CourseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
-    public CoursesDto wishList(
+    public GetCoursesDto wishList(
             @RequestAttribute UserName userName
     ) {
         return getCourseService.wishList(userName);
@@ -117,7 +118,7 @@ public class CourseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
-    public CoursesDto myCourses(
+    public GetCoursesDto myCourses(
             @RequestAttribute UserName userName
     ) {
         return myCourseService.myCourses(userName);
@@ -128,7 +129,7 @@ public class CourseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "Bearer {access_token}", required = true, dataType = "string", paramType = "header")
     })
-    public CoursesDto uploadedCourses(
+    public GetCoursesDto uploadedCourses(
             @RequestAttribute UserName userName,
             @RequestParam(required = false, defaultValue = "all") String type
     ) {
