@@ -171,7 +171,7 @@ class CourseTest {
 
         CourseDto courseDto = course.toCourseDto(Optional.of(account));
 
-        assertThat(courseDto.getIsPurchased()).isEqualTo(true);
+        assertThat(courseDto.getPurchased()).isEqualTo(true);
     }
 
     @Test
@@ -180,7 +180,7 @@ class CourseTest {
 
         CourseDto courseDto = course.toCourseDto(Optional.empty());
 
-        assertThat(courseDto.getIsPurchased()).isEqualTo(false);
+        assertThat(courseDto.getPurchased()).isEqualTo(false);
     }
 
     @Test

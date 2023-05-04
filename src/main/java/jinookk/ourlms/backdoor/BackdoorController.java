@@ -28,6 +28,12 @@ public class BackdoorController {
     public String setupCourses(
             @RequestParam(required = false) Integer count
     ) {
+        jdbcTemplate.execute("DELETE from course_hash_tags");
+        jdbcTemplate.execute("DELETE from course_news");
+        jdbcTemplate.execute("DELETE from course_skill_sets");
+        jdbcTemplate.execute("DELETE from course_goals");
+        jdbcTemplate.execute("DELETE from course");
+
         for (int i = 0; i < 30; i += 3) {
             jdbcTemplate.update("INSERT INTO " +
                             "course(" +
@@ -45,6 +51,7 @@ public class BackdoorController {
                             "VALUES(?, 1, '테스트', '', '개발 프로그래밍', '메가런', 'description', 49000, 'approved', 'BEGINNER', ?)"
                     , i + 3001, LocalDateTime.now().minusDays(10));
 
+
             jdbcTemplate.update("INSERT INTO " +
                             "course(" +
                             "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
@@ -53,6 +60,9 @@ public class BackdoorController {
                             "VALUES(?, 1, '테스트', '', '커리어', '메가런', 'description', 49000, 'approved', 'BEGINNER', ?)"
                     , i + 3002, LocalDateTime.now().minusDays(10));
 
+            setCollections(i);
+            setCollections(i + 1);
+            setCollections(i + 2);
         }
 
         for (int i = 0; i < 30; i += 3) {
@@ -79,9 +89,45 @@ public class BackdoorController {
                             ") " +
                             "VALUES(?, 1, '테스트', '', '커리어', '메가런', 'description', 49000, 'submitted', 'BEGINNER', ?)"
                     , i + 6002, LocalDateTime.now().minusDays(10));
+
+            setCollections(i);
+            setCollections(i + 1);
+            setCollections(i + 2);
         }
 
         return "Ok";
+    }
+
+    private void setCollections(int i) {
+        for (int j = 0; j < 5; j += 1) {
+            jdbcTemplate.update("INSERT INTO " +
+                            "course_goals(" +
+                            "course_id, goal" +
+                            ") " +
+                            "VALUES(?, '목표')"
+                    , i + 3000);
+
+            jdbcTemplate.update("INSERT INTO " +
+                            "course_hash_tags(" +
+                            "course_id, tag_name" +
+                            ") " +
+                            "VALUES(?, '해쉬태그')"
+                    , i + 3000);
+
+            jdbcTemplate.update("INSERT INTO " +
+                            "course_news(" +
+                            "course_id, content, created_at, title" +
+                            ") " +
+                            "VALUES(?, '내용', ?, '제목')"
+                    , i + 3000, LocalDateTime.now().minusDays(10));
+
+            jdbcTemplate.update("INSERT INTO " +
+                            "course_skill_sets(" +
+                            "course_id, tag_name" +
+                            ") " +
+                            "VALUES(?, '스킬목록')"
+                    , i + 3000);
+        }
     }
 
     @GetMapping("/setup-lecture-db")

@@ -1,4 +1,4 @@
-package jinookk.ourlms.applications.token;
+package jinookk.ourlms.applications.auth;
 
 import jinookk.ourlms.dtos.LoginRequestDto;
 import jinookk.ourlms.exceptions.RefreshTokenNotFound;

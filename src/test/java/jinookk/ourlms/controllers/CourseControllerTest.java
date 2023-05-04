@@ -4,6 +4,7 @@ import jinookk.ourlms.applications.course.CreateCourseService;
 import jinookk.ourlms.applications.course.DeleteCourseService;
 import jinookk.ourlms.applications.course.GetCourseService;
 import jinookk.ourlms.applications.course.UpdateCourseService;
+import jinookk.ourlms.applications.dtos.GetCoursesDto;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.models.entities.Course;
@@ -94,7 +95,7 @@ class CourseControllerTest {
     void list() throws Exception {
         CourseDto courseDto = Course.fake("test").toCourseDto();
 
-        given(getCourseService.list(anyInt(), any())).willReturn(new CoursesDto(List.of(courseDto)));
+        given(getCourseService.list(anyInt(), any())).willReturn(new CoursesDto(List.of(courseDto), 1));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses"))
                 .andExpect(status().isOk())
@@ -107,7 +108,7 @@ class CourseControllerTest {
     void wishList() throws Exception {
         CourseDto courseDto = Course.fake("test").toCourseDto();
 
-        given(getCourseService.wishList(any())).willReturn(new CoursesDto(List.of(courseDto)));
+        given(getCourseService.wishList(any())).willReturn(new GetCoursesDto(List.of(courseDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/wishes")
                         .header("Authorization", "Bearer " + accessToken))
@@ -123,7 +124,7 @@ class CourseControllerTest {
         List<CourseDto> dtos = List.of(myCourseDto);
 
         given(myCourseService.myCourses(any()))
-                .willReturn(new CoursesDto(dtos));
+                .willReturn(new GetCoursesDto(dtos));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/account/my-courses")
                         .header("Authorization", "Bearer " + accessToken))
@@ -211,7 +212,7 @@ class CourseControllerTest {
         List<CourseDto> dtos = List.of(courseDto);
 
         given(myCourseService.uploadedList(any(), any()))
-                .willReturn(new CoursesDto(dtos));
+                .willReturn(new GetCoursesDto(dtos));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/instructor/my-courses")
                         .header("Authorization", "Bearer " + accessToken))

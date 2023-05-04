@@ -3,7 +3,7 @@ package jinookk.ourlms.controllers;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import jinookk.ourlms.exceptions.LoginFailed;
 import jinookk.ourlms.exceptions.RefreshTokenExpired;
-import jinookk.ourlms.applications.token.IssueTokenService;
+import jinookk.ourlms.applications.auth.IssueTokenService;
 import jinookk.ourlms.utils.HttpUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -3,7 +3,7 @@ package jinookk.ourlms.controllers;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import jinookk.ourlms.exceptions.LoginFailed;
 import jinookk.ourlms.exceptions.RefreshTokenExpired;
-import jinookk.ourlms.applications.token.IssueTokenService;
+import jinookk.ourlms.applications.auth.IssueTokenService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

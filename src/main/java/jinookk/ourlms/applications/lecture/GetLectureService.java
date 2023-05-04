@@ -15,6 +15,7 @@ import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.LectureRepository;
 import jinookk.ourlms.repositories.PaymentRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ public class GetLectureService {
         this.accountRepository = accountRepository;
     }
 
+    @Cacheable(cacheNames = "lectureCache", key = "#lectureId")
     public LectureDto detail(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new LectureNotFound(lectureId));

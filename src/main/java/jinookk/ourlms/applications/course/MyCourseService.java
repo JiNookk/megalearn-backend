@@ -1,7 +1,7 @@
 package jinookk.ourlms.applications.course;
 
+import jinookk.ourlms.applications.dtos.GetCoursesDto;
 import jinookk.ourlms.dtos.CourseDto;
-import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
@@ -29,7 +29,7 @@ public class MyCourseService {
         this.accountRepository = accountRepository;
     }
 
-    public CoursesDto myCourses(UserName userName) {
+    public GetCoursesDto myCourses(UserName userName) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -45,10 +45,10 @@ public class MyCourseService {
                 .map(Course::toCourseDto)
                 .toList();
 
-        return new CoursesDto(courseDtos);
+        return new GetCoursesDto(courseDtos);
     }
 
-    public CoursesDto uploadedList(UserName userName, String type) {
+    public GetCoursesDto uploadedList(UserName userName, String type) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -60,7 +60,7 @@ public class MyCourseService {
                 .map(Course::toCourseDto)
                 .toList();
 
-        return new CoursesDto(courseDtos);
+        return new GetCoursesDto(courseDtos);
     }
 
     private List<Course> filtered(List<Course> courses, String type) {

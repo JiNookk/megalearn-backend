@@ -5,10 +5,9 @@ import java.util.Objects;
 
 public class Content {
     @Column(length = 1000)
-    private final String value;
+    private String value;
 
-    protected Content() {
-        this.value = null;
+    public Content() {
     }
 
     public Content(String value) {
@@ -30,7 +29,6 @@ public class Content {
                 other.getClass().equals(Content.class) &&
                 ((Content) other).value.equals(this.value);
     }
-
     @Override
     public String toString() {
         return "Content value: " + value;

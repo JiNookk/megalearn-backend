@@ -1,6 +1,6 @@
 package jinookk.ourlms.applications.token;
 
-import jinookk.ourlms.applications.token.IssueTokenService;
+import jinookk.ourlms.applications.auth.IssueTokenService;
 import jinookk.ourlms.models.entities.RefreshToken;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.repositories.RefreshTokenRepository;

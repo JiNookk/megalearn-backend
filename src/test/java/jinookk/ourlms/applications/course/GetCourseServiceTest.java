@@ -1,7 +1,7 @@
 package jinookk.ourlms.applications.course;
 
+import jinookk.ourlms.applications.dtos.GetCoursesDto;
 import jinookk.ourlms.dtos.CourseDto;
-import jinookk.ourlms.dtos.CoursesDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Like;
@@ -61,7 +61,7 @@ class GetCourseServiceTest {
         CourseDto courseDto = getCourseService.detail(new UserName("userName@email.com"), new CourseId(1L));
 
         assertThat(courseDto).isNotNull();
-        assertThat(courseDto.getIsPurchased()).isTrue();
+        assertThat(courseDto.getPurchased()).isTrue();
 
         verify(courseRepository).findById(1L);
     }
@@ -83,8 +83,8 @@ class GetCourseServiceTest {
 
     @Test
     void wishList() {
-        CoursesDto coursesDto = getCourseService.wishList(new UserName("userName@email.com"));
+        GetCoursesDto coursesDto = getCourseService.wishList(new UserName("userName@email.com"));
 
-        assertThat(coursesDto.getCourses()).hasSize(1);
+        assertThat(coursesDto.courses()).hasSize(1);
     }
 }
