@@ -55,7 +55,7 @@ class UpdateCourseServiceTest extends Fixture {
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 
         CourseDto courseDto = updateCourseService.update(
-                1L, new CourseUpdateRequestDto("updated", "category", "description", "thumbnailPath", "status",
+                1L, new CourseUpdateRequestDto("updated", "category", "description", "thumbnailPath", "processing",
                         "초급", List.of(), 0), new UserName("tester@email.com"));
 
         assertThat(courseDto.getTitle()).isEqualTo("updated");

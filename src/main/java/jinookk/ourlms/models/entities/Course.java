@@ -6,6 +6,7 @@ import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MyCourseDto;
 import jinookk.ourlms.dtos.StatusUpdateDto;
+import jinookk.ourlms.models.enums.CourseStatus;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.Category;
 import jinookk.ourlms.models.vos.Content;
@@ -54,12 +55,12 @@ public class Course {
     @AttributeOverride(name = "value", column = @Column(name = "description"))
     private Content description;
 
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "status"))
-    private Status status;
+//    @Embedded
+//    @AttributeOverride(name = "value", column = @Column(name = "status"))
+//    private Status status;
 
-//    @Enumerated(EnumType.STRING)
-//    private CourseStatus courseStatus;
+    @Enumerated(EnumType.STRING)
+    private CourseStatus status;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "image_path"))
@@ -98,7 +99,7 @@ public class Course {
     public Course() {
     }
 
-    public Course(Long id, Title title, Content description, Status status, ImagePath imagePath, Category category,
+    public Course(Long id, Title title, Content description, CourseStatus status, ImagePath imagePath, Category category,
                   Name instructor, AccountId accountId, Price price) {
         this.id = id;
         this.title = title;
@@ -131,7 +132,7 @@ public class Course {
         return price;
     }
 
-    public Status status() {
+    public CourseStatus status() {
         return status;
     }
 
@@ -142,7 +143,7 @@ public class Course {
     }
 
     public static Course of(CourseRequestDto courseRequestDto, Name instructor, AccountId accountId) {
-        return new Course(null, new Title(courseRequestDto.getTitle()), new Content(""), new Status(Status.PROCESSING),
+        return new Course(null, new Title(courseRequestDto.getTitle()), new Content(""), CourseStatus.PROCESSING,
                 new ImagePath(""), new Category(""), instructor, accountId, new Price(10000));
     }
 
@@ -174,7 +175,7 @@ public class Course {
     }
 
     public Course updateStatus(StatusUpdateDto statusUpdateDto) {
-        this.status = new Status(statusUpdateDto.getStatus());
+        this.status = CourseStatus.valueOf(statusUpdateDto.getStatus());
 
         return this;
     }
@@ -188,7 +189,7 @@ public class Course {
         List<String> skills = courseUpdateRequestDto.getSkills();
 
         if (!status.isBlank()) {
-            this.status.update(status);
+            this.status = CourseStatus.value(status);
 
             return;
         }
@@ -217,7 +218,7 @@ public class Course {
             throw new AccessDeniedException("only instructor can delete course!");
         }
 
-        status = new Status(Status.DELETED);
+        status = CourseStatus.DELETED;
     }
 
     public boolean filterType(String type) {

@@ -7,7 +7,7 @@ public class StatusUpdateDto {
     }
 
     public StatusUpdateDto(String status) {
-        this.status = status;
+        this.status = status.toUpperCase();
     }
 
     public String getStatus() {

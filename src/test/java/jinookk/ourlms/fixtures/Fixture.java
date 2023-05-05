@@ -15,6 +15,7 @@ import jinookk.ourlms.models.entities.Rating;
 import jinookk.ourlms.models.entities.RefreshToken;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.models.entities.Skill;
+import jinookk.ourlms.models.enums.CourseStatus;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HandOutUrl;
 import jinookk.ourlms.models.vos.ImagePath;
@@ -63,7 +64,7 @@ public class Fixture {
         AccountId accountId = new AccountId(1L);
         Content description = new Content("description");
         Price price = new Price(10000);
-        Status status = new Status(Status.PROCESSING);
+        CourseStatus status = CourseStatus.PROCESSING;
 
         return new Course(id, new Title(title), description, status, imagePath, category, instructor, accountId, price);
     }

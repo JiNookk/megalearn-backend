@@ -6,6 +6,7 @@ import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
+import jinookk.ourlms.models.enums.CourseStatus;
 import jinookk.ourlms.models.vos.Category;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.ImagePath;
@@ -31,7 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class GetPaymentServiceTest extends Fixture{
+class GetPaymentServiceTest extends Fixture {
     GetPaymentService getPaymentService;
     PaymentRepository paymentRepository;
     CourseRepository courseRepository;
@@ -45,15 +46,15 @@ class GetPaymentServiceTest extends Fixture{
         getPaymentService = new GetPaymentService(paymentRepository, courseRepository, accountRepository);
 
         Course course1 = new Course(1L, new Title("courseTitle1"), new Content("description"),
-                new Status(Status.APPROVED), new ImagePath("imagePath"), new Category("category"),
+                CourseStatus.APPROVED, new ImagePath("imagePath"), new Category("category"),
                 new Name("instructor1", false), new AccountId(5L), new Price(35_000));
 
         Course course2 = new Course(2L, new Title("courseTitle2"), new Content("description"),
-                new Status(Status.APPROVED), new ImagePath("imagePath"), new Category("category"),
+                CourseStatus.APPROVED, new ImagePath("imagePath"), new Category("category"),
                 new Name("instructor2", false), new AccountId(5L), new Price(24_000));
 
         Course course3 = new Course(3L, new Title("courseTitle3"), new Content("description"),
-                new Status(Status.APPROVED), new ImagePath("imagePath"), new Category("category"),
+                CourseStatus.APPROVED, new ImagePath("imagePath"), new Category("category"),
                 new Name("instructor3", false), new AccountId(5L), new Price(49_000));
 
         given(courseRepository.findAllByAccountId(new AccountId(1L)))
