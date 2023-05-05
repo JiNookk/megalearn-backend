@@ -26,10 +26,6 @@ public class Skill {
         return new Skill(skillRequestDto.getSkillTag());
     }
 
-    public static Skill fake(String skill) {
-        return new Skill(skill);
-    }
-
     public SkillDto toDto() {
         return new SkillDto(id, content);
     }

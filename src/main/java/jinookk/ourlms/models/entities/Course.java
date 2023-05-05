@@ -133,23 +133,6 @@ public class Course {
         return status;
     }
 
-    public static Course fake(String title) {
-        return fake(new Title(title));
-    }
-
-    private static Course fake(Title title) {
-        Long id = 1L;
-        ImagePath imagePath = new ImagePath("imagePath");
-        Category category = new Category("category");
-        Name instructor = new Name("instructor", false);
-        AccountId accountId = new AccountId(1L);
-        Content description = new Content("description");
-        Price price = new Price(10000);
-        Status status = new Status(Status.PROCESSING);
-
-        return new Course(id, title, description, status, imagePath, category, instructor, accountId, price);
-    }
-
     public Course changeLevel(Level level) {
         this.level = level;
 

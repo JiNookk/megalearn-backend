@@ -3,6 +3,7 @@ package jinookk.ourlms.applications.inquiry;
 import jinookk.ourlms.dtos.InquiriesDto;
 import jinookk.ourlms.dtos.InquiryDto;
 import jinookk.ourlms.dtos.InquiryFilterDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Inquiry;
@@ -27,7 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class GetInquiryServiceTest {
+class GetInquiryServiceTest extends Fixture {
     GetInquiryService getInquiryService;
     InquiryRepository inquiryRepository;
     AccountRepository accountRepository;
@@ -42,8 +43,8 @@ class GetInquiryServiceTest {
         inquiryRepository = mock(InquiryRepository.class);
         getInquiryService = new GetInquiryService(inquiryRepository, accountRepository, courseRepository, lectureRepository);
 
-        Inquiry inquiry1 = Inquiry.fake("inquiry1");
-        Inquiry inquiry2 = Inquiry.fake("inquiry2");
+        Inquiry inquiry1 = Fixture.inquiry("inquiry1");
+        Inquiry inquiry2 = Fixture.inquiry("inquiry2");
 
         given(inquiryRepository.save(any())).willReturn(inquiry1);
 
@@ -53,14 +54,14 @@ class GetInquiryServiceTest {
 
         given(inquiryRepository.findAllByAccountId(any())).willReturn(List.of(inquiry1, inquiry2));
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
 
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
         given(courseRepository.findAllByAccountId(new AccountId(1L))).willReturn(List.of(course));
 
-        Lecture lecture1 = Lecture.fake("lecture1");
-        Lecture lecture2 = Lecture.fake("lecture2");
+        Lecture lecture1 = Fixture.lecture("lecture1");
+        Lecture lecture2 = Fixture.lecture("lecture2");
         given(lectureRepository.findAllByCourseId(new CourseId(1L))).willReturn(List.of(lecture1, lecture2));
 
         given(inquiryRepository.findAllByCourseId(new CourseId(1L))).willReturn(List.of(inquiry1, inquiry2));

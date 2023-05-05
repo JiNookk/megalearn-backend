@@ -60,15 +60,6 @@ public class Payment {
         this.createdAt = createdAt;
     }
 
-    public static Payment fake(int price) {
-        return fake(new Price(price));
-    }
-
-    private static Payment fake(Price price) {
-        return new Payment(1L, new CourseId(1L), new AccountId(1L), price, new Title("course title"),
-                new Name("purchaser", false), LocalDateTime.now());
-    }
-
     public static List<Payment> listOf(List<Course> courses, Account account, Cart cart) {
         if (account == null || courses == null || courses.size() == 0 ) {
             throw new InvalidPaymentInformation();

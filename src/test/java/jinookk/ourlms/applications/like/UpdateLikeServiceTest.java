@@ -1,6 +1,7 @@
 package jinookk.ourlms.applications.like;
 
 import jinookk.ourlms.dtos.LikeDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.vos.ids.LikeId;
 import jinookk.ourlms.repositories.LikeRepository;
@@ -24,7 +25,7 @@ class UpdateLikeServiceTest {
         likeRepository = mock(LikeRepository.class);
         likeService = new UpdateLikeService(likeRepository);
 
-        Like like = Like.fake(false);
+        Like like = Fixture.like(false);
         given(likeRepository.findById(any())).willReturn(Optional.of(like));
         given(likeRepository.findByAccountIdAndCourseId(any(), any())).willReturn(Optional.of(like));
         given(likeRepository.findAll()).willReturn(List.of(like));

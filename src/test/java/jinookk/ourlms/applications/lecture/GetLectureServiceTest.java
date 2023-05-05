@@ -1,5 +1,6 @@
 package jinookk.ourlms.applications.lecture;
 
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LecturesDto;
 import jinookk.ourlms.models.entities.Account;
@@ -25,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class GetLectureServiceTest {
+class GetLectureServiceTest extends Fixture {
     GetLectureService getLectureService;
     LectureRepository lectureRepository;
     CourseRepository courseRepository;
@@ -40,7 +41,7 @@ class GetLectureServiceTest {
         lectureRepository = mock(LectureRepository.class);
         getLectureService = new GetLectureService(lectureRepository, courseRepository, paymentRepository, accountRepository);
 
-        Lecture lecture = Lecture.fake("테스트 1강");
+        Lecture lecture = Fixture.lecture("테스트 1강");
 
         given(lectureRepository.findById(1L))
                 .willReturn(Optional.of(lecture));
@@ -51,13 +52,13 @@ class GetLectureServiceTest {
         given(lectureRepository.findAllByCourseId(any()))
                 .willReturn(List.of(lecture));
 
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
         given(courseRepository.findAllByAccountId(new AccountId(1L))).willReturn(List.of(course));
 
-        Payment payment = Payment.fake(35000);
+        Payment payment = Fixture.payment(35000);
         given(paymentRepository.findAllByAccountId(any())).willReturn(List.of(payment));
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 

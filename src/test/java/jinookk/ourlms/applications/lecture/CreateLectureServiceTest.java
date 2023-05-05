@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.lecture;
 
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LectureRequestDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.repositories.LectureRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ class CreateLectureServiceTest {
         lectureRepository = mock(LectureRepository.class);
         createLectureService = new CreateLectureService(lectureRepository);
 
-        Lecture lecture = Lecture.fake("테스트 1강");
+        Lecture lecture = Fixture.lecture("테스트 1강");
 
         given(lectureRepository.findById(1L))
                 .willReturn(Optional.of(lecture));
@@ -38,7 +39,7 @@ class CreateLectureServiceTest {
 
     @Test
     void create() {
-        Lecture lecture = Lecture.fake("title");
+        Lecture lecture = Fixture.lecture("title");
 
         given(lectureRepository.save(any())).willReturn(lecture);
 

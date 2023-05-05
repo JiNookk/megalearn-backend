@@ -3,6 +3,7 @@ package jinookk.ourlms.controllers;
 import jinookk.ourlms.applications.like.GetLikeService;
 import jinookk.ourlms.dtos.LikeDto;
 import jinookk.ourlms.dtos.LikesDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.applications.like.UpdateLikeService;
@@ -47,7 +48,7 @@ class LikeControllerTest {
 
     @Test
     void list() throws Exception {
-        LikeDto likeDto = Like.fake(true).toDto();
+        LikeDto likeDto = Fixture.like(true).toDto();
 
         given(getLikeService.list()).willReturn(new LikesDto(List.of(likeDto)));
 
@@ -60,7 +61,7 @@ class LikeControllerTest {
 
     @Test
     void like() throws Exception {
-        LikeDto likeDto = Like.fake(true).toDto();
+        LikeDto likeDto = Fixture.like(true).toDto();
 
         given(getLikeService.detail(any(), any())).willReturn(likeDto);
 
@@ -74,7 +75,7 @@ class LikeControllerTest {
 
     @Test
     void toggle() throws Exception {
-        LikeDto likeDto = Like.fake(false).toDto();
+        LikeDto likeDto = Fixture.like(false).toDto();
 
         given(updateLikeService.toggle(any())).willReturn(likeDto);
 

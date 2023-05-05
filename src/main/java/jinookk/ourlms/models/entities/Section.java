@@ -77,14 +77,6 @@ public class Section {
         return goal;
     }
 
-    public static Section fake(String title) {
-        return fake(new Title(title));
-    }
-
-    private static Section fake(Title title) {
-        return new Section(1L, new CourseId(1L), new Status(Status.CREATED), title, new Content("goal"));
-    }
-
     public SectionWithProgressDto toSectionWithProgressDto(List<Progress> progresses) {
         if (progresses == null) {
             return new SectionWithProgressDto(id, title, List.of());

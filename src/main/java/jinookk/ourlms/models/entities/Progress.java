@@ -63,14 +63,6 @@ public class Progress {
         this.title = title;
     }
 
-    public static Progress fake(String lectureTitle) {
-        return fake(new Title(lectureTitle));
-    }
-
-    private static Progress fake(Title title) {
-        return new Progress(31L, new CourseId(1L), new AccountId(1L), new LectureId(1L), title);
-    }
-
     public static Progress of(Lecture lecture, AccountId accountId) {
         if (lecture == null || accountId == null || accountId.value() == null) {
             throw new InvalidArgument();

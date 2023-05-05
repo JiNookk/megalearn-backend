@@ -6,6 +6,7 @@ import jinookk.ourlms.applications.section.GetSectionService;
 import jinookk.ourlms.applications.section.UpdateSectionService;
 import jinookk.ourlms.dtos.SectionDto;
 import jinookk.ourlms.dtos.SectionsDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.utils.JwtUtil;
@@ -56,7 +57,7 @@ class SectionControllerTest {
 
     @Test
     void create() throws Exception {
-        SectionDto sectionDto = Section.fake("hi").toSectionDto();
+        SectionDto sectionDto = Fixture.section("hi").toSectionDto();
 
         given(createSectionService.create(any()))
                 .willReturn(sectionDto);
@@ -76,7 +77,7 @@ class SectionControllerTest {
 
     @Test
     void list() throws Exception {
-        SectionDto sectionDto = Section.fake("hi").toSectionDto();
+        SectionDto sectionDto = Fixture.section("hi").toSectionDto();
 
         given(getSectionService.list())
                 .willReturn(new SectionsDto(List.of(sectionDto)));
@@ -108,7 +109,7 @@ class SectionControllerTest {
 
     @Test
     void update() throws Exception {
-        SectionDto sectionDto = Section.fake("updated").toSectionDto();
+        SectionDto sectionDto = Fixture.section("updated").toSectionDto();
 
         given(updateSectionService.update(any(), any()))
                 .willReturn(sectionDto);
@@ -127,7 +128,7 @@ class SectionControllerTest {
 
     @Test
     void delete() throws Exception {
-        SectionDto sectionDto = Section.fake(null).toSectionDto();
+        SectionDto sectionDto = Fixture.section(null).toSectionDto();
 
         given(deleteSectionService.delete(any()))
                 .willReturn(sectionDto);

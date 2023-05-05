@@ -4,6 +4,7 @@ import jinookk.ourlms.applications.progress.GetProgressService;
 import jinookk.ourlms.applications.progress.UpdateProgressService;
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.utils.JwtUtil;
@@ -48,7 +49,7 @@ class ProgressControllerTest {
 
     @Test
     void progress() throws Exception {
-        ProgressDto progressDto = Progress.fake("테스트 1강").toDto();
+        ProgressDto progressDto = Fixture.progress("테스트 1강").toDto();
 
         given(getProgressService.detail(any(), any())).willReturn(progressDto);
 
@@ -62,7 +63,7 @@ class ProgressControllerTest {
 
     @Test
     void list() throws Exception {
-        ProgressDto progressDto = Progress.fake("테스트 1강").toDto();
+        ProgressDto progressDto = Fixture.progress("테스트 1강").toDto();
 
         ProgressesDto progressesDto = new ProgressesDto(List.of(progressDto));
         given(getProgressService.list(any(), any())).willReturn(progressesDto);
@@ -77,7 +78,7 @@ class ProgressControllerTest {
 
     @Test
     void listByCourseId() throws Exception {
-        ProgressDto progressDto = Progress.fake("테스트 1강").toDto();
+        ProgressDto progressDto = Fixture.progress("테스트 1강").toDto();
 
         ProgressesDto progressesDto = new ProgressesDto(List.of(progressDto));
         given(getProgressService.listByCourseId(any())).willReturn(progressesDto);
@@ -91,7 +92,7 @@ class ProgressControllerTest {
 
     @Test
     void complete() throws Exception {
-        Progress progress = Progress.fake("테스트 1강");
+        Progress progress = Fixture.progress("테스트 1강");
         progress.complete();
 
         ProgressDto progressDto = progress.toDto();
@@ -107,7 +108,7 @@ class ProgressControllerTest {
 
     @Test
     void updateTime() throws Exception {
-        Progress progress = Progress.fake("테스트 1강");
+        Progress progress = Fixture.progress("테스트 1강");
 
         ProgressDto progressDto = progress.toDto();
 

@@ -83,10 +83,6 @@ public class Rating {
         return average / filtered.size();
     }
 
-    public static Rating fake(Double point) {
-        return new Rating(1L, new AccountId(1L), new CourseId(1L), new Name("author", false), new Content("content"), point);
-    }
-
     public Long id() {
         return id;
     }

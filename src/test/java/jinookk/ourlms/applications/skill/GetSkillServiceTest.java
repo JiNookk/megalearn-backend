@@ -1,6 +1,7 @@
 package jinookk.ourlms.applications.skill;
 
 import jinookk.ourlms.dtos.SkillsDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Skill;
 import jinookk.ourlms.repositories.SkillRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ class GetSkillServiceTest {
 
     @Test
     void list() {
-        Skill skill = Skill.fake("skill");
+        Skill skill = Fixture.skill("skill");
 
         given(skillRepository.findAll()).willReturn(List.of(skill));
 

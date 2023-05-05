@@ -31,14 +31,6 @@ public class Category {
         this.url = url;
     }
 
-    public static Category fake(String content) {
-        return fake(new Content(content));
-    }
-
-    private static Category fake(Content content) {
-        return new Category(content, "url");
-    }
-
     public static Category of(CategoryRequestDto categoryRequestDto) {
         return new Category(new Content(categoryRequestDto.getCategory()), categoryRequestDto.getUrl());
     }

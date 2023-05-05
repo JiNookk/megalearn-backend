@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.inquiry;
 
 import jinookk.ourlms.dtos.InquiryDto;
 import jinookk.ourlms.dtos.InquiryRequestDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Inquiry;
 import jinookk.ourlms.models.vos.UserName;
@@ -20,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class CreateInquiryServiceTest {
+class CreateInquiryServiceTest extends Fixture{
     CreateInquiryService createInquiryService;
     InquiryRepository inquiryRepository;
     AccountRepository accountRepository;
@@ -31,8 +32,8 @@ class CreateInquiryServiceTest {
         inquiryRepository = mock(InquiryRepository.class);
         createInquiryService = new CreateInquiryService(inquiryRepository, accountRepository);
 
-        Inquiry inquiry1 = Inquiry.fake("inquiry1");
-        Inquiry inquiry2 = Inquiry.fake("inquiry2");
+        Inquiry inquiry1 = Fixture.inquiry("inquiry1");
+        Inquiry inquiry2 = Fixture.inquiry("inquiry2");
 
         given(inquiryRepository.save(any())).willReturn(inquiry1);
 
@@ -42,7 +43,7 @@ class CreateInquiryServiceTest {
 
         given(inquiryRepository.findAllByAccountId(any())).willReturn(List.of(inquiry1, inquiry2));
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
 
         given(inquiryRepository.findAllByCourseId(new CourseId(1L))).willReturn(List.of(inquiry1, inquiry2));

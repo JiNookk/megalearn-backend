@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.progress;
 
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.ProgressDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -31,7 +32,7 @@ class UpdateProgressServiceTest {
         progressRepository = mock(ProgressRepository.class);
         updateProgressService = new UpdateProgressService(progressRepository);
 
-        Progress progress = Progress.fake("1강");
+        Progress progress = Fixture.progress("1강");
 
         given(progressRepository.findById(1L))
                 .willReturn(Optional.of(progress));

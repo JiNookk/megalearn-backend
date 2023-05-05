@@ -1,5 +1,6 @@
 package jinookk.ourlms.models.entities;
 
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.dtos.RatingRequestDto;
 import jinookk.ourlms.exceptions.RatingNotExisting;
 import jinookk.ourlms.models.vos.Content;
@@ -12,10 +13,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class RatingTest {
+class RatingTest extends Fixture {
     @Test
     void createdFromDto() {
-        Account account = Account.fake("name");
+        Account account = Fixture.account("name");
         RatingRequestDto ratingRequestDto = new RatingRequestDto(1L, 4, "content");
 
         Rating rating = Rating.of(account, ratingRequestDto);
@@ -32,9 +33,9 @@ class RatingTest {
         List<CourseId> courseIds = List.of(new CourseId(1L), new CourseId(2L));
 
         List<Rating> ratings = List.of(
-                Rating.fake(5.0),
-                Rating.fake(4.0),
-                Rating.fake(3.0)
+                Fixture.rating(5.0),
+                Fixture.rating(4.0),
+                Fixture.rating(3.0)
         );
 
         Double rating = Rating.averageOf(courseIds, ratings);

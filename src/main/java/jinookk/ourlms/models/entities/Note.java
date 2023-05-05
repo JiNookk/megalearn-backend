@@ -60,15 +60,6 @@ public class Note {
         this.publishTime = publishTime;
     }
 
-    public static Note fake(String content) {
-        return fake(new Content(content));
-    }
-
-    private static Note fake(Content content) {
-        return new Note(1L, new LectureId(1L), new AccountId(1L), new Status(Status.CREATED), content,
-                new LectureTime(1, 24), LocalDateTime.now());
-    }
-
     public static Note of(NoteRequestDto noteRequestDto, AccountId accountId) {
         return new Note(null, new LectureId(noteRequestDto.getLectureId()), accountId,
                 new Status(Status.CREATED), new Content(noteRequestDto.getContent()),

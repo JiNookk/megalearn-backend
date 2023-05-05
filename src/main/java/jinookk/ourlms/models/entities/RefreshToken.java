@@ -29,11 +29,6 @@ public class RefreshToken {
         return new RefreshToken(userName, tokenValue);
     }
 
-    public static RefreshToken fake(String expired) {
-        return new RefreshToken("tester@email.com", expired);
-    }
-
-
     public String tokenValue() {
         return tokenValue;
     }

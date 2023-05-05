@@ -7,6 +7,7 @@ import jinookk.ourlms.applications.inquiry.UpdateInquiryService;
 import jinookk.ourlms.dtos.InquiriesDto;
 import jinookk.ourlms.dtos.InquiryDeleteDto;
 import jinookk.ourlms.dtos.InquiryDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Inquiry;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -60,7 +61,7 @@ class InquiryControllerTest {
 
     @Test
     void inquiry() throws Exception {
-        InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
+        InquiryDto inquiryDto = Fixture.inquiry("test").toInquiryDto();
 
         given(getInquiryService.detail(new InquiryId(1L))).willReturn(inquiryDto);
 
@@ -73,7 +74,7 @@ class InquiryControllerTest {
 
     @Test
     void list() throws Exception {
-        InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
+        InquiryDto inquiryDto = Fixture.inquiry("test").toInquiryDto();
 
         InquiriesDto inquiriesDto = new InquiriesDto(List.of(inquiryDto));
         given(getInquiryService.list(new LectureId(1L), null, null)).willReturn(inquiriesDto);
@@ -87,7 +88,7 @@ class InquiryControllerTest {
 
     @Test
     void myInquiries() throws Exception {
-        InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
+        InquiryDto inquiryDto = Fixture.inquiry("test").toInquiryDto();
 
         InquiriesDto inquiriesDto = new InquiriesDto(List.of(inquiryDto));
 
@@ -103,7 +104,7 @@ class InquiryControllerTest {
 
     @Test
     void listByCourseId() throws Exception {
-        InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
+        InquiryDto inquiryDto = Fixture.inquiry("test").toInquiryDto();
 
         InquiriesDto inquiriesDto = new InquiriesDto(List.of(inquiryDto));
 
@@ -118,7 +119,7 @@ class InquiryControllerTest {
 
     @Test
     void post() throws Exception {
-        InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
+        InquiryDto inquiryDto = Fixture.inquiry("test").toInquiryDto();
 
         given(createInquiryService.create(any(), any())).willReturn(inquiryDto);
 
@@ -141,7 +142,7 @@ class InquiryControllerTest {
 
     @Test
     void postWithBlankProperties() throws Exception {
-        InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
+        InquiryDto inquiryDto = Fixture.inquiry("test").toInquiryDto();
 
         given(createInquiryService.create(any(), any())).willReturn(inquiryDto);
 
@@ -161,7 +162,7 @@ class InquiryControllerTest {
 
     @Test
     void update() throws Exception {
-        InquiryDto inquiryDto = Inquiry.fake("test").toInquiryDto();
+        InquiryDto inquiryDto = Fixture.inquiry("test").toInquiryDto();
 
         given(updateInquiryService.update(any(), any())).willReturn(inquiryDto);
 
@@ -179,7 +180,7 @@ class InquiryControllerTest {
 
     @Test
     void increaseHits() throws Exception {
-        Inquiry inquiry = Inquiry.fake("test");
+        Inquiry inquiry = Fixture.inquiry("test");
 
         Inquiry increased = inquiry.increaseHits();
 
@@ -195,7 +196,7 @@ class InquiryControllerTest {
 
     @Test
     void delete() throws Exception {
-        InquiryDeleteDto inquiryDto = Inquiry.fake("test").toInquiryDeleteDto();
+        InquiryDeleteDto inquiryDto = Fixture.inquiry("test").toInquiryDeleteDto();
 
         given(deleteInquiryService.delete(any())).willReturn(inquiryDto);
 

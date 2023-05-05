@@ -53,17 +53,6 @@ public class Account {
         this.userName = userName;
     }
 
-    public static Account fake(String name) {
-        return fake(new Name(name, false));
-    }
-
-    private static Account fake(Name name) {
-        UserName userName = new UserName("ojw0828@naver.com");
-        Long id = 1L;
-
-        return new Account(id, name, userName);
-    }
-
     public static Account of(RegisterRequestDto registerRequestDto) {
         Name name = new Name(registerRequestDto.getName(), false);
         UserName userName = new UserName(registerRequestDto.getUserName());

@@ -3,6 +3,7 @@ package jinookk.ourlms.applications.lecture;
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.repositories.LectureRepository;
@@ -26,7 +27,7 @@ class UpdateLectureServiceTest {
         lectureRepository = mock(LectureRepository.class);
         updateLectureService = new UpdateLectureService(lectureRepository);
 
-        Lecture lecture = Lecture.fake("테스트 1강");
+        Lecture lecture = Fixture.lecture("테스트 1강");
 
         given(lectureRepository.findById(1L))
                 .willReturn(Optional.of(lecture));

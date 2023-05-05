@@ -4,6 +4,7 @@ import jinookk.ourlms.applications.kakao.KakaoService;
 import jinookk.ourlms.dtos.MonthlyPaymentsDto;
 import jinookk.ourlms.dtos.PaymentRequestDto;
 import jinookk.ourlms.dtos.PaymentsDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Cart;
 import jinookk.ourlms.models.entities.Course;
@@ -37,7 +38,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class CreatePaymentServiceTest {
+class CreatePaymentServiceTest extends Fixture {
     CreatePaymentService createPaymentService;
     KakaoService kakaoService;
     PaymentRepository paymentRepository;
@@ -99,9 +100,9 @@ class CreatePaymentServiceTest {
 
 
         given(paymentRepository.findAllByAccountId(new AccountId(any())))
-                .willReturn(List.of(Payment.fake(24000), Payment.fake(35000), Payment.fake(49000)));
+                .willReturn(List.of(Fixture.payment(24000), Fixture.payment(35000), Fixture.payment(49000)));
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 
@@ -110,22 +111,22 @@ class CreatePaymentServiceTest {
         PaymentRequestDto paymentRequestDto = new PaymentRequestDto("TOKEN");
         AccountId accountId = new AccountId(1L);
 
-        Course course = Course.fake("hi");
+        Course course = Fixture.course("hi");
 
         KakaoPayItemVO kakaoPayItemVO = new KakaoPayItemVO(List.of(course));
 
         given(kakaoService.approve(paymentRequestDto, accountId))
                 .willReturn(kakaoPayItemVO);
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
 
         given(accountRepository.findById(accountId.value()))
                 .willReturn(Optional.of(account));
 
-        Payment payment = Payment.fake(35000);
+        Payment payment = Fixture.payment(35000);
         given(paymentRepository.saveAll(any())).willReturn(List.of(payment));
 
-        Cart cart = Cart.fake(new AccountId(1L));
+        Cart cart = Fixture.cart(new AccountId(1L));
 
         cart = cart.addItem(course.id());
 

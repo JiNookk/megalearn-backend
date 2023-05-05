@@ -1,6 +1,7 @@
 package jinookk.ourlms.applications.category;
 
 import jinookk.ourlms.dtos.CategoryDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Category;
 import jinookk.ourlms.repositories.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,7 @@ class DeleteCategoryServiceTest {
 
     @Test
     void delete() {
-        Category category = Category.fake("category");
+        Category category = Fixture.category("category");
 
         given(categoryRepository.findById(any())).willReturn(Optional.of(category));
 

@@ -1,6 +1,7 @@
 package jinookk.ourlms.applications.course;
 
 import jinookk.ourlms.dtos.CourseRequestDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.enums.Level;
@@ -21,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class CreateCourseServiceTest {
+class CreateCourseServiceTest extends Fixture {
     CreateCourseService courseService;
     CourseRepository courseRepository;
     AccountRepository accountRepository;
@@ -32,8 +33,8 @@ class CreateCourseServiceTest {
         courseRepository = mock(CourseRepository.class);
         courseService = new CreateCourseService(courseRepository, accountRepository);
 
-        Course course = Course.fake("내 강의");
-        Account account = Account.fake("account");
+        Course course = Fixture.course("내 강의");
+        Account account = Fixture.account("account");
 
         Page<Course> courses = new PageImpl<>(List.of(course));
 

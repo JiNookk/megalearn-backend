@@ -1,5 +1,6 @@
 package jinookk.ourlms.applications.note;
 
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NoteRequestDto;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class CreateNoteServiceTest {
+class CreateNoteServiceTest extends Fixture {
     CreateNoteService createNoteService;
     NoteRepository noteRepository;
     AccountRepository accountRepository;
@@ -33,7 +34,7 @@ class CreateNoteServiceTest {
         noteRepository = mock(NoteRepository.class);
         createNoteService = new CreateNoteService(noteRepository, accountRepository);
 
-        Note note = Note.fake("content");
+        Note note = Fixture.note("content");
         given(noteRepository.save(any())).willReturn(note);
 
         given(noteRepository.findById(any())).willReturn(Optional.of(note));
@@ -41,7 +42,7 @@ class CreateNoteServiceTest {
         given(noteRepository.findAllByLectureIdAndAccountId(new LectureId(1L), new AccountId(1L)))
                 .willReturn(List.of(note));
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 

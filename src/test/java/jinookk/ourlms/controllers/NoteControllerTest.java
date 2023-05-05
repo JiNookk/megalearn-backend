@@ -7,6 +7,7 @@ import jinookk.ourlms.applications.note.UpdateNoteService;
 import jinookk.ourlms.dtos.NoteDeleteDto;
 import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NotesDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Note;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.NoteId;
@@ -58,7 +59,7 @@ class NoteControllerTest {
 
     @Test
     void post() throws Exception {
-        NoteDto noteDto = Note.fake("hi").toNoteDto();
+        NoteDto noteDto = Fixture.note("hi").toNoteDto();
         given(createNoteService.create(any(), any())).willReturn(noteDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/notes")
@@ -80,7 +81,7 @@ class NoteControllerTest {
     }
     @Test
     void list() throws Exception {
-        NoteDto noteDto = Note.fake("hi").toNoteDto();
+        NoteDto noteDto = Fixture.note("hi").toNoteDto();
         given(getNoteService.list(any(), any())).willReturn(new NotesDto(List.of(noteDto)));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/notes")
@@ -93,7 +94,7 @@ class NoteControllerTest {
 
     @Test
     void update() throws Exception {
-        NoteDto noteDto = Note.fake("updated").toNoteDto();
+        NoteDto noteDto = Fixture.note("updated").toNoteDto();
         given(updateNoteService.update(any(), any())).willReturn(noteDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/notes/1")

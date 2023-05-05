@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.LectureRequestDto;
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.dtos.LecturesDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Lecture;
@@ -39,7 +40,7 @@ class DeleteLectureServiceTest {
         lectureRepository = mock(LectureRepository.class);
         deleteLectureService = new DeleteLectureService(lectureRepository);
 
-        Lecture lecture = Lecture.fake("테스트 1강");
+        Lecture lecture = Fixture.lecture("테스트 1강");
 
         given(lectureRepository.findById(1L))
                 .willReturn(Optional.of(lecture));

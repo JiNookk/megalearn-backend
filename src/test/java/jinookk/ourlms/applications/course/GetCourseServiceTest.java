@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.course;
 
 import jinookk.ourlms.applications.dtos.GetCoursesDto;
 import jinookk.ourlms.dtos.CourseDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Like;
@@ -25,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class GetCourseServiceTest {
+class GetCourseServiceTest extends Fixture {
     GetCourseService getCourseService;
     CourseRepository courseRepository;
     AccountRepository accountRepository;
@@ -38,8 +39,8 @@ class GetCourseServiceTest {
         courseRepository = mock(CourseRepository.class);
         getCourseService = new GetCourseService(courseRepository, accountRepository, likeRepository);
 
-        Course course = Course.fake("내 강의");
-        Account account = Account.fake("account");
+        Course course = Fixture.course("내 강의");
+        Account account = Fixture.account("account");
 
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 
@@ -50,7 +51,7 @@ class GetCourseServiceTest {
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
         given(courseRepository.save(any())).willReturn(course);
 
-        Like like = Like.fake(true);
+        Like like = Fixture.like(true);
         given(likeRepository.findAllByAccountId(any())).willReturn(List.of(like));
 
         given(courseRepository.findAllById(any())).willReturn(List.of(course));

@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.section;
 
 import jinookk.ourlms.dtos.SectionDto;
 import jinookk.ourlms.dtos.SectionRequestDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.repositories.SectionRepository;
@@ -25,7 +26,7 @@ class CreateSectionServiceTest {
         sectionRepository = mock(SectionRepository.class);
         createSectionService = new CreateSectionService(sectionRepository);
 
-        Section section = Section.fake("section");
+        Section section = Fixture.section("section");
 
         given(sectionRepository.findById(1L))
                 .willReturn(Optional.of(section));
@@ -39,7 +40,7 @@ class CreateSectionServiceTest {
 
     @Test
     void create() {
-        Section section = Section.fake("title");
+        Section section = Fixture.section("title");
 
         given(sectionRepository.save(any())).willReturn(section);
 

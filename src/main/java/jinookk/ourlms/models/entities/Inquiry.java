@@ -80,10 +80,6 @@ public class Inquiry {
 
     private LocalDateTime repliedAt;
 
-    // accountId가 존재하는 inquiryId의 수를 찾아라.
-//    @Formula("(SELECT COUNT(*) FROM inquiry_likes l WHERE l.inquiry_id = id)")
-//    private int countOfLikes;
-
     public Inquiry() {
     }
 
@@ -102,20 +98,6 @@ public class Inquiry {
         this.anonymous = anonymous;
         this.publishTime = publishTime;
         this.repliedAt = repliedAt;
-    }
-
-    public static Inquiry fake(String content) {
-        return fake(new Content(content));
-    }
-
-    private static Inquiry fake(Content content) {
-        return new Inquiry(1L, new CourseId(1L), new LectureId(1L), new AccountId(1L), List.of(), new Title("title"), content,
-                new LectureTime(1, 24), new Name("tester", false), false, LocalDateTime.now(), LocalDateTime.now());
-    }
-
-    public static Inquiry fake(Name publisher) {
-        return new Inquiry(1L, new CourseId(1L), new LectureId(1L), new AccountId(1L), List.of(), new Title("title"),
-                new Content("hi"), new LectureTime(1, 24), publisher, false, LocalDateTime.now(), LocalDateTime.now());
     }
 
     public static Inquiry of(InquiryRequestDto inquiryRequestDto, AccountId accountId, Name name) {

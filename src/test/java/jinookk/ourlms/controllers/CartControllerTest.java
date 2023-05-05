@@ -4,6 +4,7 @@ import jinookk.ourlms.applications.cart.AddCartItemService;
 import jinookk.ourlms.applications.cart.DeleteCartItemService;
 import jinookk.ourlms.applications.cart.GetCartService;
 import jinookk.ourlms.dtos.CartDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Cart;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -54,7 +55,7 @@ class CartControllerTest {
 
         List<CourseId> courseIds = List.of(new CourseId(1L), new CourseId(2L));
 
-        Cart cart = Cart.fake(new AccountId(1L));
+        Cart cart = Fixture.cart(new AccountId(1L));
 
         for (CourseId courseId : courseIds) {
             cart = cart.addItem(courseId.value());
