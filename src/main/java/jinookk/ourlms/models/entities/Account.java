@@ -24,7 +24,7 @@ public class Account {
     private Name name;
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "user_name"))
+    @AttributeOverride(name = "email", column = @Column(name = "user_name"))
     private UserName userName;
 
     private String password;

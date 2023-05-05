@@ -57,12 +57,17 @@ public class GetCourseService {
         Course course = courseRepository.findById(courseId.value())
                 .orElseThrow(() -> new CourseNotFound(courseId.value()));
 
-        Optional<Account> account = accountRepository.findByUserName(userName);
+        if (userName == null) {
+            return course.toCourseDto();
+        }
+
+        Account account = accountRepository.findByUserName(userName)
+                .orElseThrow(() -> new AccountNotFound(userName));
 
         return course.toCourseDto(account);
     }
 
-//    @Cacheable(cacheNames = "courseCache", key = "#courseFilterDto")
+    //    @Cacheable(cacheNames = "courseCache", key = "#courseFilterDto")
     public CoursesDto list(Integer page, CourseFilterDto courseFilterDto) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
         QCourse course = QCourse.course;

@@ -6,7 +6,6 @@ import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MyCourseDto;
 import jinookk.ourlms.dtos.StatusUpdateDto;
-import jinookk.ourlms.models.dtos.GetCourseDto;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.Category;
 import jinookk.ourlms.models.vos.Content;
@@ -58,6 +57,9 @@ public class Course {
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "status"))
     private Status status;
+
+//    @Enumerated(EnumType.STRING)
+//    private CourseStatus courseStatus;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "image_path"))
@@ -246,12 +248,8 @@ public class Course {
         return accountId.equals(this.accountId);
     }
 
-    public CourseDto toCourseDto(Optional<Account> account) {
-        if (!account.isPresent()) {
-            return toCourseDto();
-        }
-
-        boolean isInstructor = isInstructor(new AccountId(account.get().id()));
+    public CourseDto toCourseDto(Account account) {
+        boolean isInstructor = isInstructor(new AccountId(account.id()));
 
         return new CourseDto(id, category, title, price, description, status, instructor, this.accountId,
                 imagePath, news, hashTags, skillSets, isInstructor, true, level, goals, createdAt);
