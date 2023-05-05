@@ -65,6 +65,7 @@ class CourseControllerTest {
     void create() throws Exception {
         CourseDto courseDto = Fixture.course("courseTitle").toCourseDto();
 
+
         given(createCourseService.create(any(), any())).willReturn(courseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/courses")

@@ -3,10 +3,10 @@ package jinookk.ourlms.models.enums;
 import jinookk.ourlms.exceptions.InvalidStatus;
 
 public enum CourseStatus {
-    PROCESSING("processing"),
-    SUBMITTED("submitted"),
-    APPROVED("approved"),
-    DELETED("deleted");
+    PROCESSING("PROCESSING"),
+    SUBMITTED("SUBMITTED"),
+    APPROVED("APPROVED"),
+    DELETED("DELETED");
 
     private final String status;
 

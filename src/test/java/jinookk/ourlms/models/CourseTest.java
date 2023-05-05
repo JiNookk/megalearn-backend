@@ -9,6 +9,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.entities.Rating;
+import jinookk.ourlms.models.enums.CourseStatus;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.ImagePath;
@@ -18,12 +19,15 @@ import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CourseTest extends Fixture {
     @Test
@@ -170,7 +174,7 @@ class CourseTest extends Fixture {
 
         Account account = Fixture.account("account");
 
-        CourseDto courseDto = course.toCourseDto(account);
+        CourseDto courseDto = course.toCourseDto(new AccountId(account.id()));
 
         assertThat(courseDto.getPurchased()).isEqualTo(true);
     }
@@ -178,6 +182,8 @@ class CourseTest extends Fixture {
     @Test
     void convertToDtoWithPaymentNull() {
         Course course = Fixture.course("course");
+
+        course.updateStatus("approved");
 
         CourseDto courseDto = course.toCourseDto();
 
@@ -207,10 +213,65 @@ class CourseTest extends Fixture {
     void updateStatus() {
         Course course = Fixture.course("fake");
 
-        assertThat(course.status().toString()).isEqualTo("processing");
+        course.updateStatus("processing");
 
-        Course approved = course.updateStatus(new StatusUpdateDto("approved"));
+        assertThat(course.status().toString()).isEqualTo(CourseStatus.PROCESSING.toString());
 
-        assertThat(approved.status().toString()).isEqualTo("approved");
+        Course approved = course.updateStatus("approved");
+
+        assertThat(approved.status().toString()).isEqualTo(CourseStatus.APPROVED.toString());
+    }
+
+    @Test
+    void isApproved() {
+        Course course = Fixture.course("fake");
+
+        course.updateStatus("processing");
+
+        assertThat(course.isApproved()).isFalse();
+
+        course.updateStatus("approved");
+
+        assertThat(course.isApproved()).isTrue();
+    }
+
+    @Test
+    void validateAuthorityWithInstructorId() {
+        Course course = Fixture.course("fake");
+
+        course.updateStatus("processing");
+        assertDoesNotThrow(() -> {
+            course.validateAuthority(new AccountId(1L));
+        });
+
+        course.updateStatus("submitted");
+        assertDoesNotThrow(() -> {
+            course.validateAuthority(new AccountId(1L));
+        });
+
+        course.updateStatus("approved");
+        assertDoesNotThrow(() -> {
+            course.validateAuthority(new AccountId(1L));
+        });
+    }
+
+    @Test
+    void validateAuthorityWithOtherId() {
+        Course course = Fixture.course("fake");
+
+        course.updateStatus("processing");
+        assertThrows(AccessDeniedException.class, () -> {
+            course.validateAuthority(new AccountId(2L));
+        });
+
+        course.updateStatus("submitted");
+        assertThrows(AccessDeniedException.class, () -> {
+            course.validateAuthority(new AccountId(2L));
+        });
+
+        course.updateStatus("approved");
+        assertDoesNotThrow(() -> {
+            course.validateAuthority(new AccountId(2L));
+        });
     }
 }

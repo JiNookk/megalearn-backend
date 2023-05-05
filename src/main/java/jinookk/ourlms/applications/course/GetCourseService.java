@@ -25,7 +25,6 @@ import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.LikeRepository;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -59,20 +57,23 @@ public class GetCourseService {
                 .orElseThrow(() -> new CourseNotFound(courseId.value()));
 
         if (userName == null) {
+            course.validateAuthority(new AccountId(-1L));
+
             return course.toCourseDto();
         }
 
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
-        return course.toCourseDto(account);
+        course.validateAuthority(new AccountId(account.id()));
+
+        return course.toCourseDto(new AccountId(account.id()));
     }
 
-    //    @Cacheable(cacheNames = "courseCache", key = "#courseFilterDto")
     public CoursesDto list(Integer page, CourseFilterDto courseFilterDto) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
         QCourse course = QCourse.course;
-        BooleanBuilder builder = new BooleanBuilder(course.status.ne(CourseStatus.DELETED));
+        BooleanBuilder builder = new BooleanBuilder(course.status.eq(CourseStatus.APPROVED));
 
         if (courseFilterDto.level() != null) {
             builder.or(course.level.eq(Level.of(courseFilterDto.level())));
@@ -128,7 +129,7 @@ public class GetCourseService {
                 .toList();
 
         List<CourseDto> courseDtos = courseRepository.findAllById(courseIds).stream()
-                .filter(course -> !course.status().equals(new Status(Status.DELETED)))
+                .filter(course -> course.status().equals(CourseStatus.APPROVED))
                 .map(Course::toCourseDto)
                 .toList();
 

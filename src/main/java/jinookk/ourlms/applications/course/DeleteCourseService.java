@@ -33,9 +33,11 @@ public class DeleteCourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFound(courseId));
 
-        course.delete(new AccountId(account.id()));
+        AccountId accountId = new AccountId(account.id());
 
-        return course.toCourseDto();
+        course.delete(accountId);
+
+        return course.toCourseDto(accountId);
     }
 
     public CourseDto deleteSkill(CourseId courseId, HashTag hashTag, UserName userName) {
