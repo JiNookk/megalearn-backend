@@ -6,6 +6,7 @@ import jinookk.ourlms.dtos.StatusUpdateDto;
 import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
+import jinookk.ourlms.models.enums.CourseStatus;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
@@ -65,10 +66,10 @@ class UpdateCourseServiceTest extends Fixture {
     void updateStatus() {
         Course course = Fixture.course("updated");
 
-        given(courseRepository.findById(1L)).willReturn(Optional.of(course));
+        given(courseRepository.findByIdForUpdate(1L)).willReturn(Optional.of(course));
 
         CourseDto courseDto = updateCourseService.updateStatus(1L, new StatusUpdateDto("approved"));
 
-        assertThat(courseDto.getStatus()).isEqualTo("approved");
+        assertThat(courseDto.getStatus()).isEqualTo(CourseStatus.APPROVED.toString());
     }
 }

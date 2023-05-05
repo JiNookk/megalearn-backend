@@ -33,16 +33,18 @@ public class UpdateCourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFound(courseId));
 
-        course.update(courseUpdateRequestDto, new AccountId(account.id()));
+        AccountId accountId = new AccountId(account.id());
 
-        return course.toCourseDto();
+        course.update(courseUpdateRequestDto, accountId);
+
+        return course.toCourseDto(accountId);
     }
 
     public CourseDto updateStatus(Long courseId, StatusUpdateDto statusUpdateDto) {
-        Course course = courseRepository.findById(courseId)
+        Course course = courseRepository.findByIdForUpdate(courseId)
                 .orElseThrow(() -> new CourseNotFound(courseId));
 
-        Course updated = course.updateStatus(statusUpdateDto);
+        Course updated = course.updateStatus(statusUpdateDto.getStatus());
 
         return updated.toCourseDto();
     }

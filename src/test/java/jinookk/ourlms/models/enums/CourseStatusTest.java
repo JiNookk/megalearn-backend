@@ -17,9 +17,8 @@ class CourseStatusTest {
 
     @Test
     void getString() {
-        assertThat("approved").isEqualTo(CourseStatus.APPROVED.toString());
+        assertThat("APPROVED").isEqualTo(CourseStatus.APPROVED.toString());
     }
-
 
     @Test
     void filter() {

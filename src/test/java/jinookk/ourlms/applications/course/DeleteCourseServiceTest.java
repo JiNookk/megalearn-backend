@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
+import jinookk.ourlms.models.enums.CourseStatus;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -59,7 +60,7 @@ class DeleteCourseServiceTest extends Fixture{
 
         CourseDto courseDto = courseService.delete(1L, new UserName("tester@email.com"));
 
-        assertThat(courseDto.getStatus()).isEqualTo(Status.DELETED);
+        assertThat(courseDto.getStatus()).isEqualTo(CourseStatus.DELETED.toString());
     }
 
     @Test

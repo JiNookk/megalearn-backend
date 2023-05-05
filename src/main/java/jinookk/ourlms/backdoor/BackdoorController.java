@@ -40,7 +40,7 @@ public class BackdoorController {
                             "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
                             "status, level, created_at" +
                             ") " +
-                            "VALUES(?, 1, '테스트', '', '크리에이티브', '메가런', 'description', 49000, 'approved', 'BEGINNER', ?)"
+                            "VALUES(?, 1, '테스트', '', '크리에이티브', '메가런', 'description', 49000, 'APPROVED', 'BEGINNER', ?)"
                     , i + 3000, LocalDateTime.now().minusDays(10));
 
             jdbcTemplate.update("INSERT INTO " +
@@ -48,7 +48,7 @@ public class BackdoorController {
                             "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
                             "status, level, created_at" +
                             ") " +
-                            "VALUES(?, 1, '테스트', '', '개발 프로그래밍', '메가런', 'description', 49000, 'approved', 'BEGINNER', ?)"
+                            "VALUES(?, 1, '테스트', '', '개발 프로그래밍', '메가런', 'description', 49000, 'APPROVED', 'BEGINNER', ?)"
                     , i + 3001, LocalDateTime.now().minusDays(10));
 
 
@@ -57,7 +57,7 @@ public class BackdoorController {
                             "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
                             "status, level, created_at" +
                             ") " +
-                            "VALUES(?, 1, '테스트', '', '커리어', '메가런', 'description', 49000, 'approved', 'BEGINNER', ?)"
+                            "VALUES(?, 1, '테스트', '', '커리어', '메가런', 'description', 49000, 'APPROVED', 'BEGINNER', ?)"
                     , i + 3002, LocalDateTime.now().minusDays(10));
 
             setCollections(i);
@@ -71,7 +71,7 @@ public class BackdoorController {
                             "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
                             "status, level, created_at" +
                             ") " +
-                            "VALUES(?, 1, '테스트', '', '크리에이티브', '메가런', 'description', 49000, 'submitted', 'BEGINNER', ?)"
+                            "VALUES(?, 1, '테스트', '', '크리에이티브', '메가런', 'description', 49000, 'SUBMITTED', 'BEGINNER', ?)"
                     , i + 6000, LocalDateTime.now().minusDays(10));
 
             jdbcTemplate.update("INSERT INTO " +
@@ -79,7 +79,7 @@ public class BackdoorController {
                             "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
                             "status, level, created_at" +
                             ") " +
-                            "VALUES(?, 1, '테스트', '', '개발 프로그래밍', '메가런', 'description', 49000, 'processing', 'BEGINNER', ?)"
+                            "VALUES(?, 1, '테스트', '', '개발 프로그래밍', '메가런', 'description', 49000, 'PROCESSING', 'BEGINNER', ?)"
                     , i + 6001, LocalDateTime.now().minusDays(10));
 
             jdbcTemplate.update("INSERT INTO " +
@@ -87,7 +87,7 @@ public class BackdoorController {
                             "id, instructor_id, course_title, image_path, category_name, instructor_name, description, price, " +
                             "status, level, created_at" +
                             ") " +
-                            "VALUES(?, 1, '테스트', '', '커리어', '메가런', 'description', 49000, 'submitted', 'BEGINNER', ?)"
+                            "VALUES(?, 1, '테스트', '', '커리어', '메가런', 'description', 49000, 'SUBMITTED', 'BEGINNER', ?)"
                     , i + 6002, LocalDateTime.now().minusDays(10));
 
             setCollections(i);
@@ -197,7 +197,7 @@ public class BackdoorController {
                 "anonymous, publish_time, status, replied, solved, replied_at" +
                 ") " +
                 "VALUES(" +
-                "1, 2, 1, 1, '질문 1', 'content', 3, 24, 'publisher', 0, true, ?, 'created', 'completed', 'processing', ?" +
+                "1, 2, 1, 1, '질문 1', 'content', 3, 24, 'publisher', 0, true, ?, 'created', 'completed', 'PROCESSING', ?" +
                 ")", LocalDateTime.of(2022, 12, 3, 1, 1), LocalDateTime.of(2022, 12, 26, 1, 1));
 
         jdbcTemplate.update("INSERT INTO " +
@@ -206,7 +206,7 @@ public class BackdoorController {
                 "anonymous, publish_time, status, replied, solved, replied_at" +
                 ") " +
                 "VALUES(" +
-                "2, 1, 1, 1, '질문 2', 'content2', 3, 24, 'publisher', 0, true, ?, 'created', 'processing', 'processing', ?" +
+                "2, 1, 1, 1, '질문 2', 'content2', 3, 24, 'publisher', 0, true, ?, 'created', 'PROCESSING', 'PROCESSING', ?" +
                 ")", LocalDateTime.of(2022, 12, 5, 1, 1), LocalDateTime.of(2022, 12, 27, 1, 1));
 
         jdbcTemplate.update("INSERT INTO " +
@@ -215,7 +215,7 @@ public class BackdoorController {
                 "anonymous, publish_time, status, replied, solved, replied_at" +
                 ") " +
                 "VALUES(" +
-                "4, 1, 2, 1, '질문 4', 'content2', 3, 24, 'publisher', 0, true, ?, 'created', 'processing', 'processing', ?" +
+                "4, 1, 2, 1, '질문 4', 'content2', 3, 24, 'publisher', 0, true, ?, 'created', 'PROCESSING', 'PROCESSING', ?" +
                 ")", LocalDateTime.of(2022, 12, 5, 1, 1), LocalDateTime.of(2022, 12, 27, 1, 1));
 
         jdbcTemplate.update("INSERT INTO " +
@@ -224,7 +224,7 @@ public class BackdoorController {
                 "anonymous, publish_time, status, replied, solved, replied_at" +
                 ") " +
                 "VALUES(" +
-                "3, 3, 3, 2, '질문 3', 'content3', 3, 24, 'publisher', 0, true, ?, 'created', 'processing', 'completed', ?" +
+                "3, 3, 3, 2, '질문 3', 'content3', 3, 24, 'publisher', 0, true, ?, 'created', 'PROCESSING', 'completed', ?" +
                 ")", LocalDateTime.of(2022, 12, 21, 1, 1), LocalDateTime.of(2022, 12, 25, 1, 1));
 
         for (HashTag hashTag : hashTags) {
@@ -345,7 +345,7 @@ public class BackdoorController {
                         "progress(" +
                         "id, course_id, section_id, account_id, lecture_id, lecture_title, status, minutes, seconds, updated_at" +
                         ") " +
-                        "VALUES(3, 1, 2, 1, 3, '테스트 1강', 'processing', 5, 24, ?)"
+                        "VALUES(3, 1, 2, 1, 3, '테스트 1강', 'PROCESSING', 5, 24, ?)"
                 , LocalDateTime.now());
 
         jdbcTemplate.update("INSERT INTO " +
@@ -359,7 +359,7 @@ public class BackdoorController {
                         "progress(" +
                         "id, course_id, section_id, account_id, lecture_id, lecture_title, status, minutes, seconds, updated_at" +
                         ") " +
-                        "VALUES(5, 1, 1, 2, 2, '테스트 2강', 'processing', 3, 24, ?)"
+                        "VALUES(5, 1, 1, 2, 2, '테스트 2강', 'PROCESSING', 3, 24, ?)"
                 , LocalDateTime.now());
 
         return "Ok";

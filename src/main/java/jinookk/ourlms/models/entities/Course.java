@@ -174,8 +174,8 @@ public class Course {
         return new MonthlyPaymentDto(courseId, title, cost);
     }
 
-    public Course updateStatus(StatusUpdateDto statusUpdateDto) {
-        this.status = CourseStatus.valueOf(statusUpdateDto.getStatus());
+    public Course updateStatus(String status) {
+        this.status = CourseStatus.value(status);
 
         return this;
     }
@@ -206,11 +206,6 @@ public class Course {
                     .map(HashTag::new)
                     .collect(Collectors.toList());
         }
-    }
-
-    @Override
-    public String toString() {
-        return "id: " + id;
     }
 
     public void delete(AccountId accountId) {
@@ -249,11 +244,9 @@ public class Course {
         return accountId.equals(this.accountId);
     }
 
-    public CourseDto toCourseDto(Account account) {
-        boolean isInstructor = isInstructor(new AccountId(account.id()));
-
+    public CourseDto toCourseDto(AccountId accountId) {
         return new CourseDto(id, category, title, price, description, status, instructor, this.accountId,
-                imagePath, news, hashTags, skillSets, isInstructor, true, level, goals, createdAt);
+                imagePath, news, hashTags, skillSets, isInstructor(accountId), true, level, goals, createdAt);
     }
 
     public CourseDto toCourseDto() {
@@ -277,5 +270,15 @@ public class Course {
         }
 
         this.skillSets.remove(skill);
+    }
+
+    public boolean isApproved() {
+        return this.status.equals(CourseStatus.APPROVED);
+    }
+
+    public void validateAuthority(AccountId accountId) {
+        if (this.status != CourseStatus.APPROVED && !isInstructor(accountId)) {
+            throw new AccessDeniedException("this course is not approved yet!");
+        }
     }
 }

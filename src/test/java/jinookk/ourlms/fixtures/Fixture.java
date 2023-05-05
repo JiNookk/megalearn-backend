@@ -64,7 +64,7 @@ public class Fixture {
         AccountId accountId = new AccountId(1L);
         Content description = new Content("description");
         Price price = new Price(10000);
-        CourseStatus status = CourseStatus.PROCESSING;
+        CourseStatus status = CourseStatus.APPROVED;
 
         return new Course(id, new Title(title), description, status, imagePath, category, instructor, accountId, price);
     }
