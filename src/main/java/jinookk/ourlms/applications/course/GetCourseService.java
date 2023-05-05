@@ -14,6 +14,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.entities.QCourse;
+import jinookk.ourlms.models.enums.CourseStatus;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
@@ -71,7 +72,7 @@ public class GetCourseService {
     public CoursesDto list(Integer page, CourseFilterDto courseFilterDto) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
         QCourse course = QCourse.course;
-        BooleanBuilder builder = new BooleanBuilder(course.status.value.ne(Status.DELETED));
+        BooleanBuilder builder = new BooleanBuilder(course.status.ne(CourseStatus.DELETED));
 
         if (courseFilterDto.level() != null) {
             builder.or(course.level.eq(Level.of(courseFilterDto.level())));
@@ -142,7 +143,7 @@ public class GetCourseService {
         QCourse course = QCourse.course;
 
         JPAQuery<Course> courseJPAQuery = queryFactory.selectFrom(course)
-                .where(course.status.value.ne(Status.DELETED));
+                .where(course.status.ne(CourseStatus.DELETED));
 
         List<Course> courses = courseJPAQuery
                 .offset(pageable.getOffset())

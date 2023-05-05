@@ -207,10 +207,10 @@ class CourseTest extends Fixture {
     void updateStatus() {
         Course course = Fixture.course("fake");
 
-        assertThat(course.status().value()).isEqualTo("processing");
+        assertThat(course.status().toString()).isEqualTo("processing");
 
         Course approved = course.updateStatus(new StatusUpdateDto("approved"));
 
-        assertThat(approved.status().value()).isEqualTo("approved");
+        assertThat(approved.status().toString()).isEqualTo("approved");
     }
 }

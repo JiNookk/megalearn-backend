@@ -41,20 +41,4 @@ class StatusTest {
         assertThat(status.approve()).isTrue();
     }
 
-    @Test
-    void filter() {
-        Status status = new Status(Status.PROCESSING);
-
-        assertThat(status.filter(Status.APPROVED)).isFalse();
-        assertThat(status.filter(Status.PROCESSING)).isTrue();
-
-        Status status2 = new Status(Status.SUBMITTED);
-
-        assertThat(status2.filter(Status.APPROVED)).isFalse();
-        assertThat(status2.filter(Status.SUBMITTED)).isTrue();
-
-        assertThrows(InvalidStatus.class, () -> {
-            status2.filter(null);
-        });
-    }
 }

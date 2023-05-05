@@ -1,5 +1,6 @@
 package jinookk.ourlms.dtos;
 
+import jinookk.ourlms.models.enums.CourseStatus;
 import jinookk.ourlms.models.enums.Level;
 import jinookk.ourlms.models.vos.Category;
 import jinookk.ourlms.models.vos.Content;
@@ -10,7 +11,6 @@ import jinookk.ourlms.models.vos.Post;
 import jinookk.ourlms.models.vos.Price;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
-import jinookk.ourlms.models.vos.status.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,7 +39,7 @@ public class CourseDto {
     }
 
     public CourseDto(Long id, Category category, Title title, Price price, Content description,
-                     Status status, Name instructor, AccountId instructorId, ImagePath coverImage,
+                     CourseStatus status, Name instructor, AccountId instructorId, ImagePath coverImage,
                      List<Post> news, List<HashTag> hashTags, List<HashTag> skillSets, Boolean isInstructor,
                      Boolean isPurchased, Level level, List<Content> goals, LocalDateTime createdAt) {
         this.id = id;
@@ -47,7 +47,7 @@ public class CourseDto {
         this.title = title.value();
         this.price = price.value();
         this.description = description.value();
-        this.status = status.value();
+        this.status = status.toString();
         this.instructor = instructor.value();
         this.instructorId = instructorId.value();
         this.coverImage = coverImage.value();
