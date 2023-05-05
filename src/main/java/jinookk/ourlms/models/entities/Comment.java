@@ -87,6 +87,16 @@ public class Comment {
         return Comment.of(commentRequestDto, author, new AccountId(account.id()));
     }
 
+    public static Comment of(CommentRequestDto commentRequestDto, Name publisher, AccountId accountId) {
+        Long id = null;
+        InquiryId inquiryId = commentRequestDto.getInquiryId();
+        Status status = new Status(Status.CREATED);
+        Content content = new Content(commentRequestDto.getContent());
+        LocalDateTime publishTime = LocalDateTime.now();
+
+        return new Comment(id, inquiryId, accountId, status, publisher, content, publishTime);
+    }
+
     public Long id() {
         return id;
     }
@@ -113,16 +123,6 @@ public class Comment {
 
     public LocalDateTime publishTime() {
         return publishTime;
-    }
-
-    public static Comment of(CommentRequestDto commentRequestDto, Name publisher, AccountId accountId) {
-        Long id = null;
-        InquiryId inquiryId = commentRequestDto.getInquiryId();
-        Status status = new Status(Status.CREATED);
-        Content content = new Content(commentRequestDto.getContent());
-        LocalDateTime publishTime = LocalDateTime.now();
-
-        return new Comment(id, inquiryId, accountId, status, publisher, content, publishTime);
     }
 
     public CommentDto toCommentDto() {

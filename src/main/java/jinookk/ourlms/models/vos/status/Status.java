@@ -44,6 +44,7 @@ public class Status {
         if (type == null) {
             throw new InvalidStatus(type);
         }
+
         if (type.equals(Status.PROCESSING)) {
             return processing();
         }

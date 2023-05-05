@@ -170,7 +170,7 @@ class CourseTest extends Fixture {
 
         Account account = Fixture.account("account");
 
-        CourseDto courseDto = course.toCourseDto(Optional.of(account));
+        CourseDto courseDto = course.toCourseDto(account);
 
         assertThat(courseDto.getPurchased()).isEqualTo(true);
     }
@@ -179,7 +179,7 @@ class CourseTest extends Fixture {
     void convertToDtoWithPaymentNull() {
         Course course = Fixture.course("course");
 
-        CourseDto courseDto = course.toCourseDto(Optional.empty());
+        CourseDto courseDto = course.toCourseDto();
 
         assertThat(courseDto.getPurchased()).isEqualTo(false);
     }

@@ -36,7 +36,6 @@ public class PaymentController {
         this.kakaoService = kakaoService;
     }
 
-
     @PostMapping("/payments/kakao-ready")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Payment Ready", notes = "request ready phase to Kakao Server")
@@ -64,7 +63,7 @@ public class PaymentController {
     }
 
     @GetMapping("/payments")
-    public PaymentsDto detail() {
+    public PaymentsDto list() {
         return getPaymentService.list();
     }
 

@@ -12,6 +12,7 @@ import jinookk.ourlms.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ public class LoginService {
         if (!accountRepository.existsByUserName(userName)) {
             String password = UUID.randomUUID().toString();
             RegisterRequestDto registerRequestDto = new RegisterRequestDto(
-                    userName.value(), password, name.value(), "010-0000-0000");
+                    userName.value(), password, name.value(), "01000000000");
 
             Account account = registerService.register(registerRequestDto);
 
