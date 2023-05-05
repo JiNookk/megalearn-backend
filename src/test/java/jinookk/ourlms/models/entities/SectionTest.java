@@ -2,6 +2,7 @@ package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.SectionRequestDto;
 import jinookk.ourlms.dtos.SectionWithProgressDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -25,9 +26,9 @@ class SectionTest {
 
     @Test
     void convertToDto() {
-        Section section = Section.fake("section");
+        Section section = Fixture.section("section");
 
-        Progress progress = Progress.fake("1강");
+        Progress progress = Fixture.progress("1강");
 
         SectionWithProgressDto sectionWithProgressDto = section.toSectionWithProgressDto(List.of(progress));
 
@@ -37,7 +38,7 @@ class SectionTest {
 
     @Test
     void convertToDtoWithInvalidLectureProducts() {
-        Section section = Section.fake("section");
+        Section section = Fixture.section("section");
 
         SectionWithProgressDto sectionWithProgressDto = section.toSectionWithProgressDto(null);
 

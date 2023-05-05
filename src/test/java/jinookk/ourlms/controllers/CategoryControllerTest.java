@@ -5,6 +5,7 @@ import jinookk.ourlms.applications.category.DeleteCategoryService;
 import jinookk.ourlms.applications.category.GetCategoryService;
 import jinookk.ourlms.dtos.CategoriesDto;
 import jinookk.ourlms.dtos.CategoryDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ class CategoryControllerTest {
 
     @Test
     void post() throws Exception {
-        CategoryDto categoryDto = Category.fake("category").toDto();
+        CategoryDto categoryDto = Fixture.category("category").toDto();
 
         given(createCategoryService.post(any())).willReturn(categoryDto);
 
@@ -55,7 +56,7 @@ class CategoryControllerTest {
 
     @Test
     void list() throws Exception {
-        CategoryDto categoryDto = Category.fake("category").toDto();
+        CategoryDto categoryDto = Fixture.category("category").toDto();
 
         given(getCategoryService.list()).willReturn(new CategoriesDto(List.of(categoryDto)));
 
@@ -68,7 +69,7 @@ class CategoryControllerTest {
 
     @Test
     void delete() throws Exception {
-        CategoryDto categoryDto = Category.fake("category").toDto();
+        CategoryDto categoryDto = Fixture.category("category").toDto();
 
         given(deleteCategoryService.delete(any())).willReturn(categoryDto);
 

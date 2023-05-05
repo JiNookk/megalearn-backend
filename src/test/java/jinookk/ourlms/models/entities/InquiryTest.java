@@ -1,6 +1,7 @@
 package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.InquiryRequestDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
@@ -70,7 +71,7 @@ class InquiryTest {
     void validatePreviousCommentWithDifferentAccountId() {
         AccountId accountId = new AccountId(3L);
 
-        List<Comment> comments = List.of(Comment.fake("hi"));
+        List<Comment> comments = List.of(Fixture.comment("hi"));
 
         Optional<Comment> comment = inquiry.previousComment(comments, accountId);
 
@@ -79,7 +80,7 @@ class InquiryTest {
 
     @Test
     void toggleSolved() {
-        Inquiry inquiry = Inquiry.fake("fake");
+        Inquiry inquiry = Fixture.inquiry("fake");
 
         assertThat(inquiry.status().solved()).isEqualTo("processing");
 
@@ -90,7 +91,7 @@ class InquiryTest {
 
     @Test
     void reply() {
-        Inquiry inquiry = Inquiry.fake("fake");
+        Inquiry inquiry = Fixture.inquiry("fake");
 
         assertThat(inquiry.status().replied()).isEqualTo("processing");
 
@@ -101,7 +102,7 @@ class InquiryTest {
 
     @Test
     void increaseHits() {
-        Inquiry fake = Inquiry.fake("fake");
+        Inquiry fake = Fixture.inquiry("fake");
 
         assertThat(fake.hits()).isEqualTo(0);
 

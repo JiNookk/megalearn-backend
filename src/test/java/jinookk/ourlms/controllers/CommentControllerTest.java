@@ -7,6 +7,7 @@ import jinookk.ourlms.applications.comment.UpdateCommentService;
 import jinookk.ourlms.dtos.CommentDeleteDto;
 import jinookk.ourlms.dtos.CommentDto;
 import jinookk.ourlms.dtos.CommentsDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Comment;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.InquiryId;
@@ -58,7 +59,7 @@ class CommentControllerTest {
 
     @Test
     void list() throws Exception {
-        CommentDto commentDto = Comment.fake("hi").toCommentDto();
+        CommentDto commentDto = Fixture.comment("hi").toCommentDto();
 
         CommentsDto commentsDto = new CommentsDto(List.of(commentDto));
         given(getCommentService.list(new InquiryId(1L), new UserName("userName@email.com"))).willReturn(commentsDto);
@@ -74,7 +75,7 @@ class CommentControllerTest {
 
     @Test
     void post() throws Exception {
-        CommentDto commentDto = Comment.fake("hi").toCommentDto();
+        CommentDto commentDto = Fixture.comment("hi").toCommentDto();
 
         given(createCommentService.create(any(), any())).willReturn(commentDto);
 
@@ -94,7 +95,7 @@ class CommentControllerTest {
 
     @Test
     void update() throws Exception {
-        CommentDto commentDto = Comment.fake("updated").toCommentDto();
+        CommentDto commentDto = Fixture.comment("updated").toCommentDto();
 
         given(updateCommentService.update(any(), any(), any())).willReturn(commentDto);
 
@@ -111,7 +112,7 @@ class CommentControllerTest {
 
     @Test
     void delete() throws Exception {
-        CommentDeleteDto commentDeleteDto = Comment.fake("hi").toCommentDeleteDto();
+        CommentDeleteDto commentDeleteDto = Fixture.comment("hi").toCommentDeleteDto();
         given(deleteCommentService.delete(any(), any())).willReturn(commentDeleteDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/comments/11")

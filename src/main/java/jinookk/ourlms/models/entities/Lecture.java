@@ -72,33 +72,6 @@ public class Lecture {
         this.videoUrl = videoUrl;
     }
 
-    public static Lecture fake(String lectureTitle) {
-        return fake(new Title(lectureTitle));
-    }
-
-    private static Lecture fake(Title title) {
-        Long id = 1L;
-        CourseId courseId = new CourseId(1L);
-        Content lectureNote = new Content("lectureNote");
-        SectionId sectionId = new SectionId(1L);
-        HandOutUrl handOutUrl = new HandOutUrl("url");
-        VideoUrl videoUrl = new VideoUrl("video/url");
-
-        return new Lecture(id, courseId, sectionId, title, lectureNote, handOutUrl, videoUrl);
-    }
-
-    public static Lecture fake(LectureId lectureId) {
-        Long id = lectureId.value();
-        CourseId courseId = new CourseId(1L);
-        Content lectureNote = new Content("lectureNote");
-        SectionId sectionId = new SectionId(1L);
-        Title title = new Title("title");
-        HandOutUrl handOutUrl = new HandOutUrl("url");
-        VideoUrl videoUrl = new VideoUrl("video/url");
-
-        return new Lecture(id, courseId, sectionId, title, lectureNote, handOutUrl, videoUrl);
-    }
-
     public static Lecture of(LectureRequestDto lectureRequestDto) {
         return new Lecture(
                 null,

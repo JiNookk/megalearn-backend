@@ -6,6 +6,7 @@ import jinookk.ourlms.applications.lecture.GetLectureService;
 import jinookk.ourlms.applications.lecture.UpdateLectureService;
 import jinookk.ourlms.dtos.LectureDto;
 import jinookk.ourlms.dtos.LecturesDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
@@ -57,7 +58,7 @@ class LectureControllerTest {
 
     @Test
     void create() throws Exception {
-        LectureDto lectureDto = Lecture.fake("hi").toLectureDto();
+        LectureDto lectureDto = Fixture.lecture("hi").toLectureDto();
 
         given(createLectureService.create(any()))
                 .willReturn(lectureDto);
@@ -77,7 +78,7 @@ class LectureControllerTest {
 
     @Test
     void lecture() throws Exception {
-        LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
+        LectureDto lectureDto = Fixture.lecture("test lecture 1").toLectureDto();
 
         given(getLectureService.detail(1L))
                 .willReturn(lectureDto);
@@ -91,7 +92,7 @@ class LectureControllerTest {
 
     @Test
     void listByCourseId() throws Exception {
-        LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
+        LectureDto lectureDto = Fixture.lecture("test lecture 1").toLectureDto();
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
@@ -107,7 +108,7 @@ class LectureControllerTest {
 
     @Test
     void list() throws Exception {
-        LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
+        LectureDto lectureDto = Fixture.lecture("test lecture 1").toLectureDto();
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
@@ -123,7 +124,7 @@ class LectureControllerTest {
 
     @Test
     void listByInstructorId() throws Exception {
-        LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
+        LectureDto lectureDto = Fixture.lecture("test lecture 1").toLectureDto();
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
@@ -140,7 +141,7 @@ class LectureControllerTest {
 
     @Test
     void myLectures() throws Exception {
-        LectureDto lectureDto = Lecture.fake("test lecture 1").toLectureDto();
+        LectureDto lectureDto = Fixture.lecture("test lecture 1").toLectureDto();
 
         LecturesDto lecturesDto = new LecturesDto(List.of(lectureDto));
 
@@ -157,7 +158,7 @@ class LectureControllerTest {
 
     @Test
     void update() throws Exception {
-        LectureDto lectureDto = Lecture.fake("updated").toLectureDto();
+        LectureDto lectureDto = Fixture.lecture("updated").toLectureDto();
 
         given(updateLectureService.update(any(), any()))
                 .willReturn(lectureDto);
@@ -178,7 +179,7 @@ class LectureControllerTest {
 
     @Test
     void delete() throws Exception {
-        LectureDto lectureDto = Lecture.fake((String) null).toLectureDto();
+        LectureDto lectureDto = Fixture.lecture((String) null).toLectureDto();
 
         given(deleteLectureService.delete(any()))
                 .willReturn(lectureDto);

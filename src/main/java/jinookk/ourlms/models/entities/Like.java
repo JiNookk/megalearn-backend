@@ -39,10 +39,6 @@ public class Like {
         this.clicked = clicked;
     }
 
-    public static Like fake(Boolean clicked) {
-        return new Like(new AccountId(1L), new CourseId(1L), clicked);
-    }
-
     public static List<Like> listOf(AccountId accountId, List<CourseId> courseIds) {
         return courseIds.stream()
                 .map(courseId -> Like.of(accountId, courseId))

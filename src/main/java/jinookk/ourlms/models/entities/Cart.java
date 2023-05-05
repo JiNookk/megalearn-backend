@@ -38,10 +38,6 @@ public class Cart {
         this.accountId = accountId;
     }
 
-    public static Cart fake(AccountId accountId) {
-        return new Cart(accountId);
-    }
-
     public static Cart of(AccountId accountId) {
         return new Cart(accountId);
     }

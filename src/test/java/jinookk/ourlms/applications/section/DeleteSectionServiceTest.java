@@ -1,6 +1,7 @@
 package jinookk.ourlms.applications.section;
 
 import jinookk.ourlms.dtos.SectionDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.status.Status;
@@ -24,7 +25,7 @@ class DeleteSectionServiceTest {
         sectionRepository = mock(SectionRepository.class);
         deleteSectionService = new DeleteSectionService(sectionRepository);
 
-        Section section = Section.fake("section");
+        Section section = Fixture.section("section");
 
         given(sectionRepository.findById(1L))
                 .willReturn(Optional.of(section));

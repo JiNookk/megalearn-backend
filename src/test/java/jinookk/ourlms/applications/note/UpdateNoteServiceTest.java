@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.note;
 
 import jinookk.ourlms.dtos.NoteDto;
 import jinookk.ourlms.dtos.NoteUpdateDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Note;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.LectureId;
@@ -27,7 +28,7 @@ class UpdateNoteServiceTest {
         noteRepository = mock(NoteRepository.class);
         updateNoteService = new UpdateNoteService(noteRepository);
 
-        Note note = Note.fake("content");
+        Note note = Fixture.note("content");
         given(noteRepository.save(any())).willReturn(note);
 
         given(noteRepository.findById(any())).willReturn(Optional.of(note));

@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.rating;
 
 import jinookk.ourlms.dtos.RatingDto;
 import jinookk.ourlms.dtos.RatingsDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Rating;
@@ -24,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class GetRatingServiceTest {
+class GetRatingServiceTest extends Fixture {
     GetRatingService getRatingService;
     CourseRepository courseRepository;
     RatingRepository ratingRepository;
@@ -37,10 +38,10 @@ class GetRatingServiceTest {
         courseRepository = mock(CourseRepository.class);
         getRatingService = new GetRatingService(courseRepository, ratingRepository, accountRepository);
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
 
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
         given(courseRepository.findAllByAccountId(any()))
                 .willReturn(List.of(course));
 

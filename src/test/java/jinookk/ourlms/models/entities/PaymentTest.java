@@ -1,5 +1,6 @@
 package jinookk.ourlms.models.entities;
 
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.exceptions.InvalidPaymentInformation;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -11,20 +12,20 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class PaymentTest {
+class PaymentTest extends Fixture {
     private Cart cart;
 
     @BeforeEach
     void setup() {
-        cart = Cart.fake(new AccountId(1L));
+        cart = Fixture.cart(new AccountId(1L));
 
         cart = cart.addItem(1L);
     }
 
     @Test
     void create() {
-        Course course = Course.fake("fake");
-        Account account = Account.fake("tester");
+        Course course = Fixture.course("fake");
+        Account account = Fixture.account("tester");
 
         Payment payment = Payment.of(account, course);
 
@@ -36,26 +37,26 @@ class PaymentTest {
     @Test
     void createWithInvalidInformation() {
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.of(Account.fake("tester"), Course.fake(null));
+            Payment.of(Fixture.account("tester"), Fixture.course(null));
         });
 
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.of(Account.fake(null), Course.fake("fake"));
+            Payment.of(Fixture.account(null), Fixture.course("fake"));
         });
 
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.of(Account.fake("tester"), null);
+            Payment.of(Fixture.account("tester"), null);
         });
 
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.of(null, Course.fake("fake"));
+            Payment.of(null, Fixture.course("fake"));
         });
     }
 
     @Test
     void createList() {
-        Course course = Course.fake("fake");
-        Account account = Account.fake("tester");
+        Course course = Fixture.course("fake");
+        Account account = Fixture.account("tester");
 
         List<Course> courses = List.of(course);
 
@@ -66,8 +67,8 @@ class PaymentTest {
 
     @Test
     void createListWithInvalidValue() {
-        Course course = Course.fake("fake");
-        Account account = Account.fake("tester");
+        Course course = Fixture.course("fake");
+        Account account = Fixture.account("tester");
 
         assertThrows(InvalidPaymentInformation.class, () -> {
             Payment.listOf(List.of(), account, cart);

@@ -1,6 +1,7 @@
 package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.CommentRequestDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.LectureTime;
@@ -46,7 +47,7 @@ class CommentTest {
 
     @Test
     void removeAllProperties() {
-        Comment comment = Comment.fake("hi");
+        Comment comment = Fixture.comment("hi");
 
         comment.removeAllProperties(new AccountId(1L));
 
@@ -57,7 +58,7 @@ class CommentTest {
 
     @Test
     void isMyComment() {
-        Comment comment = Comment.fake("hi");
+        Comment comment = Fixture.comment("hi");
 
         assertThat(comment.accountId()).isEqualTo(new AccountId(1L));
 
@@ -69,8 +70,8 @@ class CommentTest {
     void createCommentWithSameAccountIdWithInquiry() {
         Account account = new Account(new Name("tester", false), new UserName("userName@email.com"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
-        List<Comment> comments = List.of(Comment.fake("hi"));
-        Course course = Course.fake("course");
+        List<Comment> comments = List.of(Fixture.comment("hi"));
+        Course course = Fixture.course("course");
 
         Comment comment = Comment.of(inquiry, comments, commentRequestDto, account, course);
 
@@ -83,9 +84,9 @@ class CommentTest {
         Account account = new Account(new Name("tester", false), new UserName("userName@email.com"));
         CommentRequestDto commentRequestDto = new CommentRequestDto(new InquiryId(1L), "comment");
 
-        Comment commentWithFirstAccountId = Comment.fake("hi");
+        Comment commentWithFirstAccountId = Fixture.comment("hi");
         List<Comment> comments = List.of(commentWithFirstAccountId);
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
 
         Comment comment = Comment.of(inquiry, comments, commentRequestDto, account, course);
 
@@ -102,7 +103,7 @@ class CommentTest {
                 new Name("3rd Author", false), new Content("content"), LocalDateTime.now());
 
         List<Comment> comments = List.of(commentWithThirdAccountId);
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
 
         Comment comment = Comment.of(inquiry, comments, commentRequestDto, account, course);
 

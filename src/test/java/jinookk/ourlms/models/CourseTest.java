@@ -1,5 +1,6 @@
 package jinookk.ourlms.models;
 
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MyCourseDto;
@@ -24,10 +25,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CourseTest {
+class CourseTest extends Fixture {
     @Test
     void convertToMyCourseDto() {
-        Course course = Course.fake("Test");
+        Course course = Fixture.course("Test");
 
         MyCourseDto myCourseDto = course.toMyCourseDto();
 
@@ -36,7 +37,7 @@ class CourseTest {
 
     @Test
     void averageRating() {
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
 
         List<Rating> ratings = List.of(
                 new Rating(1L, new AccountId(1L), new CourseId(1L), new Name("name1", false), new Content("content1"), 4.0),
@@ -51,7 +52,7 @@ class CourseTest {
 
     @Test
     void averageRatingWithBlankList() {
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
 
         List<Rating> ratings = List.of();
         Double rating = course.averageRating(ratings);
@@ -61,7 +62,7 @@ class CourseTest {
 
     @Test
     void convertToMonthlyPaymentDto() {
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
 
         List<Payment> payments = List.of(
                 new Payment(1L, new CourseId(1L), new AccountId(1L), new Price(35_000),
@@ -79,7 +80,7 @@ class CourseTest {
 
     @Test
     void convertToMonthlyPaymentDtoWithOverdated() {
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
 
         List<Payment> payments = List.of(
                 new Payment(4L, new CourseId(1L), new AccountId(3L), new Price(35_000),
@@ -95,7 +96,7 @@ class CourseTest {
 
     @Test
     void convertToMonthlyPaymentDtoWithBlankList() {
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
 
         List<Payment> payments = List.of();
 
@@ -106,30 +107,30 @@ class CourseTest {
 
     @Test
     void filterIdWithNullValue() {
-        Course course = Course.fake("fake");
+        Course course = Fixture.course("fake");
 
         assertThat(course.filterId(new CourseId(null))).isTrue();
     }
 
     @Test
     void filterIdWithCorrectValue() {
-        Course course = Course.fake("fake");
+        Course course = Fixture.course("fake");
 
         assertThat(course.filterId(new CourseId(1L))).isTrue();
     }
 
     @Test
     void filterIdWithIncorrectValue() {
-        Course course = Course.fake("fake");
+        Course course = Fixture.course("fake");
 
         assertThat(course.filterId(new CourseId(10L))).isFalse();
     }
 
     @Test
     void validatePayment() {
-        Course course = Course.fake("fake");
+        Course course = Fixture.course("fake");
 
-        Payment payment = Payment.fake(35_000);
+        Payment payment = Fixture.payment(35_000);
 
         boolean validatePayment = course.validatePayment(Optional.of(payment));
 
@@ -138,7 +139,7 @@ class CourseTest {
 
     @Test
     void validatePaymentWithNull() {
-        Course course = Course.fake("fake");
+        Course course = Fixture.course("fake");
 
         boolean validatePayment = course.validatePayment(Optional.empty());
 
@@ -147,7 +148,7 @@ class CourseTest {
 
     @Test
     void validateInstructor() {
-        Course course = Course.fake("fake");
+        Course course = Fixture.course("fake");
 
         boolean validateInstructor = course.isInstructor(new AccountId(1L));
 
@@ -156,7 +157,7 @@ class CourseTest {
 
     @Test
     void validateInstructorWithIncorrectId() {
-        Course course = Course.fake("fake");
+        Course course = Fixture.course("fake");
 
         assertThat(course.isInstructor(new AccountId(2L))).isFalse();
         assertThat(course.isInstructor(new AccountId(null))).isFalse();
@@ -165,9 +166,9 @@ class CourseTest {
 
     @Test
     void convertToDtoWithPayment() {
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
 
         CourseDto courseDto = course.toCourseDto(Optional.of(account));
 
@@ -176,7 +177,7 @@ class CourseTest {
 
     @Test
     void convertToDtoWithPaymentNull() {
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
 
         CourseDto courseDto = course.toCourseDto(Optional.empty());
 
@@ -185,7 +186,7 @@ class CourseTest {
 
     @Test
     void fake() {
-        Course course = Course.fake("fake");
+        Course course = Fixture.course("fake");
 
         assertThat(course.level()).isEqualTo(Level.TOBEDETERMINED);
         assertThat(course.imagePath()).isEqualTo(new ImagePath("imagePath"));
@@ -193,7 +194,7 @@ class CourseTest {
 
     @Test
     void changeLevel() {
-        Course course = Course.fake("fake");
+        Course course = Fixture.course("fake");
 
         assertThat(course.level()).isEqualTo(Level.TOBEDETERMINED);
 
@@ -204,7 +205,7 @@ class CourseTest {
 
     @Test
     void updateStatus() {
-        Course course = Course.fake("fake");
+        Course course = Fixture.course("fake");
 
         assertThat(course.status().value()).isEqualTo("processing");
 

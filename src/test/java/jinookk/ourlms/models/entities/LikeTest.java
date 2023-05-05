@@ -1,5 +1,6 @@
 package jinookk.ourlms.models.entities;
 
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class LikeTest {
     @Test
     void toggle() {
-        Like like = Like.fake(false);
+        Like like = Fixture.like(false);
 
         assertThat(like.clicked()).isEqualTo(false);
 

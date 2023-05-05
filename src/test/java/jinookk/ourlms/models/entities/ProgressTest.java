@@ -2,6 +2,7 @@ package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.LectureTimeDto;
 import jinookk.ourlms.exceptions.InvalidArgument;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.vos.LectureTime;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ProgressTest {
     @Test
     void complete() {
-        Progress progress = Progress.fake("test");
+        Progress progress = Fixture.progress("test");
 
         assertThat(progress.status().value()).isEqualTo("processing");
 
@@ -29,7 +30,7 @@ class ProgressTest {
 
     @Test
     void updateTime() {
-        Progress progress = Progress.fake("test");
+        Progress progress = Fixture.progress("test");
 
         Progress updated = progress.updateTime(new LectureTimeDto(new LectureTime(5, 30)));
 
@@ -38,7 +39,7 @@ class ProgressTest {
 
     @Test
     void createdFromLecture() {
-        Lecture lecture = Lecture.fake(new LectureId(1L));
+        Lecture lecture = Fixture.lecture(new LectureId(1L));
 
         AccountId accountId = new AccountId(1L);
 
@@ -58,14 +59,14 @@ class ProgressTest {
         });
 
         assertThrows(InvalidArgument.class, () -> {
-            Progress.of(Lecture.fake(new LectureId(1L)), null);
+            Progress.of(Fixture.lecture(new LectureId(1L)), null);
         });
     }
 
     @Test
     void collectionWithValidLectures() {
         List<Lecture> lectures = List.of(
-                Lecture.fake(new LectureId(1L)), Lecture.fake(new LectureId(2L)), Lecture.fake(new LectureId(3L)));
+                Fixture.lecture(new LectureId(1L)), Fixture.lecture(new LectureId(2L)), Fixture.lecture(new LectureId(3L)));
 
         AccountId accountId = new AccountId(1L);
 

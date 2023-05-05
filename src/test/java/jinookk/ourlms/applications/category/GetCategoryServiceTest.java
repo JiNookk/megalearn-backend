@@ -1,6 +1,7 @@
 package jinookk.ourlms.applications.category;
 
 import jinookk.ourlms.dtos.CategoriesDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Category;
 import jinookk.ourlms.repositories.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ class GetCategoryServiceTest {
 
     @Test
     void list() {
-        Category category = Category.fake("category");
+        Category category = Fixture.category("category");
 
         given(categoryRepository.findAll()).willReturn(List.of(category));
 

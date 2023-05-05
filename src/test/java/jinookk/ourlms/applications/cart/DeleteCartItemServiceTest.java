@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.cart;
 
 import jinookk.ourlms.dtos.CartDto;
 import jinookk.ourlms.dtos.CartRequestDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Cart;
 import jinookk.ourlms.models.vos.UserName;
@@ -20,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class DeleteCartItemServiceTest {
+class DeleteCartItemServiceTest extends Fixture{
     DeleteCartItemService deleteCartItemService;
     CartRepository cartRepository;
     AccountRepository accountRepository;
@@ -33,7 +34,7 @@ class DeleteCartItemServiceTest {
 
         List<CourseId> courseIds = List.of(new CourseId(1L), new CourseId(2L));
 
-        Cart cart = Cart.fake(new AccountId(1L));
+        Cart cart = Fixture.cart(new AccountId(1L));
 
         for (CourseId courseId : courseIds) {
             cart = cart.addItem(courseId.value());
@@ -41,7 +42,7 @@ class DeleteCartItemServiceTest {
 
         given(cartRepository.findByAccountId(new AccountId(1L))).willReturn(Optional.of(cart));
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 

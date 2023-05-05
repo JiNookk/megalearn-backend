@@ -5,6 +5,7 @@ import jinookk.ourlms.applications.skill.DeleteSkillService;
 import jinookk.ourlms.applications.skill.GetSkillService;
 import jinookk.ourlms.dtos.SkillsDto;
 import jinookk.ourlms.dtos.SkillDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Skill;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ class SkillControllerTest {
 
     @Test
     void post() throws Exception {
-        SkillDto skillDto = Skill.fake("skill").toDto();
+        SkillDto skillDto = Fixture.skill("skill").toDto();
 
         given(createSkillService.post(any())).willReturn(skillDto);
 
@@ -55,7 +56,7 @@ class SkillControllerTest {
 
     @Test
     void list() throws Exception {
-        SkillDto skillDto = Skill.fake("skill").toDto();
+        SkillDto skillDto = Fixture.skill("skill").toDto();
 
         given(getSkillService.list()).willReturn(new SkillsDto(List.of(skillDto)));
 
@@ -68,7 +69,7 @@ class SkillControllerTest {
 
     @Test
     void delete() throws Exception {
-        SkillDto skillDto = Skill.fake("skill").toDto();
+        SkillDto skillDto = Fixture.skill("skill").toDto();
 
         given(deleteSkillService.delete(any())).willReturn(skillDto);
 

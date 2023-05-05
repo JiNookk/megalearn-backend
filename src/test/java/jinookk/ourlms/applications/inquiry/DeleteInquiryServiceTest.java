@@ -1,6 +1,7 @@
 package jinookk.ourlms.applications.inquiry;
 
 import jinookk.ourlms.dtos.InquiryDeleteDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Inquiry;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.InquiryId;
@@ -25,8 +26,8 @@ class DeleteInquiryServiceTest {
         inquiryRepository = mock(InquiryRepository.class);
         deleteInquiryService = new DeleteInquiryService(inquiryRepository);
 
-        Inquiry inquiry1 = Inquiry.fake("inquiry1");
-        Inquiry inquiry2 = Inquiry.fake("inquiry2");
+        Inquiry inquiry1 = Fixture.inquiry("inquiry1");
+        Inquiry inquiry2 = Fixture.inquiry("inquiry2");
 
         given(inquiryRepository.save(any())).willReturn(inquiry1);
 

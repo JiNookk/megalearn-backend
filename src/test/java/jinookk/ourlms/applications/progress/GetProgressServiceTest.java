@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.progress;
 
 import jinookk.ourlms.dtos.ProgressDto;
 import jinookk.ourlms.dtos.ProgressesDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Progress;
 import jinookk.ourlms.models.vos.UserName;
@@ -24,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class GetProgressServiceTest {
+class GetProgressServiceTest extends Fixture {
     ProgressRepository progressRepository;
     GetProgressService getProgressService;
     AccountRepository accountRepository;
@@ -35,7 +36,7 @@ class GetProgressServiceTest {
         progressRepository = mock(ProgressRepository.class);
         getProgressService = new GetProgressService(progressRepository, accountRepository);
 
-        Progress progress = Progress.fake("1강");
+        Progress progress = Fixture.progress("1강");
 
         given(progressRepository.findById(1L))
                 .willReturn(Optional.of(progress));
@@ -52,7 +53,7 @@ class GetProgressServiceTest {
         given(progressRepository.findAll((Specification<Progress>) any(), (Sort) any()))
                 .willReturn(List.of(progress));
 
-        Account account = Account.fake("userName@email.com");
+        Account account = Fixture.account("userName@email.com");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 

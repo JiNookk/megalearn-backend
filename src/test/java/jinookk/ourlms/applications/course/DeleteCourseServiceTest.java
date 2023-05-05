@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.course;
 
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.vos.HashTag;
@@ -25,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class DeleteCourseServiceTest {
+class DeleteCourseServiceTest extends Fixture{
     DeleteCourseService courseService;
     CourseRepository courseRepository;
     AccountRepository accountRepository;
@@ -36,8 +37,8 @@ class DeleteCourseServiceTest {
         courseRepository = mock(CourseRepository.class);
         courseService = new DeleteCourseService(courseRepository, accountRepository);
 
-        Course course = Course.fake("내 강의");
-        Account account = Account.fake("account");
+        Course course = Fixture.course("내 강의");
+        Account account = Fixture.account("account");
 
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 
@@ -52,7 +53,7 @@ class DeleteCourseServiceTest {
 
     @Test
     void delete() {
-        Course course = Course.fake("updated");
+        Course course = Fixture.course("updated");
 
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 
@@ -63,7 +64,7 @@ class DeleteCourseServiceTest {
 
     @Test
     void deleteSkill() {
-        Course course = Course.fake("updated");
+        Course course = Fixture.course("updated");
 
         CourseUpdateRequestDto courseUpdateRequestDto = new CourseUpdateRequestDto(
                 "updated", "category", "description", "thumbnailPath", "", "초급", List.of("스킬"), 0);

@@ -2,6 +2,7 @@ package jinookk.ourlms.applications.payment;
 
 import jinookk.ourlms.dtos.MonthlyPaymentsDto;
 import jinookk.ourlms.dtos.PaymentsDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
@@ -30,7 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class GetPaymentServiceTest {
+class GetPaymentServiceTest extends Fixture{
     GetPaymentService getPaymentService;
     PaymentRepository paymentRepository;
     CourseRepository courseRepository;
@@ -82,9 +83,9 @@ class GetPaymentServiceTest {
 
 
         given(paymentRepository.findAllByAccountId(new AccountId(any())))
-                .willReturn(List.of(Payment.fake(24000), Payment.fake(35000), Payment.fake(49000)));
+                .willReturn(List.of(Fixture.payment(24000), Fixture.payment(35000), Fixture.payment(49000)));
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 

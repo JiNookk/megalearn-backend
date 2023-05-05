@@ -3,6 +3,7 @@ package jinookk.ourlms.applications.comment;
 import jinookk.ourlms.dtos.CommentDto;
 import jinookk.ourlms.dtos.CommentRequestDto;
 import jinookk.ourlms.dtos.CommentsDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Comment;
 import jinookk.ourlms.models.entities.Course;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-class CreateCommentServiceTest {
+class CreateCommentServiceTest extends Fixture {
     CreateCommentService createCommentService;
     CommentRepository commentRepository;
     InquiryRepository inquiryRepository;
@@ -46,20 +47,20 @@ class CreateCommentServiceTest {
         courseRepository = mock(CourseRepository.class);
         createCommentService = new CreateCommentService(commentRepository, inquiryRepository, accountRepository, courseRepository);
 
-        Comment comment = Comment.fake("hi");
-        Comment comment2 = Comment.fake("hi2");
-        Comment comment3 = Comment.fake("hi3");
+        Comment comment = Fixture.comment("hi");
+        Comment comment2 = Fixture.comment("hi2");
+        Comment comment3 = Fixture.comment("hi3");
         given(commentRepository.save(any())).willReturn(comment);
 
         given(commentRepository.findAllByInquiryId(new InquiryId(1L))).willReturn(List.of(comment, comment2, comment3));
 
-        Course course = Course.fake("course");
+        Course course = Fixture.course("course");
         given(courseRepository.findById(any())).willReturn(Optional.of(course));
 
-        Inquiry inquiry = Inquiry.fake("inquiry");
+        Inquiry inquiry = Fixture.inquiry("inquiry");
         given(inquiryRepository.findById(1L)).willReturn(Optional.of(inquiry));
 
-        Account account = Account.fake("tester2");
+        Account account = Fixture.account("tester2");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 

@@ -3,6 +3,7 @@ package jinookk.ourlms.applications.course;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CourseUpdateRequestDto;
 import jinookk.ourlms.dtos.StatusUpdateDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.vos.UserName;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class UpdateCourseServiceTest {
+class UpdateCourseServiceTest extends Fixture {
     UpdateCourseService updateCourseService;
     CourseRepository courseRepository;
     AccountRepository accountRepository;
@@ -33,8 +34,8 @@ class UpdateCourseServiceTest {
         courseRepository = mock(CourseRepository.class);
         updateCourseService = new UpdateCourseService(courseRepository, accountRepository);
 
-        Course course = Course.fake("내 강의");
-        Account account = Account.fake("account");
+        Course course = Fixture.course("내 강의");
+        Account account = Fixture.account("account");
 
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 
@@ -49,7 +50,7 @@ class UpdateCourseServiceTest {
 
     @Test
     void update() {
-        Course course = Course.fake("updated");
+        Course course = Fixture.course("updated");
 
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 
@@ -62,7 +63,7 @@ class UpdateCourseServiceTest {
 
     @Test
     void updateStatus() {
-        Course course = Course.fake("updated");
+        Course course = Fixture.course("updated");
 
         given(courseRepository.findById(1L)).willReturn(Optional.of(course));
 

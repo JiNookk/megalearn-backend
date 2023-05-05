@@ -1,6 +1,7 @@
 package jinookk.ourlms.applications.token;
 
 import jinookk.ourlms.applications.auth.IssueTokenService;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.RefreshToken;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.repositories.RefreshTokenRepository;
@@ -45,7 +46,7 @@ class IssueTokenServiceTest {
     @Test
     void reissueRefreshToken() {
         given(refreshTokenRepository.findByTokenValue(any()))
-                .willReturn(Optional.of(RefreshToken.fake("expired")));
+                .willReturn(Optional.of(Fixture.refreshToken("expired")));
 
         String userName = "tester@email.com";
 

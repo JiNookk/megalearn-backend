@@ -1,6 +1,7 @@
 package jinookk.ourlms.applications.note;
 
 import jinookk.ourlms.dtos.NoteDeleteDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Note;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -19,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class DeleteNoteServiceTest {
+class DeleteNoteServiceTest extends Fixture {
     DeleteNoteService deleteNoteService;
     NoteRepository noteRepository;
     AccountRepository accountRepository;
@@ -30,7 +31,7 @@ class DeleteNoteServiceTest {
         noteRepository = mock(NoteRepository.class);
         deleteNoteService = new DeleteNoteService(noteRepository);
 
-        Note note = Note.fake("content");
+        Note note = Fixture.note("content");
         given(noteRepository.save(any())).willReturn(note);
 
         given(noteRepository.findById(any())).willReturn(Optional.of(note));
@@ -38,7 +39,7 @@ class DeleteNoteServiceTest {
         given(noteRepository.findAllByLectureIdAndAccountId(new LectureId(1L), new AccountId(1L)))
                 .willReturn(List.of(note));
 
-        Account account = Account.fake("account");
+        Account account = Fixture.account("account");
         given(accountRepository.findByUserName(any())).willReturn(Optional.of(account));
     }
 

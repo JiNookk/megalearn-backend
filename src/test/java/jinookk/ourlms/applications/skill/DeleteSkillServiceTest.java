@@ -1,6 +1,7 @@
 package jinookk.ourlms.applications.skill;
 
 import jinookk.ourlms.dtos.SkillDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Skill;
 import jinookk.ourlms.repositories.SkillRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,7 @@ class DeleteSkillServiceTest {
 
     @Test
     void delete() {
-        Skill skill = Skill.fake("skill");
+        Skill skill = Fixture.skill("skill");
 
         given(skillRepository.findById(any())).willReturn(Optional.of(skill));
 

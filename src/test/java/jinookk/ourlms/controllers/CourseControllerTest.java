@@ -7,6 +7,7 @@ import jinookk.ourlms.applications.course.UpdateCourseService;
 import jinookk.ourlms.applications.dtos.GetCoursesDto;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CoursesDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.applications.course.MyCourseService;
@@ -62,7 +63,7 @@ class CourseControllerTest {
 
     @Test
     void create() throws Exception {
-        CourseDto courseDto = Course.fake("courseTitle").toCourseDto();
+        CourseDto courseDto = Fixture.course("courseTitle").toCourseDto();
 
         given(createCourseService.create(any(), any())).willReturn(courseDto);
 
@@ -78,7 +79,7 @@ class CourseControllerTest {
 
     @Test
     void detail() throws Exception {
-        CourseDto courseDto = Course.fake("test").toCourseDto();
+        CourseDto courseDto = Fixture.course("test").toCourseDto();
 
         given(getCourseService.detail(any(), any())).willReturn(courseDto);
 
@@ -93,7 +94,7 @@ class CourseControllerTest {
 
     @Test
     void list() throws Exception {
-        CourseDto courseDto = Course.fake("test").toCourseDto();
+        CourseDto courseDto = Fixture.course("test").toCourseDto();
 
         given(getCourseService.list(anyInt(), any())).willReturn(new CoursesDto(List.of(courseDto), 1));
 
@@ -106,7 +107,7 @@ class CourseControllerTest {
 
     @Test
     void wishList() throws Exception {
-        CourseDto courseDto = Course.fake("test").toCourseDto();
+        CourseDto courseDto = Fixture.course("test").toCourseDto();
 
         given(getCourseService.wishList(any())).willReturn(new GetCoursesDto(List.of(courseDto)));
 
@@ -120,7 +121,7 @@ class CourseControllerTest {
 
     @Test
     void purchasedMyCourses() throws Exception {
-        CourseDto myCourseDto = Course.fake("my-courses").toCourseDto();
+        CourseDto myCourseDto = Fixture.course("my-courses").toCourseDto();
         List<CourseDto> dtos = List.of(myCourseDto);
 
         given(myCourseService.myCourses(any()))
@@ -136,7 +137,7 @@ class CourseControllerTest {
 
     @Test
     void update() throws Exception {
-        CourseDto courseDto = Course.fake("updated").toCourseDto();
+        CourseDto courseDto = Fixture.course("updated").toCourseDto();
 
         given(updateCourseService.update(any(), any(), any())).willReturn(courseDto);
 
@@ -161,7 +162,7 @@ class CourseControllerTest {
 
     @Test
     void updateStatus() throws Exception {
-        CourseDto courseDto = Course.fake("updated").toCourseDto();
+        CourseDto courseDto = Fixture.course("updated").toCourseDto();
 
         given(updateCourseService.updateStatus(any(), any())).willReturn(courseDto);
 
@@ -178,7 +179,7 @@ class CourseControllerTest {
 
     @Test
     void delete() throws Exception {
-        CourseDto courseDto = Course.fake(null).toCourseDto();
+        CourseDto courseDto = Fixture.course(null).toCourseDto();
 
         given(deleteCourseService.delete(any(), any())).willReturn(courseDto);
 
@@ -193,7 +194,7 @@ class CourseControllerTest {
 
     @Test
     void deleteSkill() throws Exception {
-        CourseDto courseDto = Course.fake(null).toCourseDto();
+        CourseDto courseDto = Fixture.course(null).toCourseDto();
 
         given(deleteCourseService.deleteSkill(any(), any(), any())).willReturn(courseDto);
 
@@ -208,7 +209,7 @@ class CourseControllerTest {
 
     @Test
     void uploadedMyCourses() throws Exception {
-        CourseDto courseDto = Course.fake("my-courses").toCourseDto();
+        CourseDto courseDto = Fixture.course("my-courses").toCourseDto();
         List<CourseDto> dtos = List.of(courseDto);
 
         given(myCourseService.uploadedList(any(), any()))

@@ -8,6 +8,7 @@ import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MonthlyPaymentsDto;
 import jinookk.ourlms.dtos.PaymentDto;
 import jinookk.ourlms.dtos.PaymentsDto;
+import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.UserName;
@@ -74,7 +75,7 @@ class PaymentControllerTest {
 
     @Test
     void purchase() throws Exception {
-        PaymentDto paymentDto = Payment.fake(35_000).toDto();
+        PaymentDto paymentDto = Fixture.payment(35_000).toDto();
 
         given(createPaymentService.purchase(any(), any()))
                 .willReturn(new PaymentsDto(List.of(paymentDto)));
@@ -93,7 +94,7 @@ class PaymentControllerTest {
 
     @Test
     void list() throws Exception {
-        PaymentDto paymentDto = Payment.fake(35_000).toDto();
+        PaymentDto paymentDto = Fixture.payment(35_000).toDto();
 
         given(getPaymentService.list(new UserName("userName@email.com"), new CourseId(1L)))
                 .willReturn(new PaymentsDto(List.of(paymentDto)));
@@ -108,7 +109,7 @@ class PaymentControllerTest {
 
     @Test
     void myPayments() throws Exception {
-        PaymentDto paymentDto = Payment.fake(35_000).toDto();
+        PaymentDto paymentDto = Fixture.payment(35_000).toDto();
 
         given(getPaymentService.list(new UserName("userName@email.com")))
                 .willReturn(new PaymentsDto(List.of(paymentDto)));
