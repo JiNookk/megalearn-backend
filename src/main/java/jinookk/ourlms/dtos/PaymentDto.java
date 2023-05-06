@@ -1,5 +1,6 @@
 package jinookk.ourlms.dtos;
 
+import jinookk.ourlms.models.enums.PaymentStatus;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Price;
 import jinookk.ourlms.models.vos.Title;
@@ -8,6 +9,7 @@ import jinookk.ourlms.models.vos.ids.CourseId;
 import java.time.LocalDateTime;
 
 public class PaymentDto {
+    private String status;
     private Long id;
     private Long courseId;
     private Integer cost;
@@ -18,13 +20,15 @@ public class PaymentDto {
     public PaymentDto() {
     }
 
-    public PaymentDto(Long id, CourseId courseId, Price cost, Name purchaser, Title courseTitle, LocalDateTime createdAt) {
+    public PaymentDto(Long id, CourseId courseId, Price cost, Name purchaser, Title courseTitle,
+                      LocalDateTime createdAt, PaymentStatus status) {
         this.id = id;
         this.courseId = courseId.value();
         this.cost = cost.value();
         this.purchaser = purchaser.value();
         this.courseTitle = courseTitle.value();
         this.createdAt = createdAt;
+        this.status = status.toString();
     }
 
     public Long getId() {
@@ -49,5 +53,9 @@ public class PaymentDto {
 
     public String getPurchaser() {
         return purchaser;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

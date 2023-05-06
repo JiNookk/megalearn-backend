@@ -7,6 +7,7 @@ import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.enums.CourseStatus;
+import jinookk.ourlms.models.enums.PaymentStatus;
 import jinookk.ourlms.models.vos.Category;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.ImagePath;
@@ -16,7 +17,6 @@ import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.PaymentRepository;
@@ -63,23 +63,28 @@ class GetPaymentServiceTest extends Fixture {
         given(paymentRepository.findAllByCourseId(new CourseId(1L)))
                 .willReturn(List.of(
                         new Payment(1L, new CourseId(1L), new AccountId(1L), new Price(35_000),
-                                new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now()),
+                                new Title("courseTitle1"), new Name("purchaser", false), PaymentStatus.SUCCESS,
+                                LocalDateTime.now()),
                         new Payment(2L, new CourseId(1L), new AccountId(2L), new Price(35_000),
-                                new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now()),
+                                new Title("courseTitle1"), new Name("purchaser", false), PaymentStatus.SUCCESS,
+                                LocalDateTime.now()),
                         new Payment(3L, new CourseId(1L), new AccountId(3L), new Price(35_000),
-                                new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now())
+                                new Title("courseTitle1"), new Name("purchaser", false), PaymentStatus.SUCCESS,
+                                LocalDateTime.now())
                 ));
 
         given(paymentRepository.findAllByCourseId(new CourseId(2L)))
                 .willReturn(List.of(
                         new Payment(4L, new CourseId(2L), new AccountId(1L), new Price(24_000),
-                                new Title("courseTitle2"), new Name("purchaser", false), LocalDateTime.now())
+                                new Title("courseTitle2"), new Name("purchaser", false), PaymentStatus.SUCCESS,
+                                LocalDateTime.now())
                 ));
 
         given(paymentRepository.findAllByCourseId(new CourseId(3L)))
                 .willReturn(List.of(
                         new Payment(5L, new CourseId(3L), new AccountId(2L), new Price(49_000),
-                                new Title("courseTitle3"), new Name("purchaser", false), LocalDateTime.now())
+                                new Title("courseTitle3"), new Name("purchaser", false), PaymentStatus.SUCCESS,
+                                LocalDateTime.now())
                 ));
 
 

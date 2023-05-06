@@ -16,6 +16,7 @@ import jinookk.ourlms.models.entities.RefreshToken;
 import jinookk.ourlms.models.entities.Section;
 import jinookk.ourlms.models.entities.Skill;
 import jinookk.ourlms.models.enums.CourseStatus;
+import jinookk.ourlms.models.enums.PaymentStatus;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HandOutUrl;
 import jinookk.ourlms.models.vos.ImagePath;
@@ -113,7 +114,7 @@ public class Fixture {
 
     public static Payment payment(int price) {
         return new Payment(1L, new CourseId(1L), new AccountId(1L), new Price(price), new Title("course title"),
-                new Name("purchaser", false), LocalDateTime.now());
+                new Name("purchaser", false), PaymentStatus.SUCCESS, LocalDateTime.now());
     }
 
     public static Progress progress(String lectureTitle) {

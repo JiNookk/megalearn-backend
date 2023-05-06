@@ -12,7 +12,7 @@ import jinookk.ourlms.dtos.PaymentRequestDto;
 import jinookk.ourlms.dtos.PaymentsDto;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.applications.kakao.KakaoService;
+import jinookk.ourlms.applications.kakao.KakaoPayService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,16 +24,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URISyntaxException;
+
 @RestController
 public class PaymentController {
     private final GetPaymentService getPaymentService;
     private final CreatePaymentService createPaymentService;
-    private final KakaoService kakaoService;
+    private final KakaoPayService kakaoPayService;
 
-    public PaymentController(GetPaymentService getPaymentService, CreatePaymentService createPaymentService, KakaoService kakaoService) {
+    public PaymentController(GetPaymentService getPaymentService,
+                             CreatePaymentService createPaymentService,
+                             KakaoPayService kakaoPayService) {
         this.getPaymentService = getPaymentService;
         this.createPaymentService = createPaymentService;
-        this.kakaoService = kakaoService;
+        this.kakaoPayService = kakaoPayService;
     }
 
     @PostMapping("/payments/kakao-ready")
@@ -45,8 +49,8 @@ public class PaymentController {
     public KakaoReadyDto paymentReady(
             @RequestAttribute UserName userName,
             @RequestBody KakaoRequestDto kakaoRequestDto
-    ) {
-        return kakaoService.paymentUrl(userName, kakaoRequestDto.getCourseIds());
+    ) throws URISyntaxException {
+        return kakaoPayService.paymentUrl(userName, kakaoRequestDto.getCourseIds());
     }
 
     @ResponseStatus(HttpStatus.CREATED)

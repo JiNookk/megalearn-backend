@@ -1,6 +1,6 @@
 package jinookk.ourlms.applications.payment;
 
-import jinookk.ourlms.applications.kakao.KakaoService;
+import jinookk.ourlms.applications.kakao.KakaoPayService;
 import jinookk.ourlms.dtos.PaymentDto;
 import jinookk.ourlms.dtos.PaymentRequestDto;
 import jinookk.ourlms.dtos.PaymentsDto;
@@ -8,21 +8,28 @@ import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.CartNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Cart;
+import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.entities.Progress;
+import jinookk.ourlms.models.enums.PaymentStatus;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.kakao.KakaoPayItemVO;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CartRepository;
+import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.LectureRepository;
 import jinookk.ourlms.repositories.PaymentRepository;
 import jinookk.ourlms.repositories.ProgressRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceUnit;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,23 +41,34 @@ public class CreatePaymentService {
     private final LectureRepository lectureRepository;
     private final ProgressRepository progressRepository;
     private final AccountRepository accountRepository;
-    private final KakaoService kakaoService;
+    private final KakaoPayService kakaoPayService;
+    private final CourseRepository courseRepository;
+
+    @PersistenceUnit
+    private EntityManagerFactory entityManagerFactory;
 
     public CreatePaymentService(PaymentRepository paymentRepository,
                                 CartRepository cartRepository,
                                 LectureRepository lectureRepository,
                                 AccountRepository accountRepository,
                                 ProgressRepository progressRepository,
-                                KakaoService kakaoService) {
+                                KakaoPayService kakaoPayService, CourseRepository courseRepository) {
         this.paymentRepository = paymentRepository;
         this.cartRepository = cartRepository;
         this.lectureRepository = lectureRepository;
         this.accountRepository = accountRepository;
         this.progressRepository = progressRepository;
-        this.kakaoService = kakaoService;
+        this.kakaoPayService = kakaoPayService;
+        this.courseRepository = courseRepository;
     }
 
+//    결제 성공 -> 성공 엔티티
+//    결제 실패 -> 실패 엔티티
+//    근데 사용자한테 예외 메시지는 전달해야함.
     public PaymentsDto purchase(PaymentRequestDto paymentRequestDto, UserName userName) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
@@ -59,25 +77,45 @@ public class CreatePaymentService {
         Cart cart = cartRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new CartNotFound(accountId));
 
-        KakaoPayItemVO kakaoPayItemVO = kakaoService.approve(paymentRequestDto, accountId);
+        KakaoPayItemVO kakaoPayItemVO = kakaoPayService.approve(paymentRequestDto, accountId);
 
-        List<Lecture> lectures = kakaoPayItemVO.getCourses().stream()
-                .map(course -> lectureRepository.findAllByCourseId(new CourseId(course.id())))
-                .flatMap(Collection::stream)
-                .toList();
+        List<Long> courseIds = kakaoPayItemVO.getCourses().stream().map(Course::id).toList();
 
-        List<Payment> payments = Payment.listOf(kakaoPayItemVO.getCourses(), account, cart);
+        List<Course> courses = courseRepository.findAllById(courseIds);
 
-        List<Progress> progresses = Progress.listOf(lectures, new AccountId(account.id()));
+        transaction.begin();
 
-        progressRepository.saveAll(progresses);
+        try {
+            List<Lecture> lectures = kakaoPayItemVO.getCourses().stream()
+                    .map(course -> lectureRepository.findAllByCourseId(new CourseId(course.id())))
+                    .flatMap(Collection::stream)
+                    .toList();
 
-        List<Payment> saved = paymentRepository.saveAll(payments);
+            List<Payment> payments = Payment.listOf(courses, account, cart, PaymentStatus.SUCCESS);
 
-        List<PaymentDto> paymentDtos = saved.stream()
-                .map(Payment::toDto)
-                .toList();
+            List<Progress> progresses = Progress.listOf(lectures, new AccountId(account.id()));
 
-        return new PaymentsDto(paymentDtos);
+            progressRepository.saveAll(progresses);
+
+            List<Payment> saved = paymentRepository.saveAll(payments);
+
+            List<PaymentDto> paymentDtos = saved.stream()
+                    .map(Payment::toDto)
+                    .toList();
+
+            transaction.commit();
+
+            return new PaymentsDto(paymentDtos);
+
+        } catch (RuntimeException exception){
+            System.out.println("error3");
+
+            transaction.rollback();
+
+            List<Payment> payments = Payment.listOf(courses, account, cart, PaymentStatus.FAILED);
+            paymentRepository.saveAll(payments);
+
+            throw exception;
+        }
     }
 }
