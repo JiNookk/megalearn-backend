@@ -1,7 +1,10 @@
 package jinookk.ourlms.applications.course;
 
-import jinookk.ourlms.applications.dtos.GetCoursesDto;
+import jinookk.ourlms.daos.CourseDao;
 import jinookk.ourlms.dtos.CourseDto;
+import jinookk.ourlms.dtos.CourseFilterDto;
+import jinookk.ourlms.dtos.CoursesDto;
+import jinookk.ourlms.dtos.GetCoursesDto;
 import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
@@ -31,13 +34,15 @@ class GetCourseServiceTest extends Fixture {
     CourseRepository courseRepository;
     AccountRepository accountRepository;
     LikeRepository likeRepository;
+    CourseDao courseDao;
 
     @BeforeEach
     void setup() {
         likeRepository = mock(LikeRepository.class);
         accountRepository = mock(AccountRepository.class);
         courseRepository = mock(CourseRepository.class);
-        getCourseService = new GetCourseService(courseRepository, accountRepository, likeRepository);
+        courseDao = mock(CourseDao.class);
+        getCourseService = new GetCourseService(courseRepository, accountRepository, likeRepository, courseDao);
 
         Course course = Fixture.course("내 강의");
         Account account = Fixture.account("account");
@@ -55,6 +60,9 @@ class GetCourseServiceTest extends Fixture {
         given(likeRepository.findAllByAccountId(any())).willReturn(List.of(like));
 
         given(courseRepository.findAllById(any())).willReturn(List.of(course));
+
+        given(courseDao.findCoursesByFilter(any(), any())).willReturn(new PageImpl<>(List.of(course)));
+        given(courseDao.findCoursesForAdmin(any())).willReturn(new PageImpl<>(List.of(course)));
     }
 
     @Test
@@ -68,19 +76,19 @@ class GetCourseServiceTest extends Fixture {
     }
 
     // TODO: EntityManager를 모킹하는 방법 찾기
-//    @Test
-//    void list() {
-//        CoursesDto coursesDto = getCourseService.list(1, new CourseFilterDto("입문", "cost", "skill", "content"));
-//
-//        assertThat(coursesDto.getCourses()).hasSize(1);
-//    }
-//
-//    @Test
-//    void listForAdmin() {
-//        CoursesDto coursesDto = getCourseService.listForAdmin(1);
-//
-//        assertThat(coursesDto.getCourses()).hasSize(1);
-//    }
+    @Test
+    void list() {
+        CoursesDto coursesDto = getCourseService.list(1, new CourseFilterDto("입문", "cost", "skill", "content"));
+
+        assertThat(coursesDto.getCourses()).hasSize(1);
+    }
+
+    @Test
+    void listForAdmin() {
+        CoursesDto coursesDto = getCourseService.listForAdmin(1);
+
+        assertThat(coursesDto.getCourses()).hasSize(1);
+    }
 
     @Test
     void wishList() {

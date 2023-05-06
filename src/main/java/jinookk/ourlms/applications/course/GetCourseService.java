@@ -1,10 +1,9 @@
 package jinookk.ourlms.applications.course;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jinookk.ourlms.applications.dtos.GetCoursesDto;
+import jinookk.ourlms.daos.CourseDao;
+import jinookk.ourlms.dtos.GetCoursesDto;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CoursesDto;
@@ -15,18 +14,16 @@ import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Like;
 import jinookk.ourlms.models.entities.QCourse;
 import jinookk.ourlms.models.enums.CourseStatus;
-import jinookk.ourlms.models.enums.Level;
-import jinookk.ourlms.models.vos.Content;
-import jinookk.ourlms.models.vos.HashTag;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
-import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.repositories.AccountRepository;
 import jinookk.ourlms.repositories.CourseRepository;
 import jinookk.ourlms.repositories.LikeRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,15 +37,17 @@ public class GetCourseService {
     private final CourseRepository courseRepository;
     private final AccountRepository accountRepository;
     private final LikeRepository likeRepository;
+    private final CourseDao courseDao;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     public GetCourseService(CourseRepository courseRepository, AccountRepository accountRepository,
-                            LikeRepository likeRepository) {
+                            LikeRepository likeRepository, CourseDao courseDao) {
         this.courseRepository = courseRepository;
         this.accountRepository = accountRepository;
         this.likeRepository = likeRepository;
+        this.courseDao = courseDao;
     }
 
     // TODO : 강의에서 account여부와 payment여부를 분리해야한다.
@@ -71,50 +70,15 @@ public class GetCourseService {
     }
 
     public CoursesDto list(Integer page, CourseFilterDto courseFilterDto) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-        QCourse course = QCourse.course;
-        BooleanBuilder builder = new BooleanBuilder(course.status.eq(CourseStatus.APPROVED));
+        Pageable pageable = PageRequest.of(page - 1, 24);
 
-        if (courseFilterDto.level() != null) {
-            builder.or(course.level.eq(Level.of(courseFilterDto.level())));
-        }
-
-        if (courseFilterDto.cost() != null) {
-            BooleanExpression costExpression = courseFilterDto.cost().equals("무료")
-                    ? course.price.value.eq(0)
-                    : course.price.value.gt(0);
-
-            builder.or(costExpression);
-        }
-
-        if (courseFilterDto.skill() != null) {
-            builder.or(course.skillSets.contains(new HashTag(courseFilterDto.skill())));
-        }
-
-        if (courseFilterDto.content() != null) {
-            builder.and(course.title.value.like("%" + courseFilterDto.content() + "%"))
-                    .or(course.description.value.like("%" + courseFilterDto.content() + "%"))
-                    .or(course.goals.contains(new Content("%" + courseFilterDto.content() + "%")));
-        }
-
-        JPAQuery<Course> courseQuery = queryFactory.selectFrom(course)
-                .where(builder);
-
-        int pageSize = 24;
-        long totalItems = courseQuery.fetch().size();
-
-        List<Course> courses = courseQuery
-                .offset((long) (page - 1) * pageSize)
-                .limit(pageSize)
-                .fetch();
+        Page<Course> courses = courseDao.findCoursesByFilter(courseFilterDto, pageable);
 
         List<CourseDto> courseDtos = courses.stream()
                 .map(Course::toCourseDto)
                 .toList();
 
-        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-
-        return new CoursesDto(courseDtos, totalPages);
+        return new CoursesDto(courseDtos, courses.getTotalPages());
     }
 
     public GetCoursesDto wishList(UserName userName) {
@@ -139,27 +103,12 @@ public class GetCourseService {
     public CoursesDto listForAdmin(Integer page) {
         Pageable pageable = PageRequest.of(page - 1, 6);
 
-        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-
-        QCourse course = QCourse.course;
-
-        JPAQuery<Course> courseJPAQuery = queryFactory.selectFrom(course)
-                .where(course.status.ne(CourseStatus.DELETED));
-
-        List<Course> courses = courseJPAQuery
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(course.createdAt.desc())
-                .fetch();
+        Page<Course> courses = courseDao.findCoursesForAdmin(pageable);
 
         List<CourseDto> courseDtos = courses.stream()
                 .map(Course::toCourseDto)
                 .toList();
 
-        int totalItems = courseJPAQuery.fetch().size();
-
-        int totalPages = (int) Math.ceil((double) totalItems / pageable.getPageSize());
-
-        return new CoursesDto(courseDtos, totalPages);
+        return new CoursesDto(courseDtos, courses.getTotalPages());
     }
 }

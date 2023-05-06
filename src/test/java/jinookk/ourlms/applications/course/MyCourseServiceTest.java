@@ -1,6 +1,6 @@
 package jinookk.ourlms.applications.course;
 
-import jinookk.ourlms.applications.dtos.GetCoursesDto;
+import jinookk.ourlms.dtos.GetCoursesDto;
 import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;

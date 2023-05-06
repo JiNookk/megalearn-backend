@@ -1,6 +1,6 @@
 package jinookk.ourlms.applications.course;
 
-import jinookk.ourlms.applications.dtos.GetCoursesDto;
+import jinookk.ourlms.dtos.GetCoursesDto;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.models.entities.Account;
