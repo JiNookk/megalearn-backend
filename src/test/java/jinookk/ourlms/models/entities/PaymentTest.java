@@ -2,6 +2,7 @@ package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.exceptions.InvalidPaymentInformation;
+import jinookk.ourlms.models.enums.PaymentStatus;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ class PaymentTest extends Fixture {
         Course course = Fixture.course("fake");
         Account account = Fixture.account("tester");
 
-        Payment payment = Payment.of(account, course);
+        Payment payment = Payment.of(account, course, PaymentStatus.SUCCESS);
 
         assertThat(payment.purchaser()).isEqualTo(new Name("tester", false));
         assertThat(payment.id()).isEqualTo(null);
@@ -37,19 +38,19 @@ class PaymentTest extends Fixture {
     @Test
     void createWithInvalidInformation() {
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.of(Fixture.account("tester"), Fixture.course(null));
+            Payment.of(Fixture.account("tester"), Fixture.course(null), PaymentStatus.SUCCESS);
         });
 
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.of(Fixture.account(null), Fixture.course("fake"));
+            Payment.of(Fixture.account(null), Fixture.course("fake"), PaymentStatus.SUCCESS);
         });
 
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.of(Fixture.account("tester"), null);
+            Payment.of(Fixture.account("tester"), null, PaymentStatus.SUCCESS);
         });
 
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.of(null, Fixture.course("fake"));
+            Payment.of(null, Fixture.course("fake"), PaymentStatus.SUCCESS);
         });
     }
 
@@ -60,7 +61,7 @@ class PaymentTest extends Fixture {
 
         List<Course> courses = List.of(course);
 
-        List<Payment> payments = Payment.listOf(courses, account, cart);
+        List<Payment> payments = Payment.listOf(courses, account, cart, PaymentStatus.FAILED);
 
         assertThat(payments).hasSize(1);
     }
@@ -71,15 +72,15 @@ class PaymentTest extends Fixture {
         Account account = Fixture.account("tester");
 
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.listOf(List.of(), account, cart);
+            Payment.listOf(List.of(), account, cart, PaymentStatus.FAILED);
         });
 
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.listOf(null, account, cart);
+            Payment.listOf(null, account, cart, PaymentStatus.FAILED);
         });
 
         assertThrows(InvalidPaymentInformation.class, () -> {
-            Payment.listOf(List.of(course), null, cart);
+            Payment.listOf(List.of(course), null, cart, PaymentStatus.FAILED);
         });
     }
 }

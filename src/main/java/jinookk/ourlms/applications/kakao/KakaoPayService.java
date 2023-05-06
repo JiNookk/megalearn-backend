@@ -1,59 +1,49 @@
 package jinookk.ourlms.applications.kakao;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import jinookk.ourlms.dtos.KakaoReadyDto;
 import jinookk.ourlms.dtos.PaymentRequestDto;
 import jinookk.ourlms.exceptions.AccountNotFound;
+import jinookk.ourlms.exceptions.CartNotFound;
 import jinookk.ourlms.exceptions.KakaoApprovalFail;
 import jinookk.ourlms.models.entities.Account;
+import jinookk.ourlms.models.entities.Cart;
 import jinookk.ourlms.models.entities.Course;
+import jinookk.ourlms.models.entities.Payment;
+import jinookk.ourlms.models.enums.PaymentStatus;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.kakao.KakaoPayApprovalVO;
 import jinookk.ourlms.models.vos.kakao.KakaoPayItemVO;
 import jinookk.ourlms.models.vos.kakao.KakaoPayReadyVO;
 import jinookk.ourlms.repositories.AccountRepository;
+import jinookk.ourlms.repositories.CartRepository;
 import jinookk.ourlms.repositories.CourseRepository;
+import jinookk.ourlms.repositories.PaymentRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceUnit;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
-public class KakaoService {
+public class KakaoPayService {
     private static final String HOST = "https://kapi.kakao.com";
-
-    @Value("${kakao.api-key}")
-    private String apiKey;
 
     @Value("${kakao.admin-key}")
     private String adminKey;
-
-    @Value("${kakao.redirect-uri}")
-    private String redirectUri;
 
     @Value("${kakao.approval.url}")
     private String approvalUrl;
@@ -64,114 +54,45 @@ public class KakaoService {
     @Value("${kakao.cancel.url}")
     private String cancelUrl;
 
+    @PersistenceUnit
+    private EntityManagerFactory entityManagerFactory;
+
     private KakaoPayReadyVO kakaoPayReadyVO;
     private KakaoPayApprovalVO kakaoPayApprovalVO;
     private KakaoPayItemVO kakaoPayItemVO;
 
     private final CourseRepository courseRepository;
     private final AccountRepository accountRepository;
+    private final CartRepository cartRepository;
+    private final PaymentRepository paymentRepository;
 
-
-    public KakaoService(CourseRepository courseRepository, AccountRepository accountRepository) {
+    public KakaoPayService(CourseRepository courseRepository,
+                           AccountRepository accountRepository,
+                           CartRepository cartRepository,
+                           PaymentRepository paymentRepository) {
         this.courseRepository = courseRepository;
         this.accountRepository = accountRepository;
+        this.cartRepository = cartRepository;
+        this.paymentRepository = paymentRepository;
     }
 
-    public String getAccessToken(String code) throws IOException {
-        String accessToken = "";
-        String reqURL = "https://kauth.kakao.com/oauth/token";
+    public KakaoReadyDto paymentUrl(UserName userName, List<Long> courseIds) throws URISyntaxException {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
 
-        try {
-            URL url = new URL(reqURL);
+        transaction.begin();
 
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-            StringBuilder sb = new StringBuilder();
-            sb.append("grant_type=authorization_code");
-            sb.append("&client_id=" + apiKey);
-            sb.append("&redirect_uri=" + redirectUri);
-            System.out.println(redirectUri);
-            sb.append("&code=" + code);
-            bw.write(sb.toString());
-            bw.flush();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String result = "";
-
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-
-            JsonElement element = JsonParser.parseString(result);
-
-            accessToken = element.getAsJsonObject().get("access_token").getAsString();
-
-            br.close();
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            throw e;
-        }
-
-        return accessToken;
-    }
-
-    public Map<String, Object> getUser(String accessToken) {
-        Map<String, Object> user = new HashMap<>();
-
-        String reqURL = "https://kapi.kakao.com/v2/user/me";
-
-        try {
-            URL url = new URL(reqURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-
-            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
-
-            BufferedReader br =
-                    new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            String line = "";
-            String result = "";
-
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-
-            JsonElement element = JsonParser.parseString(result);
-
-            JsonObject properties =
-                    element.getAsJsonObject().get("properties").getAsJsonObject();
-            JsonObject kakaoAccount =
-                    element.getAsJsonObject().get("kakao_account").getAsJsonObject();
-
-            String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-            String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
-
-            user.put("nickname", nickname);
-            user.put("email", email);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return user;
-    }
-
-    public KakaoReadyDto paymentUrl(UserName userName, List<Long> courseIds) {
         Account account = accountRepository.findByUserName(userName)
                 .orElseThrow(() -> new AccountNotFound(userName));
 
         AccountId accountId = new AccountId(account.id());
 
+        Cart cart = cartRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new CartNotFound(accountId));
+
         List<Course> courses = courseRepository.findAllById(courseIds);
 
-        kakaoPayItemVO = new KakaoPayItemVO(courses);
+        kakaoPayItemVO = new KakaoPayItemVO(account, courses, cart);
 
         String itemNames = courses.stream()
                 .map(course -> course.title().value())
@@ -213,15 +134,24 @@ public class KakaoService {
         try {
             kakaoPayReadyVO = restTemplate.postForObject(new URI(HOST + "/v1/payment/ready"), body, KakaoPayReadyVO.class);
 
-            return new KakaoReadyDto(kakaoPayReadyVO.getNext_redirect_pc_url());
-        } catch (RestClientException | URISyntaxException e) {
-            e.printStackTrace();
-        }
+            transaction.commit();
 
-        return new KakaoReadyDto("/pay");
+            return new KakaoReadyDto(kakaoPayReadyVO.getNext_redirect_pc_url());
+        } catch (RestClientException | URISyntaxException exception ) {
+            transaction.rollback();
+
+            List<Payment> payments = Payment.listOf(courses, account, cart, PaymentStatus.FAILED);
+            paymentRepository.saveAll(payments);
+
+            exception.printStackTrace();
+            throw exception;
+        }
     }
 
     public KakaoPayItemVO approve(PaymentRequestDto paymentRequestDto, AccountId accountId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
         RestTemplate restTemplate = new RestTemplate();
 
         // 서버로 요청할 Header
@@ -241,12 +171,23 @@ public class KakaoService {
 
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 
+        transaction.begin();
         try {
             kakaoPayApprovalVO = restTemplate.postForObject(new URI(HOST + "/v1/payment/approve"), body, KakaoPayApprovalVO.class);
 
+            transaction.commit();
             return kakaoPayItemVO;
-//        } catch (RuntimeException | RestClientException |  URISyntaxException e) {
         } catch (RuntimeException | URISyntaxException e) {
+            transaction.rollback();
+
+            List<Course> courses = kakaoPayItemVO.getCourses();
+            Cart cart = kakaoPayItemVO.getCart();
+            Account account = kakaoPayItemVO.getAccount();
+
+            List<Payment> payments = Payment.listOf(courses, account, cart, PaymentStatus.FAILED);
+
+            paymentRepository.saveAll(payments);
+
             e.printStackTrace();
             throw new KakaoApprovalFail(e);
         }

@@ -1,6 +1,6 @@
 package jinookk.ourlms.controllers;
 
-import jinookk.ourlms.applications.kakao.KakaoService;
+import jinookk.ourlms.applications.kakao.KakaoPayService;
 import jinookk.ourlms.applications.payment.CreatePaymentService;
 import jinookk.ourlms.applications.payment.GetPaymentService;
 import jinookk.ourlms.dtos.KakaoReadyDto;
@@ -44,7 +44,7 @@ class PaymentControllerTest {
     private CreatePaymentService createPaymentService;
 
     @MockBean
-    private KakaoService kakaoService;
+    private KakaoPayService kakaoPayService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -58,7 +58,7 @@ class PaymentControllerTest {
 
     @Test
     void kakaoReady() throws Exception {
-        given(kakaoService.paymentUrl(any(), any()))
+        given(kakaoPayService.paymentUrl(any(), any()))
                 .willReturn(new KakaoReadyDto("http://localhost:8080"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/payments/kakao-ready")

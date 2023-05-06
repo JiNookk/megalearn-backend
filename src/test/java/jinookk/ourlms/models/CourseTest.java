@@ -4,13 +4,13 @@ import jinookk.ourlms.fixtures.Fixture;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.MonthlyPaymentDto;
 import jinookk.ourlms.dtos.MyCourseDto;
-import jinookk.ourlms.dtos.StatusUpdateDto;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Payment;
 import jinookk.ourlms.models.entities.Rating;
 import jinookk.ourlms.models.enums.CourseStatus;
 import jinookk.ourlms.models.enums.Level;
+import jinookk.ourlms.models.enums.PaymentStatus;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.ImagePath;
 import jinookk.ourlms.models.vos.Name;
@@ -70,11 +70,11 @@ class CourseTest extends Fixture {
 
         List<Payment> payments = List.of(
                 new Payment(1L, new CourseId(1L), new AccountId(1L), new Price(35_000),
-                        new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now()),
+                        new Title("courseTitle1"), new Name("purchaser", false), PaymentStatus.SUCCESS, LocalDateTime.now()),
                 new Payment(2L, new CourseId(1L), new AccountId(2L), new Price(35_000),
-                        new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now()),
+                        new Title("courseTitle1"), new Name("purchaser", false), PaymentStatus.SUCCESS, LocalDateTime.now()),
                 new Payment(3L, new CourseId(1L), new AccountId(3L), new Price(35_000),
-                        new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.now())
+                        new Title("courseTitle1"), new Name("purchaser", false), PaymentStatus.SUCCESS, LocalDateTime.now())
         );
 
         MonthlyPaymentDto monthlyPaymentDto = course.toMonthlyPaymentDto(payments);
@@ -88,9 +88,9 @@ class CourseTest extends Fixture {
 
         List<Payment> payments = List.of(
                 new Payment(4L, new CourseId(1L), new AccountId(3L), new Price(35_000),
-                        new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.of(2020, 1, 1, 1, 1)),
+                        new Title("courseTitle1"), new Name("purchaser", false), PaymentStatus.SUCCESS, LocalDateTime.of(2020, 1, 1, 1, 1)),
                 new Payment(5L, new CourseId(1L), new AccountId(3L), new Price(35_000),
-                        new Title("courseTitle1"), new Name("purchaser", false), LocalDateTime.of(2020, 1, 1, 1, 1))
+                        new Title("courseTitle1"), new Name("purchaser", false), PaymentStatus.SUCCESS, LocalDateTime.of(2020, 1, 1, 1, 1))
         );
 
         MonthlyPaymentDto monthlyPaymentDto = course.toMonthlyPaymentDto(payments);

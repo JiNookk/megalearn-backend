@@ -2,17 +2,21 @@ package jinookk.ourlms.models.entities;
 
 import jinookk.ourlms.dtos.PaymentDto;
 import jinookk.ourlms.exceptions.InvalidPaymentInformation;
+import jinookk.ourlms.models.enums.PaymentStatus;
 import jinookk.ourlms.models.vos.Name;
 import jinookk.ourlms.models.vos.Price;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.ids.AccountId;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
@@ -44,39 +48,60 @@ public class Payment {
     @AttributeOverride(name = "value", column = @Column(name = "purchaser"))
     private Name purchaser;
 
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     public Payment() {
     }
 
-    public Payment(Long id, CourseId courseId, AccountId accountId, Price price, Title courseTitle, Name purchaser, LocalDateTime createdAt) {
+    public Payment(Long id, CourseId courseId, AccountId accountId, Price price, Title courseTitle,
+                   Name purchaser, PaymentStatus status, LocalDateTime createdAt) {
         this.id = id;
         this.courseId = courseId;
         this.accountId = accountId;
         this.price = price;
         this.courseTitle = courseTitle;
         this.purchaser = purchaser;
+        this.status = status;
         this.createdAt = createdAt;
     }
 
-    public static List<Payment> listOf(List<Course> courses, Account account, Cart cart) {
-        if (account == null || courses == null || courses.size() == 0 ) {
+    public static List<Payment> listOf(List<Course> courses, Account account, Cart cart, PaymentStatus status) {
+        if (account == null || courses == null || courses.size() == 0) {
             throw new InvalidPaymentInformation();
         }
 
-        List<Payment> payments = courses.stream()
-                .map(course -> of(account, course))
-                .toList();
+        try {
+            courses.forEach(course -> {
+                if (!course.isApproved()) {
+                    throw new AccessDeniedException("cannot purchase not approved course!");
+                }
+            });
 
-        List<CourseId> courseIds = getCourseIds(courses);
+            List<Payment> payments = courses.stream()
+                    .map(course -> of(account, course, status))
+                    .toList();
 
-        cart.removeItems(courseIds);
+            List<CourseId> courseIds = getCourseIds(courses);
 
-        return payments;
+            if (status.equals(PaymentStatus.SUCCESS)) {
+                cart.removeItems(courseIds);
+            }
+
+            return payments;
+        } catch (AccessDeniedException exception) {
+            List<Payment> payments = courses.stream()
+                    .map(course -> of(account, course, PaymentStatus.FAILED))
+                    .toList();
+
+            return payments;
+        }
     }
 
-    public static Payment of(Account account, Course course) {
+    public static Payment of(Account account, Course course, PaymentStatus status) {
         if (hasInvalidInformation(account, course)) {
             throw new InvalidPaymentInformation();
         }
@@ -88,6 +113,7 @@ public class Payment {
                 new Price(course.price().value()),
                 new Title(course.title().value()),
                 new Name(account.name().value(), false),
+                status,
                 LocalDateTime.now()
         );
     }
@@ -126,6 +152,10 @@ public class Payment {
     }
 
     public PaymentDto toDto() {
-        return new PaymentDto(id, courseId, price, purchaser, courseTitle, createdAt);
+        return new PaymentDto(id, courseId, price, purchaser, courseTitle, createdAt, status);
+    }
+
+    public PaymentStatus status() {
+        return status;
     }
 }

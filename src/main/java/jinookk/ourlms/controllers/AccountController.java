@@ -7,7 +7,7 @@ import io.swagger.annotations.ExampleProperty;
 import jinookk.ourlms.dtos.LoginResultDto;
 import jinookk.ourlms.dtos.RegisterRequestDto;
 import jinookk.ourlms.exceptions.RegisterFailed;
-import jinookk.ourlms.applications.kakao.KakaoService;
+import jinookk.ourlms.applications.kakao.KakaoAuthService;
 import jinookk.ourlms.applications.auth.LoginService;
 import jinookk.ourlms.applications.auth.RegisterService;
 import org.springframework.http.HttpStatus;
@@ -23,12 +23,12 @@ import java.util.Map;
 
 @RestController
 public class AccountController {
-    private final KakaoService kakaoService;
+    private final KakaoAuthService kakaoAuthService;
     private final LoginService loginService;
     private final RegisterService registerService;
 
-    public AccountController(KakaoService kakaoService, LoginService loginService, RegisterService registerService) {
-        this.kakaoService = kakaoService;
+    public AccountController(KakaoAuthService kakaoAuthService, LoginService loginService, RegisterService registerService) {
+        this.kakaoAuthService = kakaoAuthService;
         this.loginService = loginService;
         this.registerService = registerService;
     }
@@ -52,9 +52,9 @@ public class AccountController {
     private LoginResultDto kaKaoLogin(
             @RequestParam String code
     ) throws IOException {
-        String kakaoToken = kakaoService.getAccessToken(code);
+        String kakaoToken = kakaoAuthService.getAccessToken(code);
 
-        Map<String, Object> userInfo = kakaoService.getUser(kakaoToken);
+        Map<String, Object> userInfo = kakaoAuthService.getUser(kakaoToken);
 
         return loginService.kakaoLogin(userInfo);
     }
