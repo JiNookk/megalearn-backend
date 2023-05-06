@@ -5,6 +5,7 @@ import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.exceptions.LectureNotFound;
 import jinookk.ourlms.models.entities.Lecture;
 import jinookk.ourlms.repositories.LectureRepository;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ public class UpdateLectureService {
         this.lectureRepository = lectureRepository;
     }
 
+    @CachePut(cacheNames = "lectureCache", key = "#lectureId")
     public LectureDto update(Long lectureId, LectureUpdateRequestDto lectureUpdateRequestDto) {
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new LectureNotFound(lectureId));

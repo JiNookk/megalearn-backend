@@ -15,11 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AuthenticationInterceptor implements HandlerInterceptor{
     private final JwtUtil jwtUtil;
-    private final HttpUtil httpUtil;
 
-    public AuthenticationInterceptor(JwtUtil jwtUtil, HttpUtil httpUtil) {
+    public AuthenticationInterceptor(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.httpUtil = httpUtil;
     }
 
     @Override
