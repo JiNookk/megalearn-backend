@@ -57,7 +57,7 @@ public class OurlmsApplication {
     }
 
     public AuthenticationInterceptor authenticationInterceptor() {
-        return new AuthenticationInterceptor(jwtUtil(), httpUtil());
+        return new AuthenticationInterceptor(jwtUtil());
     }
 
     @Bean

@@ -35,4 +35,4 @@ application-API-KEY.properties
 application.properties
 
 # backdoor API
-*/backdoor/
+/backdoor/
