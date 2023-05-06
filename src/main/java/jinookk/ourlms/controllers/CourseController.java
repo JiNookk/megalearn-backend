@@ -8,7 +8,7 @@ import jinookk.ourlms.applications.course.CreateCourseService;
 import jinookk.ourlms.applications.course.DeleteCourseService;
 import jinookk.ourlms.applications.course.GetCourseService;
 import jinookk.ourlms.applications.course.UpdateCourseService;
-import jinookk.ourlms.applications.dtos.GetCoursesDto;
+import jinookk.ourlms.dtos.GetCoursesDto;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CourseRequestDto;

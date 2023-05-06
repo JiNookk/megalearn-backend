@@ -1,6 +1,4 @@
-package jinookk.ourlms.applications.dtos;
-
-import jinookk.ourlms.dtos.CourseDto;
+package jinookk.ourlms.dtos;
 
 import java.util.List;
 
