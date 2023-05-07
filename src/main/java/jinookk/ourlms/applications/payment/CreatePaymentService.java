@@ -62,9 +62,6 @@ public class CreatePaymentService {
         this.courseRepository = courseRepository;
     }
 
-//    결제 성공 -> 성공 엔티티
-//    결제 실패 -> 실패 엔티티
-//    근데 사용자한테 예외 메시지는 전달해야함.
     public PaymentsDto purchase(PaymentRequestDto paymentRequestDto, UserName userName) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -108,8 +105,6 @@ public class CreatePaymentService {
             return new PaymentsDto(paymentDtos);
 
         } catch (RuntimeException exception){
-            System.out.println("error3");
-
             transaction.rollback();
 
             List<Payment> payments = Payment.listOf(courses, account, cart, PaymentStatus.FAILED);

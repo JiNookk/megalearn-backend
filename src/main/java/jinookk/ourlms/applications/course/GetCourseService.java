@@ -1,18 +1,15 @@
 package jinookk.ourlms.applications.course;
 
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import jinookk.ourlms.daos.CourseDao;
-import jinookk.ourlms.dtos.GetCoursesDto;
 import jinookk.ourlms.dtos.CourseDto;
 import jinookk.ourlms.dtos.CourseFilterDto;
 import jinookk.ourlms.dtos.CoursesDto;
+import jinookk.ourlms.dtos.GetCoursesDto;
 import jinookk.ourlms.exceptions.AccountNotFound;
 import jinookk.ourlms.exceptions.CourseNotFound;
 import jinookk.ourlms.models.entities.Account;
 import jinookk.ourlms.models.entities.Course;
 import jinookk.ourlms.models.entities.Like;
-import jinookk.ourlms.models.entities.QCourse;
 import jinookk.ourlms.models.enums.CourseStatus;
 import jinookk.ourlms.models.vos.UserName;
 import jinookk.ourlms.models.vos.ids.AccountId;
@@ -23,7 +20,6 @@ import jinookk.ourlms.repositories.LikeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
