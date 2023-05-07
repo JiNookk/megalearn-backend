@@ -28,7 +28,6 @@ public class OurlmsApplication {
     private String adminOrigin;
 
     public static void main(String[] args) {
-        System.out.println(Runtime.getRuntime().maxMemory() / (1024 * 1024) + "MB");
         SpringApplication.run(OurlmsApplication.class, args);
     }
 
