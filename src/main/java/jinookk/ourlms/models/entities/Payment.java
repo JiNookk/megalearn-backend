@@ -48,6 +48,7 @@ public class Payment {
     @AttributeOverride(name = "value", column = @Column(name = "purchaser"))
     private Name purchaser;
 
+    @Column(columnDefinition = "VARCHAR(255) DEFAULT 'SUCCESS'")
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
