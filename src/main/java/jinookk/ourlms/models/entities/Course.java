@@ -55,10 +55,7 @@ public class Course {
     @AttributeOverride(name = "value", column = @Column(name = "description"))
     private Content description;
 
-//    @Embedded
-//    @AttributeOverride(name = "value", column = @Column(name = "status"))
-//    private Status status;
-
+    @Column(columnDefinition = "VARCHAR(255) DEFAULT 'PROCESSING'")
     @Enumerated(EnumType.STRING)
     private CourseStatus status;
 

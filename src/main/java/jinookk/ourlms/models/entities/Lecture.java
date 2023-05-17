@@ -6,12 +6,11 @@ import jinookk.ourlms.dtos.LectureUpdateRequestDto;
 import jinookk.ourlms.models.vos.Content;
 import jinookk.ourlms.models.vos.HandOutUrl;
 import jinookk.ourlms.models.vos.LectureTime;
-import jinookk.ourlms.models.vos.ids.LectureId;
-import jinookk.ourlms.models.vos.status.Status;
 import jinookk.ourlms.models.vos.Title;
 import jinookk.ourlms.models.vos.VideoUrl;
 import jinookk.ourlms.models.vos.ids.CourseId;
 import jinookk.ourlms.models.vos.ids.SectionId;
+import jinookk.ourlms.models.vos.status.Status;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -56,7 +55,6 @@ public class Lecture {
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "handout_url"))
     private HandOutUrl handOutUrl;
-
 
     public Lecture() {
     }
